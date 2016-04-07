@@ -1,4 +1,3 @@
-
 import sqlite3
 import sys
 # Creates all the tabe within the database.
@@ -21,6 +20,7 @@ CREATE_MEMBER_TABLE_STMT = '''CREATE TABLE 'Member' (
 CREATE_RESULT_TABLE_STMT = '''CREATE TABLE 'Result' (
 	event_id INTEGER,
 	player_id INTEGER,
+    score INTEGER,
 	FOREIGN KEY(event_id) REFERENCES EVENT(event_id),
 	FOREIGN KEY(player_id) REFERENCES PLAYER(player_id)
 );'''
@@ -30,42 +30,36 @@ def parse_args():
     return sys.argv[1]
 
 def create_event_table(connection):
-    print "CREATING TABLE: 'Event'"
-    print CREATE_EVENT_TABLE_STMT
     try:
         cursor = None
         cursor = connection.cursor()
         cursor.execute(CREATE_EVENT_TABLE_STMT)
-    except lite.Error, e:
+    except sqlite3.Error, e:
         print "ERORR: There was an error creating table 'Event'"
-
-    print "TABLE: 'Event' created successfully"
+    else:
+        print "TABLE: 'Event' created successfully"
 
 def create_member_table(connection):
-    print "CREATING TABLE: 'Member'"
-    print CREATE_EVENT_TABLE_STMT
     try:
         cursor = None
         cursor = connection.cursor()
         cursor.execute(CREATE_MEMBER_TABLE_STMT)
-    except lite.Error, e:
+    except sqlite3.Error, e:
         print "ERORR: There was an error creating table 'Member'"
-
-    print "TABLE: 'Member' created successfully"
+    else:
+        print "TABLE: 'Member' created successfully"
 
 
 
 def create_result_table(connection):
-    print "CREATING TABLE: 'Result'"
-    print CREATE_EVENT_TABLE_STMT
     try:
         cursor = None
         cursor = connection.cursor()
         cursor.execute(CREATE_RESULT_TABLE_STMT)
-    except lite.Error, e:
-        print "ERORR: There was an error creating table 'Member'"
-
-    print "TABLE: 'Result' created successfully"
+    except sqlite3.Error, e:
+        print "ERORR: There was an error creating table 'Result'"
+    else:
+        print "TABLE: 'Result' created successfully"
 
 
 
@@ -77,7 +71,7 @@ def create_sqlite_db(filepath):
     create_member_table(connection)
     create_result_table(connection)
 
-
+    connection.close()
 
 
 
