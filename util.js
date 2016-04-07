@@ -6,3 +6,10 @@
 function setTextFieldValue(element, value) {
   element.value = value
 }
+
+function addClickOffEvent(element, action) {
+  var isClickInside = specifiedElement.contains(event.target);
+  if (!isClickInside) {
+    action()
+  }
+}
