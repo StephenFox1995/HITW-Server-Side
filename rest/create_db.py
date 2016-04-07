@@ -39,6 +39,7 @@ def create_event_table(connection):
     else:
         print "TABLE: 'Event' created successfully"
 
+
 def create_member_table(connection):
     try:
         cursor = None
@@ -48,7 +49,6 @@ def create_member_table(connection):
         print "ERORR: There was an error creating table 'Member'"
     else:
         print "TABLE: 'Member' created successfully"
-
 
 
 def create_result_table(connection):
