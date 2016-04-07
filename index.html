@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <script src="jquery-1.12.0.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
+    <title>Hole in the wall</title>
+  </head>
+
+
+  <body>
+
+    <h3>Add Event<h3>
+    <form id="event_info_form">
+      <table>
+        <tr>
+          <td>
+            Title
+            <input type="text" name="Event-Title" id="event_title"/>
+          </td>
+        </tr>
+
+        <tr>
+          <td>
+            Location
+            <input type="text" name="Event-Location" id="event_location"/>
+          </td>
+        </tr>
+
+        <tr>
+          <td>
+            Time
+            <input type="text" name="Event-Time" id="event_time"/>
+          </td>
+        </tr>
+
+        <tr>
+          <td>
+            <input type="submit" value="Add Event"/>
+          </td>
+        </tr>
+
+
+      </table>
+
+      <hr>
+      <h3>Add Member<h3>
+      <form id="event_info_form">
+        <table>
+          <tr>
+            <td>
+              Name
+              <input type="text" name="Event-Title" id="event_title"/>
+            </td>
+          </tr>
+
+          <tr>
+            <td>
+              Location
+              <input type="text" name="Event-Location" id="event_location"/>
+            </td>
+          </tr>
+
+          <tr>
+            <td>
+              Time
+              <input type="text" name="Event-Time" id="event_time"/>
+            </td>
+          </tr>
+
+          <tr>
+            <td>
+              <input type="submit" value="Add Event"/>
+            </td>
+          </tr>
+
+
+        </table>
+
+    </form>
+  </body>
+
+
+
+  <script type="text/javascript">
+    var event_title = document.getElementById("event_title")
+    event_title.addEventListener("click", function() {
+      setTextFieldValue(event_title, "")
+    });
+
+
+    function setTextFieldValue(element, value) {
+      element.value = value
+    }
+
+
+  </script>
+</html>
