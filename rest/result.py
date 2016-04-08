@@ -1,4 +1,5 @@
 import json
+
 class Result():
 
     _event_id = 0;
