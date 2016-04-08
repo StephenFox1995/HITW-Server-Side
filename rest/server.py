@@ -5,9 +5,19 @@ import query_db
 
 app = Flask(__name__)
 
-# Adds an member to the database.
+
+CURRENT_DB_LOCATION = "/Users/stephenfox/Desktop/sqldb"
+
+# ------------------
+# RESPONSE CODES
+# ------------------
+#
 # Success code : 300
 # Failure code : 301
+#
+# ------------------
+
+
 @app.route('/add_member/', methods=['POST'])
 def add_member():
     if request.json:
@@ -24,14 +34,14 @@ def add_member():
         if not handicap:
             return Response(status=301)
         else:
-            connection = query_db.get_connection("/Users/stephenfox/Desktop/sqldb")
+            connection = query_db.get_connection(CURRENT_DB_LOCATION)
             if connection is not None:
                 query_db.insert_into_member(connection, firstname, lastname, handicap)
-            else:
+                connection.close()
+                return Response(status=300)
+            else: # Connection to database failed
                 return Response(status=301)
-    else:
-        return Response(status=301)
-    return Response(status=300)
+    return Response(status=301)
 
 
 # Adds an event to the database.
@@ -56,16 +66,16 @@ def add_event():
         if not date:
             return Response(status=301)
         else:
-            connection = query_db.get_connection("/Users/stephenfox/Desktop/sqldb")
-
+            connection = query_db.get_connection(CURRENT_DB_LOCATION)
             if connection is not None:
                 query_db.insert_into_event(connection, title, location, time, date)
-            else:
+                connection.close()
+                return Response(status=300)
+            else: # Connection to database failed
                 return Response(status=301)
+    # Failure
+    return Response(status=301)
 
-    else:
-        return Response(status=301)
-    return Response(status=300)
 
 
 @app.route('/add_result/', methods=['POST'])
@@ -85,24 +95,77 @@ def add_result():
         if not score:
             return Response(status=301)
         else:
-            connection = query_db.get_connection("/Users/stephenfox/Desktop/sqldb")
-
+            connection = query_db.get_connection(CURRENT_DB_LOCATION)
             if connection is not None:
                 query_db.insert_into_result(connection, event_id, member_id, score)
-            else:
+                connection.close()
+                return Response(status=300)
+            else: # Connection to database failed
                 return Response(status=301)
+    # Failure
+    return Response(status=301)
 
-    else:
-        return Response(status=301)
-    return Response(status=300)
 
 
 @app.route('/get_all_events', methods=['GET'])
 def get_all_events():
-    connection = query_db.get_connection("/Users/stephenfox/Desktop/sqldb")
-    query_db.get_all_events(connection)
+    connection = query_db.get_connection(CURRENT_DB_LOCATION)
 
+    json = ""
+
+    if connection is not None:
+        events = query_db.get_all_events(connection)
+        connection.close()
+        if events:
+            for event in events:
+                if event:
+                    json += event.jsonify() + '\r\n'
+            print json
+            return Response(status=300, response=json, mimetype='application/json')
+    # Failure
     return Response(status=301)
+
+
+@app.route('/get_event/<identifier>', methods=['GET'])
+def get_event(identifier):
+    connection = query_db.get_connection(CURRENT_DB_LOCATION)
+
+    if connection is not None:
+        if identifier:
+            event = query_db.get_event(connection, identifier)
+            connection.close()
+            if event:
+                json = event.jsonify() + '\r\n'
+                return Response(status=300, response=json, mimetype='application/json')
+    # Failure
+    return Response(status=301)
+
+
+@app.route('/get_all_members/', methods=['GET'])
+def get_all_members():
+    connection = query_db.get_connection(CURRENT_DB_LOCATION)
+
+    json = '{ "members": [ '
+    if connection is not None:
+        members = query_db.get_all_members(connection)
+        connection.close()
+        if members:
+            for count, member in enumerate(members, start=1):
+                if member:
+                    json += member.jsonify()
+
+                # Add comma after json object created
+                # up until the last one, then add }
+                if count is not len(members):
+                    json += ',' + "\r\n"
+                else:
+                    json += ' ] }'
+
+            print json
+            return Response(status=300, response=json, mimetype='application/json')
+    # Failure
+    return Response(status=301)
+
 
 
 if __name__ == "__main__":
