@@ -110,6 +110,10 @@ def add_result():
 
 
 
+
+
+
+
 @app.route('/get_all_events', methods=['GET'])
 def get_all_events():
     connection = query_db.get_connection(CURRENT_DB_LOCATION)
@@ -144,12 +148,13 @@ def get_event(identifier):
 
     connection = query_db.get_connection(CURRENT_DB_LOCATION)
     if connection is not None:
-        if identifier:
-            event = query_db.get_event(connection, identifier)
-            connection.close()
-            if event:
-                json = event.jsonify() + '\r\n'
-                return Response(status=SUCCESS_CODE, response=json, mimetype='application/json')
+        event = query_db.get_event(connection, identifier)
+        connection.close()
+        if event:
+            json = event.jsonify() + '\r\n'
+        else:
+            json = empty_json()
+        return Response(status=SUCCESS_CODE, response=json, mimetype='application/json')
     # Failure
     return Response(status=FAILURE_CODE)
 
@@ -188,12 +193,13 @@ def get_member(identifier):
 
     connection = query_db.get_connection(CURRENT_DB_LOCATION)
     if connection is not None:
-        if identifier:
-            member = query_db.get_member(connection, identifier)
-            connection.close()
-            if member:
-                json = member.jsonify() + '\r\n'
-                return Response(status=SUCCESS_CODE, response=json, mimetype='application/json')
+        member = query_db.get_member(connection, identifier)
+        connection.close()
+        if member:
+            json = member.jsonify() + '\r\n'
+        else:
+            json = empty_json()
+        return Response(status=SUCCESS_CODE, response=json, mimetype='application/json')
     # Failure
     return Response(status=FAILURE_CODE)
 
@@ -257,6 +263,9 @@ def get_all_results_for_event(identifier):
 
 def empty_json_for_array(array):
     return '{ ' + '"' + array + '"'': []}'
+
+def empty_json():
+    return '{ }'
 
 
 
