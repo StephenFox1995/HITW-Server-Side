@@ -145,15 +145,15 @@ def get_event(identifier):
     if not identifier:
         return Response(status=MISSING_PARAM_CODE)
 
-
+    json = '{ "event:" {'
     connection = query_db.get_connection(CURRENT_DB_LOCATION)
     if connection is not None:
         event = query_db.get_event(connection, identifier)
         connection.close()
         if event:
-            json = event.jsonify() + '\r\n'
+            json = event.jsonify() + '}}'
         else:
-            json = empty_json()
+            json = empty_json_for_object("event")
         return Response(status=SUCCESS_CODE, response=json, mimetype='application/json')
     # Failure
     return Response(status=FAILURE_CODE)
@@ -189,16 +189,16 @@ def get_all_members():
 def get_member(identifier):
     if not identifier:
         return Response(status=MISSING_PARAM_CODE)
-    print identifier
 
+    json = '{ "member:" {'
     connection = query_db.get_connection(CURRENT_DB_LOCATION)
     if connection is not None:
         member = query_db.get_member(connection, identifier)
         connection.close()
         if member:
-            json = member.jsonify() + '\r\n'
+            json = member.jsonify() + '}}'
         else:
-            json = empty_json()
+            json = empty_json_for_object("member")
         return Response(status=SUCCESS_CODE, response=json, mimetype='application/json')
     # Failure
     return Response(status=FAILURE_CODE)
@@ -259,13 +259,43 @@ def get_all_results_for_event(identifier):
     # Failure
     return Response(status=FAILURE_CODE)
 
+@app.route('/get_all_results_for_member/<identifier>', methods=['GET'])
+def get_all_results_for_member(identifier):
+    if not identifier:
+        return Response(status=MISSING_PARAM_CODE)
+
+    connection = query_db.get_connection(CURRENT_DB_LOCATION)
+
+    json = '{ "results": [ '
+    if connection is not None:
+        results = query_db.get_all_results_for_member(connection, identifier)
+        connection.close()
+        if len(results) > 0:
+            for count, result in enumerate(results, start=1):
+                if result:
+                    json += result.jsonify()
+
+                # Add comma after json object created
+                # up until the last one, then add }
+                if count is not len(results):
+                    json += ',' + "\r\n"
+                else:
+                    json += ' ] }'
+        else: # There are no records in the database for that indentifier.
+            json = empty_json_for_array("results")
+        return Response(status=SUCCESS_CODE, response=json, mimetype='application/json')
+
+    # Failure
+    return Response(status=FAILURE_CODE)
+
+
 
 
 def empty_json_for_array(array):
-    return '{ ' + '"' + array + '"'': []}'
+    return '{ ' + '"' + array + '"'': null}'
 
-def empty_json():
-    return '{ }'
+def empty_json_for_object(object):
+    return '{ ' + '"' + object + '"'': null}'
 
 
 

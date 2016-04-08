@@ -131,6 +131,19 @@ def get_all_results_for_event(connection, identifier):
     cursor.close()
     return results
 
+def get_all_results_for_member(connection, identifier):
+    cursor = connection.cursor()
+    cursor.execute(SELECT_RESULT_X_FROM_MEMBER_ID, (identifier,))
+    rows = cursor.fetchall()
+
+    results = []
+    if rows:
+        for row in rows:
+            result = create_resultObject_from_result(row)
+            results.append(result)
+    cursor.close()
+    return results
+
 
 def create_event_from_result(result):
     if result:
