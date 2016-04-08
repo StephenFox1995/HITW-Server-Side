@@ -111,16 +111,21 @@ def add_result():
 def get_all_events():
     connection = query_db.get_connection(CURRENT_DB_LOCATION)
 
-    json = ""
+    json = '{"events": ['
 
     if connection is not None:
         events = query_db.get_all_events(connection)
         connection.close()
         if events:
-            for event in events:
+            for count, event in enumerate(events, start=1):
                 if event:
-                    json += event.jsonify() + '\r\n'
-            print json
+                    json += event.jsonify()
+                    # Add comma after json object created
+                    # up until the last one, then add }
+                    if count is not len(events):
+                        json += ',' + "\r\n"
+                    else:
+                        json += ' ] }'
             return Response(status=300, response=json, mimetype='application/json')
     # Failure
     return Response(status=301)
@@ -160,8 +165,6 @@ def get_all_members():
                     json += ',' + "\r\n"
                 else:
                     json += ' ] }'
-
-            print json
             return Response(status=300, response=json, mimetype='application/json')
     # Failure
     return Response(status=301)
