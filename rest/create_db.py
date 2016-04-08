@@ -19,10 +19,10 @@ CREATE_MEMBER_TABLE_STMT = '''CREATE TABLE 'Member' (
 
 CREATE_RESULT_TABLE_STMT = '''CREATE TABLE 'Result' (
 	event_id INTEGER,
-	player_id INTEGER,
+	member_id INTEGER,
     score INTEGER,
 	FOREIGN KEY(event_id) REFERENCES EVENT(event_id),
-	FOREIGN KEY(player_id) REFERENCES PLAYER(player_id)
+	FOREIGN KEY(member_id) REFERENCES Member(member_id)
 );'''
 
 
