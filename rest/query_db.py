@@ -1,6 +1,7 @@
 import sqlite3
 from event import Event
 from member import Member
+from result import Result
 
 # Inserts
 #-------------------
@@ -22,6 +23,12 @@ SELECT_EVENT_X = '''SELECT * FROM EVENT WHERE event_id = ?;'''
 SELECT_ALL_MEMBERS = '''SELECT * FROM Member;'''
 
 SELECT_MEMBER_X = '''SELECT * FROM MEMBER WHERE member_id = ?;'''
+
+
+SELECT_ALL_RESULTS = '''SELECT * FROM Result'''
+
+SELECT_RESULT_X_FROM_MEMBER_ID = '''SELECT * FROM Result WHERE member_id = ?;'''
+SELECT_RESULT_X_FROM_EVENT = '''SELECT * FROM Result WHERE event_id = ?;'''
 #-------------------
 
 
@@ -87,6 +94,30 @@ def get_all_members(connection):
     cursor.close()
     return members
 
+def get_member(connection, identifier):
+    cursor = connection.cursor()
+    cursor.execute(SELECT_MEMBER_X, (identifier))
+    row = cursor.fetchone()
+
+    member = None
+    if row:
+        member = create_member_from_result(row)
+    cursor.close()
+    return member
+
+def get_all_results(connection):
+    cursor = connection.cursor()
+    cursor.execute(SELECT_ALL_RESULTS)
+    rows = cursor.fetchall()
+
+    results = []
+    if rows:
+        for row in rows:
+            result = create_resultObject_from_result(row)
+            results.append(result)
+    cursor.close()
+    return results
+
 
 def create_event_from_result(result):
     if result:
@@ -107,3 +138,11 @@ def create_member_from_result(result):
         member_handicap = result[3]
         member = Member(member_id, member_f_name, member_l_name, member_handicap)
         return member
+
+def create_resultObject_from_result(result):
+    if result:
+        result_o_event_id = result[0]
+        result_o_member_id = result[1]
+        result_score = result[2]
+        result_o = Result(result_o_event_id, result_o_member_id, result_score)
+        return result_o

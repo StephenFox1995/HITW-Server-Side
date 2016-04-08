@@ -84,6 +84,7 @@ def add_result():
         json = request.json
 
         # TODO: Check that the member actually exists.
+        # TODO: Check there already isnt result for the user for a given event.
         event_id = json.get("event_id")
         member_id = json.get("member_id")
         score = json.get("score")
@@ -162,6 +163,45 @@ def get_all_members():
                 # Add comma after json object created
                 # up until the last one, then add }
                 if count is not len(members):
+                    json += ',' + "\r\n"
+                else:
+                    json += ' ] }'
+            return Response(status=300, response=json, mimetype='application/json')
+    # Failure
+    return Response(status=301)
+
+
+@app.route('/get_member/<identifier>', methods=['GET'])
+def get_member(identifier):
+    connection = query_db.get_connection(CURRENT_DB_LOCATION)
+
+    if connection is not None:
+        if identifier:
+            member = query_db.get_member(connection, identifier)
+            connection.close()
+            if member:
+                json = member.jsonify() + '\r\n'
+                return Response(status=300, response=json, mimetype='application/json')
+    # Failure
+    return Response(status=301)
+
+
+@app.route('/get_all_results/', methods=['GET'])
+def get_all_results():
+    connection = query_db.get_connection(CURRENT_DB_LOCATION)
+
+    json = '{ "results": [ '
+    if connection is not None:
+        results = query_db.get_all_results(connection)
+        connection.close()
+        if results:
+            for count, result in enumerate(results, start=1):
+                if result:
+                    json += result.jsonify()
+
+                # Add comma after json object created
+                # up until the last one, then add }
+                if count is not len(results):
                     json += ',' + "\r\n"
                 else:
                     json += ' ] }'
