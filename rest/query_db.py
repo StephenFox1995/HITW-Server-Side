@@ -71,7 +71,7 @@ def get_all_events(connection):
 
 def get_event(connection, identifier):
     cursor = connection.cursor()
-    cursor.execute(SELECT_EVENT_X, (identifier))
+    cursor.execute(SELECT_EVENT_X, (identifier,))
     row = cursor.fetchone()
 
     event = None
@@ -96,7 +96,7 @@ def get_all_members(connection):
 
 def get_member(connection, identifier):
     cursor = connection.cursor()
-    cursor.execute(SELECT_MEMBER_X, (identifier))
+    cursor.execute(SELECT_MEMBER_X, (identifier,))
     row = cursor.fetchone()
 
     member = None
@@ -120,7 +120,7 @@ def get_all_results(connection):
 
 def get_all_results_for_event(connection, identifier):
     cursor = connection.cursor()
-    cursor.execute(SELECT_RESULT_X_FOR_EVENT, (identifier))
+    cursor.execute(SELECT_RESULT_X_FOR_EVENT, (identifier,))
     rows = cursor.fetchall()
 
     results = []
