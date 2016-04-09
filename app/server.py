@@ -19,7 +19,6 @@ FAILURE_CODE = 500 # Internal Server Error
 MISSING_PARAM_CODE = 422 # Missing param error
 
 
-
 @app.route('/', methods=['GET'])
 def index():
     return render_template('index.html')
@@ -269,6 +268,7 @@ def get_all_results_for_event(identifier):
 
     # Failure
     return Response(status=FAILURE_CODE)
+
 
 @app.route('/get_all_results_for_member/<identifier>', methods=['GET'])
 def get_all_results_for_member(identifier):

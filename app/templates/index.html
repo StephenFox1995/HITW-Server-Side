@@ -2,9 +2,9 @@
 <html>
   <head>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
+    <script src="../static/util.js"></script>
     <title>Homepage</title>
   </head>
-
 
   <body>
     <a href="/see_events_page/"><h2>See events</h2></a>
@@ -86,19 +86,22 @@
         "handicap"  :member_handicap
       };
       var data = JSON.stringify(jsonData)
-
-         $.ajax({
-            type: "POST",
-            url: '/add_member/',
-            contentType: "application/json",
-            data: data,
-            success: function(data) {
-              alert("Success")
-            },
-            failure: function() {
-              alert("Something went wrong.")
-            }
-        });
+      $.ajax({
+        type: "POST",
+        url: '/add_member/',
+        contentType: "application/json",
+        data: data,
+        success: function(data) {
+          // Clear all text fields after success insertion.
+          $('#member_f_name').val("")
+          $('#member_l_name').val("")
+          $('#member_handicap').val("")
+          alert(member_f_name + " " + member_l_name + " has been added.")
+        },
+        failure: function() {
+          alert("Something went wrong.")
+        }
+      });
     });
 
     $("#add_event_button").click(function() {
@@ -120,6 +123,11 @@
             contentType: "application/json",
             data: data,
             success: function(data) {
+              // Clear all text fields after success insertion.
+              $('#event_title').val("");
+              $('#event_location').val("");
+              $('#event_date').val("dd/mm/yy");
+              $('#event_time').val("mm:hh");
               alert("Success")
             },
             failure: function() {

@@ -17,7 +17,11 @@ class Event():
 
 
     def jsonify(self):
-        data = {'identifier': self._identifier, 'title':self._title, 'location' : self._location, 'time': self._time, 'date': self._date }
+        data = {'identifier': self._identifier,
+        'title':self._title,
+        'location' : self._location,
+        'time': self._time,
+        'date': self._date }
         return json.dumps(data)
 
 

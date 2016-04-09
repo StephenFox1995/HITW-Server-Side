@@ -10,20 +10,18 @@
 
 
   <body>
-
     <table class="table table-bordered" data-resizable-columns-id="member_table" id="member_table">
       <thead>
         <tr>
           <th data-resizable-column-id="member_f_name">Firstname</th>
           <th data-resizable-column-id="member_l_name">Lastname</th>
           <th data-resizable-column-id="member_handicap">Handicap</th>
+          <th data-resizable-column-id="update_member">Update Member</th>
         </tr>
       </thead>
       <tbody>
       </tbody>
     </table>
-
-
   </body>
 </html>
 
@@ -40,11 +38,13 @@ $(document).ready(function(){
             member_f_name =     json['firstname']
             member_l_name =     json['lastname']
             member_handicap =   json['handicap']
+            member_id = json['member_id']
 
             $('#member_table > tbody').append(
               '<tr><td>' + member_f_name + '</td>' +
               '<td>' + member_l_name + '</td>' +
-              '<td>' + member_handicap + '</td></tr>')
+              '<td>' + member_handicap + '</td>' +
+              '<td><input type="button" id="' + member_id + '" value="Update Member" onclick="update_member()"></tr>')
           });
         });
     },
@@ -53,4 +53,12 @@ $(document).ready(function(){
     }
   });
 });
+
+function update_member() {
+  alert("Should update")
+}
+
+function display_update_area() {
+  $('#body').append()
+}
 </script>
