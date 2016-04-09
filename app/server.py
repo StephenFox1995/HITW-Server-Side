@@ -121,7 +121,7 @@ def add_result():
 
 
 
-@app.route('/get_all_events', methods=['GET'])
+@app.route('/get_all_events/', methods=['GET'])
 def get_all_events():
     connection = query_db.get_connection(CURRENT_DB_LOCATION)
 

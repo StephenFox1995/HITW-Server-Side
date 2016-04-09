@@ -19,8 +19,7 @@
         </td>
       </tr>
       <tr>
-        <td>
-          Location
+        <td> Location
           <input type="text" id="event_location">
         </td>
       </tr>
@@ -76,11 +75,10 @@
   <script type="text/javascript">
 
   function show_events() {
-
     $.ajax({
        type: "GET",
        url: '/see_events_page/'
-   });
+     });
   }
 
   $(function() {

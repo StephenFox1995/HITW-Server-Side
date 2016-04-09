@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='jquery.resizableColumns.js') }}"></script>
+    <link rel= "stylesheet" type= "text/css" href= "{{ url_for('static',filename='styles/jquery.resizableColumns.css') }}">
+
+    <title>Events</title>
+  </head>
+
+
+  <body>
+
+    <table class="table table-bordered" data-resizable-columns-id="demo-table-v2">
+      <thead>
+        <tr>
+          <th data-resizable-column-id="event_title">Event Title</th>
+          <th data-resizable-column-id="event_location">Event Location</th>
+          <th data-resizable-column-id="event_time">Event Time</th>
+          <th data-resizable-column-id="event_date">Event Date</th>
+          <th data-resizable-column-id="username" id="username-column" data-noresize>Username</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>1</td>
+          <td>Mark</td>
+          <td>Otto</td>
+          <td>@mdo</td>
+        </tr>
+        <tr>
+          <td>2</td>
+          <td>Jacob</td>
+          <td>Thornton</td>
+          <td>@fat</td>
+        </tr>
+        <tr>
+          <td>3</td>
+          <td colspan="2">Larry the Bird</td>
+          <td>@twitter</td>
+        </tr>
+      </tbody>
+    </table>
+
+
+  </body>
+</html>
+
+<script>
+$(document).ready(function(){
+  $.ajax({
+    type: "GET",
+    url: '/get_all_events/',
+    contentType: "application/json",
+    success: function(data) {
+      $.each(data, function(index, element) {
+        alert(element['title'])
+      });
+
+    },
+    failure: function() {
+      alert("Something went wrong.")
+    }
+  });
+});
+
+  $(function(){
+    $("table").resizableColumns({
+      store: store
+    });
+  });
+</script>
