@@ -1,4 +1,4 @@
-from flask import Flask, Response
+from flask import Flask, Response, render_template
 from flask import request
 import query_db
 
@@ -14,11 +14,15 @@ app = Flask(__name__)
 CURRENT_DB_LOCATION = "/Users/stephenfox/Desktop/sqldb"
 
 # Reponse codes.
-SUCCESS_CODE = 302 # Success
+SUCCESS_CODE = 200 # Success
 FAILURE_CODE = 500 # Internal Server Error
 MISSING_PARAM_CODE = 422 # Missing param error
 
 
+
+@app.route('/', methods=['GET'])
+def index():
+    return render_template('index.html')
 
 
 
@@ -30,6 +34,8 @@ def add_member():
         firstname = json.get("firstname")
         lastname = json.get("lastname")
         handicap = json.get("handicap")
+
+        print "Firstname: " + firstname + "\nLastname: " + lastname
 
         if not firstname:
             return Response(status=MISSING_PARAM_CODE)

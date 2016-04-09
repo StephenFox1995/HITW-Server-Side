@@ -20,7 +20,7 @@ function POSTMember(firstname, lastname, handicap) {
   window.alert("Attempting..")
 
   $.ajax({
-    url:post_member_url,
+    url:'http://localhost:6565/add_member/',
     type: 'post',
     content-type: 'application/json',
     data {
@@ -32,5 +32,4 @@ function POSTMember(firstname, lastname, handicap) {
       window.alert("it worked")
     }
   })
-
 }
