@@ -11,34 +11,17 @@
 
   <body>
 
-    <table class="table table-bordered" data-resizable-columns-id="demo-table-v2">
+    <table class="table table-bordered" data-resizable-columns-id="event_table" id="event_table">
       <thead>
         <tr>
           <th data-resizable-column-id="event_title">Event Title</th>
           <th data-resizable-column-id="event_location">Event Location</th>
           <th data-resizable-column-id="event_time">Event Time</th>
           <th data-resizable-column-id="event_date">Event Date</th>
-          <th data-resizable-column-id="username" id="username-column" data-noresize>Username</th>
+
         </tr>
       </thead>
       <tbody>
-        <tr>
-          <td>1</td>
-          <td>Mark</td>
-          <td>Otto</td>
-          <td>@mdo</td>
-        </tr>
-        <tr>
-          <td>2</td>
-          <td>Jacob</td>
-          <td>Thornton</td>
-          <td>@fat</td>
-        </tr>
-        <tr>
-          <td>3</td>
-          <td colspan="2">Larry the Bird</td>
-          <td>@twitter</td>
-        </tr>
       </tbody>
     </table>
 
@@ -52,21 +35,27 @@ $(document).ready(function(){
     type: "GET",
     url: '/get_all_events/',
     contentType: "application/json",
+    dataType: "json",
     success: function(data) {
       $.each(data, function(index, element) {
-        alert(element['title'])
-      });
+          $.each(element, function(i, json){
+            event_id =       json['identifier']
+            event_title =    json['title']
+            event_location = json['location']
+            event_time =     json['time']
+            event_date =     json['date']
 
+            $('#event_table > tbody').append(
+              '<tr><td>' + event_title + '</td>' +
+              '<td>' + event_location + '</td>' +
+              '<td>' + event_time + '</td>' +
+              '<td>' + event_time + '</td> </tr>')
+          });
+        });
     },
     failure: function() {
       alert("Something went wrong.")
     }
   });
 });
-
-  $(function(){
-    $("table").resizableColumns({
-      store: store
-    });
-  });
 </script>

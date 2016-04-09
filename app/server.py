@@ -28,6 +28,10 @@ def index():
 def see_events_page():
     return render_template('events.html')
 
+@app.route('/see_members_page/', methods=['GET'])
+def see_members_page():
+    return render_template('members.html')
+
 
 
 @app.route('/add_member/', methods=['POST'])

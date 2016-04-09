@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='jquery.resizableColumns.js') }}"></script>
+    <link rel= "stylesheet" type= "text/css" href= "{{ url_for('static',filename='styles/jquery.resizableColumns.css') }}">
+
+    <title>Members</title>
+  </head>
+
+
+  <body>
+
+    <table class="table table-bordered" data-resizable-columns-id="member_table" id="member_table">
+      <thead>
+        <tr>
+          <th data-resizable-column-id="member_f_name">Firstname</th>
+          <th data-resizable-column-id="member_l_name">Lastname</th>
+          <th data-resizable-column-id="member_handicap">Handicap</th>
+        </tr>
+      </thead>
+      <tbody>
+      </tbody>
+    </table>
+
+
+  </body>
+</html>
+
+<script>
+$(document).ready(function(){
+  $.ajax({
+    type: "GET",
+    url: '/get_all_members/',
+    contentType: "application/json",
+    dataType: "json",
+    success: function(data) {
+      $.each(data, function(index, element) {
+          $.each(element, function(i, json){
+            member_f_name =     json['firstname']
+            member_l_name =     json['lastname']
+            member_handicap =   json['handicap']
+
+            $('#member_table > tbody').append(
+              '<tr><td>' + member_f_name + '</td>' +
+              '<td>' + member_l_name + '</td>' +
+              '<td>' + member_handicap + '</td></tr>')
+          });
+        });
+    },
+    failure: function() {
+      alert("Something went wrong.")
+    }
+  });
+});
+</script>

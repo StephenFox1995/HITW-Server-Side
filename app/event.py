@@ -13,7 +13,7 @@ class Event():
         self._location = location
         self._time = time
         self._date = date
-        self.title = title
+        self._title = title
 
 
     def jsonify(self):
