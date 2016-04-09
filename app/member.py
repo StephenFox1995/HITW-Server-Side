@@ -11,6 +11,7 @@ class Member():
         self._identifier = identifier
         self._firstname = firstname
         self._lastname = lastname
+        self._handicap = handicap
 
 
     def jsonify(self):
