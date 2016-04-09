@@ -70,11 +70,9 @@
 
           <tr>
             <td>
-              <input type="submit" value="Add Member"/>
+              <input type="submit" value="Add Member" onclick="post_new_member()"/>
             </td>
           </tr>
-
-
         </table>
 
     </form>
@@ -83,9 +81,34 @@
 
 
   <script type="text/javascript">
-    var event_title = document.getElementById("event_title")
-    event_title.addEventListener("click", function() {
-      setTextFieldValue(event_title, "")
-    });
+    var member_f_name = document.getElementById("member_f_name").value
+    var member_f_name = document.getElementById("member_l_name").value
+    var member_handicap = document.getElementById("member_handicap").value
+
+    function post_new_member() {
+      alert("Attempting..")
+      alert(member_f_name + member_l_name + member_handicap)
+      post_member(member_f_name, member_l_name, member_handicap)
+    }
+
+    function post_member(firstname, lastname, handicap) {
+
+
+
+        $.ajax({
+          url:post_member_url,
+          type: 'post',
+          content-type: 'application/json',
+          data {
+            firstname: firstname,
+            lastname: lastname,
+            handicap: handicap
+          },
+          success: function(data) {
+            window.alert("it worked")
+          }
+        })
+    }
+
   </script>
 </html>
