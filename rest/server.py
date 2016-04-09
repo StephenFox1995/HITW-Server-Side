@@ -24,18 +24,19 @@ MISSING_PARAM_CODE = 422 # Missing param error
 def index():
     return render_template('index.html')
 
+@app.route('/see_events_page/', methods=['GET'])
+def see_events_page():
+    return render_template('events.html')
+
 
 
 @app.route('/add_member/', methods=['POST'])
 def add_member():
     if request.json:
         json = request.json
-
         firstname = json.get("firstname")
         lastname = json.get("lastname")
         handicap = json.get("handicap")
-
-        print "Firstname: " + firstname + "\nLastname: " + lastname
 
         if not firstname:
             return Response(status=MISSING_PARAM_CODE)
