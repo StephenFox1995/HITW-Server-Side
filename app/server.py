@@ -1,6 +1,7 @@
 from flask import Flask, Response, render_template
 from flask import request
 from event import Event
+from member import Member
 import query_db
 
 
@@ -322,9 +323,29 @@ def update_event(identifier):
     # Failure
     return Response(status=FAILURE_CODE)
 
+@app.route('/update_member/<identifier>', methods=['PUT'])
+def update_member(identifier):
+    if not identifier:
+        return Response(status=MISSING_PARAM_CODE)
+
+    if request.json:
+        json = request.json
+        member = member_obj_from_json(json, identifier)
+
+        if not member:
+            return Response(status=MISSING_PARAM_CODE)
+
+        connection = query_db.get_connection(CURRENT_DB_LOCATION)
+        if connection is not None:
+            query_db.update_member(connection, identifier, member)
+            connection.close()
+            return Response(status=SUCCESS_CODE)
+    # Failure
+    return Response(status=FAILURE_CODE)
 
 
-# Attempts to create new event object
+
+# Attempts to create new Event object
 # from json, if any of the fields
 # needed to initialise the json are missing
 # None will be returned.
@@ -337,6 +358,19 @@ def event_obj_from_json(json, identifier):
         return None
 
     return Event(identifier, title, location, time, date)
+
+# Attempts to create new Member object
+# from json, if any of the fields
+# needed to initialise the json are missing
+# None will be returned.
+def member_obj_from_json(json, identifier):
+    firstname = json.get("firstname")
+    lastname = json.get("lastname")
+    handicap = json.get("handicap")
+    if not firstname or not lastname or not handicap:
+        return None
+    return Member(identifier, firstname, lastname, handicap)
+
 
 
 def empty_json_for_array(array):

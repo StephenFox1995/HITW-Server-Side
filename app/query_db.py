@@ -161,9 +161,25 @@ def update_event(connection, identifier, event):
     cursor.close()
 
 
+def update_member(connection, identifier, member):
+    update_query = gen_unbinded_member_update_query()
+
+    new_member_f_name = member.firstname
+    new_member_l_name = member.lastname
+    new_member_handicap = member.handicap
+
+    cursor = connection.cursor()
+    cursor.execute(update_query, (new_member_f_name, new_member_l_name, new_member_handicap, identifier))
+    connection.commit()
+    cursor.close
+
+
 
 def gen_unbinded_event_update_query():
     return 'UPDATE Event SET event_title=?, event_location=?, event_date=?, event_time=? WHERE event_id=?;'
+
+def gen_unbinded_member_update_query():
+    return 'UPDATE Member SET member_f_name=?, member_l_name=?, member_handicap=? WHERE member_id=?';
 
 
 def create_event_from_result(result):

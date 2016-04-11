@@ -37,3 +37,7 @@ class Member():
     @property
     def score(self):
         return self._score
+
+    @property
+    def handicap(self):
+        return self._handicap
