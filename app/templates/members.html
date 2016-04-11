@@ -38,7 +38,7 @@ $(document).ready(function(){
             member_f_name =     json['firstname']
             member_l_name =     json['lastname']
             member_handicap =   json['handicap']
-            member_id = json['member_id']
+            member_id =         json['member_id']
 
             $('#member_table > tbody').append(
               '<tr><td>' + member_f_name + '</td>' +
@@ -55,10 +55,16 @@ $(document).ready(function(){
 });
 
 function update_member() {
-  alert("Should update")
+  display_update_area()
 }
 
 function display_update_area() {
-  $('#body').append()
+  $(function () {
+    $.ajax({
+      url: "../app/static/update_member.html",
+      success: function (data) { $('body').append(data); },
+      dataType: 'html'
+    });
+  });
 }
 </script>

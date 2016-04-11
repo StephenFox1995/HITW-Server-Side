@@ -299,6 +299,35 @@ def get_all_results_for_member(identifier):
     # Failure
     return Response(status=FAILURE_CODE)
 
+# {
+#
+#   {"update_column": "column_name",
+#    "new_value": "value"}
+#
+# }
+@app.route('/update_event/<identifier>', methods=['PUT'])
+def update_event(identifier):
+    if not identifier:
+        return Response(status=MISSING_PARAM_CODE)
+
+    if request.json:
+        json = request.json
+        update_column = json.get('update_column')
+        updated_value = json.get('new_value')
+
+        if not update_column:
+            return Response(status=MISSING_PARAM_CODE)
+        if not updated_value:
+            return Response(status=MISSING_PARAM_CODE)
+
+        connection = query_db.get_connection(CURRENT_DB_LOCATION)
+        if connection is not None:
+            query_db.update_event(connection, identifier, update_column, updated_value)
+            connection.close()
+            return Response(status=SUCCESS_CODE)
+    # Failure
+    return Response(status=FAILURE_CODE)
+
 
 
 

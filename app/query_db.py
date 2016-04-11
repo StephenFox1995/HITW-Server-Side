@@ -145,6 +145,21 @@ def get_all_results_for_member(connection, identifier):
     return results
 
 
+
+def update_event(connection, identifier, update_column, new_value):
+    update_query = gen_unbinded_update_query('Event', update_column, 'event_id')
+    cursor = connection.cursor()
+    cursor.execute(update_query, (new_value, identifier))
+    connection.commit()
+    cursor.close()
+
+
+
+
+def gen_unbinded_update_query(table, set_column, where_column):
+    return 'UPDATE ' + table + ' SET ' + set_column + ' = ? WHERE ' + where_column + ' = ?;'
+
+
 def create_event_from_result(result):
     if result:
         event_id =       result[0]
