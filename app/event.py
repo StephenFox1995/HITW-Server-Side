@@ -7,7 +7,7 @@ class Event():
     _time = ""
     _date = ""
     _identifier = None
-
+    
     def __init__(self, identifier, title, location, time, date):
         self._identifier = identifier
         self._location = location
@@ -28,6 +28,8 @@ class Event():
     @property
     def title(self):
         return self._title
+
+
 
     @property
     def location(self):

@@ -146,18 +146,24 @@ def get_all_results_for_member(connection, identifier):
 
 
 
-def update_event(connection, identifier, update_column, new_value):
-    update_query = gen_unbinded_update_query('Event', update_column, 'event_id')
+def update_event(connection, identifier, event):
+    update_query = gen_unbinded_event_update_query()
+    # Just use update with all the fields even
+    # if only one was updated.
+    new_event_title = event.title
+    new_event_location = event.location
+    new_event_date = event.date
+    new_event_time = event.time
+
     cursor = connection.cursor()
-    cursor.execute(update_query, (new_value, identifier))
+    cursor.execute(update_query, (new_event_title, new_event_location, new_event_date, new_event_time, identifier))
     connection.commit()
     cursor.close()
 
 
 
-
-def gen_unbinded_update_query(table, set_column, where_column):
-    return 'UPDATE ' + table + ' SET ' + set_column + ' = ? WHERE ' + where_column + ' = ?;'
+def gen_unbinded_event_update_query():
+    return 'UPDATE Event SET event_title=?, event_location=?, event_date=?, event_time=? WHERE event_id=?;'
 
 
 def create_event_from_result(result):

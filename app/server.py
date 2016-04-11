@@ -1,6 +1,8 @@
 from flask import Flask, Response, render_template
 from flask import request
+from event import Event
 import query_db
+
 
 
 # @app.route('/add_result/', methods=['POST'])
@@ -299,12 +301,7 @@ def get_all_results_for_member(identifier):
     # Failure
     return Response(status=FAILURE_CODE)
 
-# {
-#
-#   {"update_column": "column_name",
-#    "new_value": "value"}
-#
-# }
+
 @app.route('/update_event/<identifier>', methods=['PUT'])
 def update_event(identifier):
     if not identifier:
@@ -312,23 +309,34 @@ def update_event(identifier):
 
     if request.json:
         json = request.json
-        update_column = json.get('update_column')
-        updated_value = json.get('new_value')
+        event = event_obj_from_json(json, identifier)
 
-        if not update_column:
-            return Response(status=MISSING_PARAM_CODE)
-        if not updated_value:
+        if not event:
             return Response(status=MISSING_PARAM_CODE)
 
         connection = query_db.get_connection(CURRENT_DB_LOCATION)
         if connection is not None:
-            query_db.update_event(connection, identifier, update_column, updated_value)
+            query_db.update_event(connection, identifier, event)
             connection.close()
             return Response(status=SUCCESS_CODE)
     # Failure
     return Response(status=FAILURE_CODE)
 
 
+
+# Attempts to create new event object
+# from json, if any of the fields
+# needed to initialise the json are missing
+# None will be returned.
+def event_obj_from_json(json, identifier):
+    title = json.get("title")
+    location = json.get("location")
+    time = json.get("time")
+    date = json.get("date")
+    if not title or not location or not time or not date:
+        return None
+
+    return Event(identifier, title, location, time, date)
 
 
 def empty_json_for_array(array):
