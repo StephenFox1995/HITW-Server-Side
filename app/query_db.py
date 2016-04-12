@@ -173,6 +173,18 @@ def update_member(connection, identifier, member):
     connection.commit()
     cursor.close
 
+def update_result(connection, result):
+    update_query = gen_unbinded_result_update_query()
+
+    member_id = result.member_id
+    event_id = result.event_id
+    score = result.score
+
+    cursor = connection.cursor()
+    cursor.execute(update_query, (member_id, score, event_id))
+    connection.commit()
+    cursor.close
+
 
 
 def gen_unbinded_event_update_query():
@@ -180,6 +192,10 @@ def gen_unbinded_event_update_query():
 
 def gen_unbinded_member_update_query():
     return 'UPDATE Member SET member_f_name=?, member_l_name=?, member_handicap=? WHERE member_id=?';
+
+def gen_unbinded_result_update_query():
+    return 'UPDATE Result SET member_id=?, score=? WHERE event_id=?';
+
 
 
 def create_event_from_result(result):

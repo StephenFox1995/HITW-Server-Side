@@ -2,6 +2,7 @@ from flask import Flask, Response, render_template
 from flask import request
 from event import Event
 from member import Member
+from result import Result
 import query_db
 
 
@@ -323,6 +324,7 @@ def update_event(identifier):
     # Failure
     return Response(status=FAILURE_CODE)
 
+
 @app.route('/update_member/<identifier>', methods=['PUT'])
 def update_member(identifier):
     if not identifier:
@@ -338,6 +340,27 @@ def update_member(identifier):
         connection = query_db.get_connection(CURRENT_DB_LOCATION)
         if connection is not None:
             query_db.update_member(connection, identifier, member)
+            connection.close()
+            return Response(status=SUCCESS_CODE)
+    # Failure
+    return Response(status=FAILURE_CODE)
+
+# {
+#   {event_identifier:"", member_identifier: "" }
+# }
+@app.route('/update_result/', methods=['PUT'])
+def update_result():
+    if request.json:
+        json = request.json
+
+        result = result_obj_from_json(json)
+
+        if not result:
+            return Response(status=MISSING_PARAM_CODE)
+
+        connection = query_db.get_connection(CURRENT_DB_LOCATION)
+        if connection is not None:
+            query_db.update_result(connection, result)
             connection.close()
             return Response(status=SUCCESS_CODE)
     # Failure
@@ -370,6 +393,23 @@ def member_obj_from_json(json, identifier):
     if not firstname or not lastname or not handicap:
         return None
     return Member(identifier, firstname, lastname, handicap)
+
+
+# Attempts to create new Member object
+# from json, if any of the fields
+# needed to initialise the json are missing
+# None will be returned.
+def result_obj_from_json(json):
+    member_identifier = json.get("member_id")
+    event_identifier = json.get("event_id")
+    score = json.get("score")
+
+    if not member_identifier or not event_identifier or not score:
+        return None
+
+    result = Result(event_identifier, member_identifier, score)
+    return result
+
 
 
 
