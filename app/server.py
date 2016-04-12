@@ -348,31 +348,37 @@ def update_member(identifier):
 
 
 # Update or delete a result from the database.
-@app.route('/edit_result/', methods=['PUT', 'DELETE'])
+@app.route('/edit_result/', methods=['DELETE', 'PUT'])
 def edit_result():
+    result = None
+    # As this function can take an PUT and DELETE
+    # request, json content can't be garaunteed.
+    # For this reason, keep executing the code
+    # as it may be a DELETE.
     if request.json:
         json = request.json
-
-        member_id_key = request.args.get("mem_id")
-        event_id_key = request.args.get("event_id")
-
         result = result_obj_from_json(json)
-        print member_id_key
-        print event_id_key
-        if not result or not member_id_key or not event_id_key:
-            return Response(status=MISSING_PARAM_CODE)
 
-        connection = query_db.get_connection(CURRENT_DB_LOCATION)
-        if connection is None:
-            return Response(status=FAILURE_CODE)
 
-        if request.method == 'PUT':
+    member_id_key = request.args.get("mem_id")
+    event_id_key = request.args.get("event_id")
+
+    if not member_id_key or not event_id_key:
+        return Response(status=MISSING_PARAM_CODE)
+
+    connection = query_db.get_connection(CURRENT_DB_LOCATION)
+    if connection is None:
+        return Response(status=FAILURE_CODE)
+
+    if request.method == 'PUT':
+        if result is not None:
             query_db.update_result(connection, result, member_id_key, event_id_key)
             connection.close()
             return Response(status=SUCCESS_CODE)
-        elif request.method == 'DELETE':
-            query_db.delete_result(connection, result)
-            connection.close()
+    elif request.method == 'DELETE':
+        query_db.delete_result(connection, member_id_key, event_id_key)
+        connection.close()
+        return Response(status=SUCCESS_CODE)
 
     # Failure
     return Response(status=FAILURE_CODE)
