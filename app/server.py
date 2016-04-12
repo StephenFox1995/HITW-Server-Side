@@ -345,26 +345,38 @@ def update_member(identifier):
     # Failure
     return Response(status=FAILURE_CODE)
 
-# {
-#   {event_identifier:"", member_identifier: "" }
-# }
-@app.route('/update_result/', methods=['PUT'])
-def update_result():
+
+
+# Update or delete a result from the database.
+@app.route('/edit_result/', methods=['PUT', 'DELETE'])
+def edit_result():
     if request.json:
         json = request.json
 
-        result = result_obj_from_json(json)
+        member_id_key = request.args.get("mem_id")
+        event_id_key = request.args.get("event_id")
 
-        if not result:
+        result = result_obj_from_json(json)
+        print member_id_key
+        print event_id_key
+        if not result or not member_id_key or not event_id_key:
             return Response(status=MISSING_PARAM_CODE)
 
         connection = query_db.get_connection(CURRENT_DB_LOCATION)
-        if connection is not None:
-            query_db.update_result(connection, result)
+        if connection is None:
+            return Response(status=FAILURE_CODE)
+
+        if request.method == 'PUT':
+            query_db.update_result(connection, result, member_id_key, event_id_key)
             connection.close()
             return Response(status=SUCCESS_CODE)
+        elif request.method == 'DELETE':
+            query_db.delete_result(connection, result)
+            connection.close()
+
     # Failure
     return Response(status=FAILURE_CODE)
+
 
 
 
@@ -395,7 +407,7 @@ def member_obj_from_json(json, identifier):
     return Member(identifier, firstname, lastname, handicap)
 
 
-# Attempts to create new Member object
+# Attempts to create new Result object
 # from json, if any of the fields
 # needed to initialise the json are missing
 # None will be returned.

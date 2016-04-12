@@ -3,33 +3,47 @@ from event import Event
 from member import Member
 from result import Result
 
-# Inserts
+# INSERTS
 #-------------------
-INSER_INTO_EVENT = '''INSERT INTO Event(event_id, event_title, event_location, event_date, event_time) VALUES(NULL, ?, ?, ?, ?);'''
+INSER_INTO_EVENT = '''INSERT INTO Event(event_id, event_title, event_location, event_date, event_time) VALUES(NULL, ?, ?, ?, ?)'''
 
-INSERT_INTO_MEMBER = '''INSERT INTO Member(member_id, member_f_name, member_l_name, member_handicap) VALUES(NULL, ?, ?, ?);'''
+INSERT_INTO_MEMBER = '''INSERT INTO Member(member_id, member_f_name, member_l_name, member_handicap) VALUES(NULL, ?, ?, ?)'''
 
-INSERT_INTO_RESULT = '''INSERT INTO Result(event_id, member_id, score) VALUES(?, ?, ?);'''
+INSERT_INTO_RESULT = '''INSERT INTO Result(event_id, member_id, score) VALUES(?, ?, ?)'''
 #-------------------
 
 
-# Selects
+# SELECTS
 #-------------------
-SELECT_ALL_EVENTS = '''SELECT * FROM Event;'''
+SELECT_ALL_EVENTS = '''SELECT * FROM Event'''
 
-SELECT_EVENT_X = '''SELECT * FROM EVENT WHERE event_id = ?;'''
+SELECT_EVENT_X = '''SELECT * FROM EVENT WHERE event_id = ?'''
 
 
-SELECT_ALL_MEMBERS = '''SELECT * FROM Member;'''
+SELECT_ALL_MEMBERS = '''SELECT * FROM Member'''
 
-SELECT_MEMBER_X = '''SELECT * FROM MEMBER WHERE member_id = ?;'''
+SELECT_MEMBER_X = '''SELECT * FROM MEMBER WHERE member_id = ?'''
 
 
 SELECT_ALL_RESULTS = '''SELECT * FROM Result'''
 
-SELECT_RESULT_X_FROM_MEMBER_ID = '''SELECT * FROM Result WHERE member_id = ?;'''
-SELECT_RESULT_X_FOR_EVENT = '''SELECT * FROM Result WHERE event_id = ?;'''
+SELECT_RESULT_X_FROM_MEMBER_ID = '''SELECT * FROM Result WHERE member_id = ?'''
+SELECT_RESULT_X_FOR_EVENT = '''SELECT * FROM Result WHERE event_id = ?'''
 #-------------------
+
+
+# UPDATES
+# ------------------
+UPDATE_EVENT_BY_EVENT_ID_AND_MEM_ID = 'UPDATE Event SET event_title=?, event_location=?, event_date=?, event_time=? WHERE event_id=? AND member_id=?;'
+
+UPDATE_MEMBER_BY_MEM_ID = 'UPDATE Member SET member_f_name=?, member_l_name=?, member_handicap=? WHERE member_id=?';
+
+UPDATE_RESULT_BY_EVENT_ID_AND_MEM_ID = 'UPDATE Result SET member_id=?, event_id=?, score=? WHERE member_id=? AND event_id=?';
+# -------------------
+
+# DELETES
+# ----------------
+DELETE_RESULT_BY_EVENT_ID = 'DELETE FROM Result WHERE event_id = ?'
 
 
 def get_connection(filepath):
@@ -147,7 +161,7 @@ def get_all_results_for_member(connection, identifier):
 
 
 def update_event(connection, identifier, event):
-    update_query = gen_unbinded_event_update_query()
+    update_query = UPDATE_EVENT_BY_EVENT_ID
     # Just use update with all the fields even
     # if only one was updated.
     new_event_title = event.title
@@ -162,7 +176,7 @@ def update_event(connection, identifier, event):
 
 
 def update_member(connection, identifier, member):
-    update_query = gen_unbinded_member_update_query()
+    update_query = UPDATE_MEMBER_BY_MEM_ID
 
     new_member_f_name = member.firstname
     new_member_l_name = member.lastname
@@ -173,28 +187,35 @@ def update_member(connection, identifier, member):
     connection.commit()
     cursor.close
 
-def update_result(connection, result):
-    update_query = gen_unbinded_result_update_query()
+def update_result(connection, result, member_id_key, event_id_key):
+    update_query = UPDATE_RESULT_BY_EVENT_ID_AND_MEM_ID
 
+    # This properties are the
+    # updated properties.
     member_id = result.member_id
     event_id = result.event_id
     score = result.score
 
     cursor = connection.cursor()
-    cursor.execute(update_query, (member_id, score, event_id))
+    cursor.execute(update_query, (member_id, event_id, score, member_id_key, event_id_key))
     connection.commit()
-    cursor.close
+    cursor.close()
+
+def delete_result(connection, result):
+    delete_query = UPDATE_RESULT_BY_EVENT_ID_AND_MEM_ID
+
+    event_id = result.event_id
+    member_id = result.member_id
+
+    cursor = connection.cursor()
+    cursor.execute(delete_query, event_id, member_id)
+    connection.commit
+    cursor.close()
 
 
 
-def gen_unbinded_event_update_query():
-    return 'UPDATE Event SET event_title=?, event_location=?, event_date=?, event_time=? WHERE event_id=?;'
 
-def gen_unbinded_member_update_query():
-    return 'UPDATE Member SET member_f_name=?, member_l_name=?, member_handicap=? WHERE member_id=?';
 
-def gen_unbinded_result_update_query():
-    return 'UPDATE Result SET member_id=?, score=? WHERE event_id=?';
 
 
 
