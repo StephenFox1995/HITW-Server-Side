@@ -1,5 +1,7 @@
 import sqlite3
 import sys
+import config
+import os
 # Creates all the tabe within the database.
 
 CREATE_EVENT_TABLE_STMT = '''CREATE TABLE 'Event' (
@@ -100,6 +102,10 @@ def create_triggers(connection):
 def create_sqlite_db(filepath):
 	connection = None
 	connection = sqlite3.connect(filepath)
+	# Change so the user can write to as
+	# the script is needed to be in superuser mode.
+	os.system('sudo chmod g+w ' + filepath)
+
 	create_event_table(connection)
 	create_member_table(connection)
 	create_result_table(connection)
@@ -111,6 +117,8 @@ def create_sqlite_db(filepath):
 
 # Parse the filepath so the db can be create there.
 db_filepath = parse_args()
+
+config.write_db_filepath(db_filepath)
 
 # Now create the sqlite db at that filepath.
 create_sqlite_db(db_filepath)

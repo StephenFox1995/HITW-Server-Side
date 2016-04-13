@@ -4,18 +4,17 @@ from event import Event
 from member import Member
 from result import Result
 import query_db
+import config
 
 
 
-# @app.route('/add_result/', methods=['POST'])
-# TODO: Check that the member actually exists.
-# TODO: Check there already isnt result for the user for a given event.
 
 
 
 app = Flask(__name__)
+def current_db_location():
+    return config.get_db_filepath()
 
-CURRENT_DB_LOCATION = "/Users/stephenfox/Desktop/sqldb"
 
 # Reponse codes.
 SUCCESS_CODE = 200 # Success
@@ -57,7 +56,7 @@ def add_member():
         if not handicap:
             return Response(status=MISSING_PARAM_CODE)
         else:
-            connection = query_db.get_connection(CURRENT_DB_LOCATION)
+            connection = query_db.get_connection(current_db_location())
             if connection is not None:
                 query_db.insert_into_member(connection, firstname, lastname, handicap)
                 connection.close()
@@ -87,7 +86,7 @@ def add_event():
         if not date:
             return Response(status=MISSING_PARAM_CODE)
         else:
-            connection = query_db.get_connection(CURRENT_DB_LOCATION)
+            connection = query_db.get_connection(current_db_location())
             if connection is not None:
                 query_db.insert_into_event(connection, title, location, time, date)
                 connection.close()
@@ -117,7 +116,7 @@ def add_result():
         if not score:
             return Response(status=MISSING_PARAM_CODE)
         else:
-            connection = query_db.get_connection(CURRENT_DB_LOCATION)
+            connection = query_db.get_connection(current_db_location())
             if connection is not None:
                 query_db.insert_into_result(connection, event_id, member_id, score)
                 connection.close()
@@ -135,7 +134,7 @@ def add_result():
 
 @app.route('/get_all_events/', methods=['GET'])
 def get_all_events():
-    connection = query_db.get_connection(CURRENT_DB_LOCATION)
+    connection = query_db.get_connection(current_db_location())
 
     json = '{"events": ['
 
@@ -165,7 +164,7 @@ def get_event(identifier):
         return Response(status=MISSING_PARAM_CODE)
 
     json = '{ "event:" {'
-    connection = query_db.get_connection(CURRENT_DB_LOCATION)
+    connection = query_db.get_connection(current_db_location())
     if connection is not None:
         event = query_db.get_event(connection, identifier)
         connection.close()
@@ -180,7 +179,7 @@ def get_event(identifier):
 
 @app.route('/get_all_members/', methods=['GET'])
 def get_all_members():
-    connection = query_db.get_connection(CURRENT_DB_LOCATION)
+    connection = query_db.get_connection(current_db_location())
 
     json = '{ "members": [ '
     if connection is not None:
@@ -210,7 +209,7 @@ def get_member(identifier):
         return Response(status=MISSING_PARAM_CODE)
 
     json = '{ "member:" {'
-    connection = query_db.get_connection(CURRENT_DB_LOCATION)
+    connection = query_db.get_connection(current_db_location())
     if connection is not None:
         member = query_db.get_member(connection, identifier)
         connection.close()
@@ -225,7 +224,7 @@ def get_member(identifier):
 
 @app.route('/get_all_results/', methods=['GET'])
 def get_all_results():
-    connection = query_db.get_connection(CURRENT_DB_LOCATION)
+    connection = query_db.get_connection(current_db_location())
 
     json = '{ "results": [ '
     if connection is not None:
@@ -254,7 +253,7 @@ def get_all_results_for_event(identifier):
     if not identifier:
         return Response(status=MISSING_PARAM_CODE)
 
-    connection = query_db.get_connection(CURRENT_DB_LOCATION)
+    connection = query_db.get_connection(current_db_location())
 
     json = '{ "results": [ '
     if connection is not None:
@@ -284,7 +283,7 @@ def get_all_results_for_member(identifier):
     if not identifier:
         return Response(status=MISSING_PARAM_CODE)
 
-    connection = query_db.get_connection(CURRENT_DB_LOCATION)
+    connection = query_db.get_connection(current_db_location())
 
     json = '{ "results": [ '
     if connection is not None:
@@ -321,7 +320,7 @@ def edit_event(identifier):
         if not event:
             return Response(status=MISSING_PARAM_CODE)
 
-    connection = query_db.get_connection(CURRENT_DB_LOCATION)
+    connection = query_db.get_connection(current_db_location())
     if connection is not None:
         if request.method == 'PUT':
             query_db.update_event(connection, identifier, event)
@@ -349,7 +348,7 @@ def edit_member(identifier):
             return Response(status=MISSING_PARAM_CODE)
 
 
-    connection = query_db.get_connection(CURRENT_DB_LOCATION)
+    connection = query_db.get_connection(current_db_location())
     if connection is not None:
         if request.method == 'PUT':
             query_db.update_member(connection, identifier, member)
@@ -384,7 +383,7 @@ def edit_result():
     if not member_id_key or not event_id_key:
         return Response(status=MISSING_PARAM_CODE)
 
-    connection = query_db.get_connection(CURRENT_DB_LOCATION)
+    connection = query_db.get_connection(current_db_location())
     if connection is None:
         return Response(status=FAILURE_CODE)
 
