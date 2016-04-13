@@ -229,7 +229,7 @@ def delete_event(connection, event_id):
     cursor.execute(delete_query, (event_id,))
     connection.commit()
     cursor.close()
-    
+
 
 def create_event_from_result(result):
     if result:

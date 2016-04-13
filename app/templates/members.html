@@ -70,7 +70,7 @@ $(document).ready(function() {
 
 function update_member(member) {
   display_update_area(function() {
-    fill_textfields_with_info(member)
+    fill_html_with_member(member)
   });
 }
 
@@ -91,27 +91,35 @@ function display_update_area(callback) {
   }
 }
 
-function fill_textfields_with_info(member) {
-  // Go get the Members info so we can display it in the text field.
-  $(function () {
-    $.ajax({
-      type: 'GET',
-      url: '/get_member/' + member.get_member_id(),
-      contentType: "application/json",
-      dataType: "json",
-      success: function(data) {
-        member_to_update = new Member(data['identifier'],
-                                      data['firstname'],
-                                      data['lastname'],
-                                      data['handicap']);
-        $('#member_f_name').val(member_to_update.get_member_f_name());
-        $('#member_l_name').val(member_to_update.get_member_l_name());
-        $('#member_handicap').val(member_to_update.get_member_handicap());
-      },
-      failure: function() {
-        alert("Something went wrong!")
-      }
-    });
+function fill_html_with_member(member) {
+  var editing_member = member;
+  $('#member_f_name').val(editing_member.get_member_f_name());
+  $('#member_l_name').val(editing_member.get_member_l_name());
+  $('#member_handicap').val(editing_member.get_member_handicap());
+
+  // Logic for updating user.
+  $('button').click(function() {
+    if (this.id == 'update_member_button') {
+      send_update_to_server(editing_member)
+    }
+  });
+}
+
+function send_update_to_server(member) {
+  var jsonData = member.jsonify();
+
+  $.ajax({
+    type: "PUT",
+    url: '/edit_member/' + member.get_member_id(),
+    contentType: "application/json",
+    dataType: 'json',
+    data: jsonData,
+    success: function(data) {
+      alert(member.get_member_f_name() + " " + member.get_member_l_name() + " has been updated.")
+    },
+    failure: function() {
+      alert("Something went wrong.")
+    }
   });
 }
 

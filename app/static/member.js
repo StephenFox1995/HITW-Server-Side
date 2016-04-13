@@ -16,4 +16,13 @@ function Member(member_id, member_f_name, member_l_name, member_handicap) {
   this.get_member_handicap = function() {
     return this.member_handicap;
   }
+  this.jsonify = function() {
+    var jsonData = {
+      "firstname" :this.get_member_f_name(),
+      "lastname"  :this.get_member_l_name(),
+      "handicap"  :this.get_member_handicap(),
+      "identifier":this.get_member_id()
+    }
+    return JSON.stringify(jsonData);
+  }
 }
