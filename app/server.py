@@ -304,22 +304,26 @@ def get_all_results_for_member(identifier):
     return Response(status=FAILURE_CODE)
 
 
-@app.route('/update_event/<identifier>', methods=['PUT'])
-def update_event(identifier):
+@app.route('/edit_event/<identifier>', methods=['PUT', 'DELETE'])
+def edit_event(identifier):
+    event = None
     if not identifier:
         return Response(status=MISSING_PARAM_CODE)
 
     if request.json:
         json = request.json
         event = event_obj_from_json(json, identifier)
-
         if not event:
             return Response(status=MISSING_PARAM_CODE)
 
-        connection = query_db.get_connection(CURRENT_DB_LOCATION)
-        if connection is not None:
+    connection = query_db.get_connection(CURRENT_DB_LOCATION)
+    if connection is not None:
+        if request.method == 'PUT':
             query_db.update_event(connection, identifier, event)
             connection.close()
+            return Response(status=SUCCESS_CODE)
+        elif request.method == 'DELETE':
+            query_db.delete_event(connection, identifier)
             return Response(status=SUCCESS_CODE)
     # Failure
     return Response(status=FAILURE_CODE)

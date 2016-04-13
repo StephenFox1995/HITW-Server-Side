@@ -47,6 +47,8 @@ DELETE_RESULT_BY_EVENT_ID_AND_MEM_ID = 'DELETE FROM Result WHERE member_id =? AN
 
 DELETE_MEMBER = 'DELETE FROM Member WHERE member_id = ?';
 
+DELETE_EVENT = 'DELETE FROM Event WHERE event_id = ?'
+
 #----------------
 
 
@@ -221,6 +223,13 @@ def delete_member(connection, member_id):
     connection.commit()
     cursor.close()
 
+def delete_event(connection, event_id):
+    delete_query = DELETE_EVENT
+    cursor = connection.cursor()
+    cursor.execute(delete_query, (event_id,))
+    connection.commit()
+    cursor.close()
+    
 
 def create_event_from_result(result):
     if result:
