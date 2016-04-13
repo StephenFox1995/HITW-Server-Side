@@ -109,7 +109,7 @@ function fill_html_with_member(member) {
       send_update_to_server(editing_member, updated_member_f_name, updated_l_name, updated_member_handicap)
     }
     if (this.id == 'cancel_update') {
-      $('#update_member_content').remove();
+      remove_update_content();
     }
   });
 }
@@ -130,15 +130,18 @@ function send_update_to_server(old_member, new_member_f_name, new_member_l_name,
     contentType: "application/json",
     data: data,
     success: function(data) {
-
-      $('#update_member_content').remove();
+      remove_update_content();
       alert(new_member_f_name + " " + new_member_l_name + " has been updated.")
-
     },
     failure: function() {
       alert("Something went wrong.")
     }
   });
+}
+
+function remove_update_content() {
+  $('#update_member_content').remove();
+  currently_updating_user = false;
 }
 
 
