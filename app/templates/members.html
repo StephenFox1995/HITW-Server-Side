@@ -50,7 +50,8 @@ $(document).ready(function() {
             '<td>' + member_f_name + '</td>' +
             '<td>' + member_l_name + '</td>' +
             '<td>' + member_handicap + '</td>' +
-            '<td><button id="update_button">Update Member</button>' +
+            '<td><button id="update_button">Update Member</button></td>' +
+            '<td><button id="delete_member">Remove Member</button></td>' +
           '</tr>')
       });
       // Add listener.
@@ -58,6 +59,10 @@ $(document).ready(function() {
         if (this.id == 'update_button') {
           var index = $(this).closest('tr').index();
           update_member(members[index]);
+        }
+        if (this.id == 'delete_member') {
+          var index = $(this).closest('tr').index();
+          delete_member(members[index]);
         }
       });
     },
@@ -72,6 +77,24 @@ function update_member(member) {
   display_update_area(function() {
     fill_html_with_member(member)
   });
+}
+
+function delete_member(member) {
+  if (confirm("Are you sure you want to delete " + member.get_member_f_name() + " " + member.get_member_l_name())) {
+    $(function () {
+      $.ajax({
+        type: "DELETE",
+        url: '/edit_member/' + member.get_member_id(),
+        success: function(data) {
+          alert(member.get_member_f_name() + " " + member.get_member_l_name() + " has been removed.")
+          location.reload(true)
+        },
+        failure: function() {
+          alert("Something went wrong.")
+        }
+      });
+    });
+  }
 }
 
 function display_update_area(callback) {
@@ -132,6 +155,7 @@ function send_update_to_server(old_member, new_member_f_name, new_member_l_name,
     success: function(data) {
       remove_update_content();
       alert(new_member_f_name + " " + new_member_l_name + " has been updated.")
+      location.reload(true)
     },
     failure: function() {
       alert("Something went wrong.")
