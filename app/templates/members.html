@@ -29,7 +29,7 @@
 
 <script>
 var currently_updating_user = false;
-
+var members = [] // All the members currently in the table.
 
 $(document).ready(function() {
   $.ajax({
@@ -38,7 +38,7 @@ $(document).ready(function() {
     contentType: "application/json",
     dataType: "json",
     success: function(data) {
-      var members = parse_member_from_json(data);
+      members = parse_member_from_json(data);
       members.forEach(function(member) {
         var member_f_name =     member.get_member_f_name()
         var member_l_name =     member.get_member_l_name()
@@ -46,10 +46,19 @@ $(document).ready(function() {
         var member_id =         member.get_member_id()
 
         $('#member_table > tbody').append(
-          '<tr><td>' + member_f_name + '</td>' +
-          '<td>' + member_l_name + '</td>' +
-          '<td>' + member_handicap + '</td>' +
-          '<td><input type="button" id="' + member_id + '" value="Update Member" onclick="update_member()"></tr>')
+          '<tr>' +
+            '<td>' + member_f_name + '</td>' +
+            '<td>' + member_l_name + '</td>' +
+            '<td>' + member_handicap + '</td>' +
+            '<td><button id="update_member_button">Update Member</button>' +
+          '</tr>')
+      });
+      // Add listener.
+      $("button").click(function() {
+        if (this.id == 'update_member_button') {
+          var index = $(this).closest('tr').index();
+          update_member(members[index]);
+        }
       });
     },
     failure: function() {
@@ -59,13 +68,13 @@ $(document).ready(function() {
 });
 
 
-function update_member() {
-  display_update_area()
+function update_member(member) {
+  display_update_area(function() {
+    fill_textfields_with_info(member)
+  });
 }
 
-function display_update_area() {
-  var member_to_update;
-
+function display_update_area(callback) {
   if (!currently_updating_user) {
     $(function () {
       $.ajax({
@@ -74,7 +83,7 @@ function display_update_area() {
         success: function (data) {
           $('body').append(data);
           currently_updating_user = true;
-          fill_textfields_with_info()
+          callback()
         },
         dataType: 'html'
       });
@@ -82,18 +91,22 @@ function display_update_area() {
   }
 }
 
-function fill_textfields_with_info() {
+function fill_textfields_with_info(member) {
   // Go get the Members info so we can display it in the text field.
   $(function () {
     $.ajax({
       type: 'GET',
-      url: '/get_member/2',
+      url: '/get_member/' + member.get_member_id(),
       contentType: "application/json",
       dataType: "json",
       success: function(data) {
-        console.log(data)
-        member_to_update = parse_member_from_json(data)[0]
-        $('#member_f_name').value = member_to_update.get_member_f_name()
+        member_to_update = new Member(data['identifier'],
+                                      data['firstname'],
+                                      data['lastname'],
+                                      data['handicap']);
+        $('#member_f_name').val(member_to_update.get_member_f_name());
+        $('#member_l_name').val(member_to_update.get_member_l_name());
+        $('#member_handicap').val(member_to_update.get_member_handicap());
       },
       failure: function() {
         alert("Something went wrong!")
