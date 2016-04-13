@@ -50,12 +50,12 @@ $(document).ready(function() {
             '<td>' + member_f_name + '</td>' +
             '<td>' + member_l_name + '</td>' +
             '<td>' + member_handicap + '</td>' +
-            '<td><button id="update_member_button">Update Member</button>' +
+            '<td><button id="update_button">Update Member</button>' +
           '</tr>')
       });
       // Add listener.
       $("button").click(function() {
-        if (this.id == 'update_member_button') {
+        if (this.id == 'update_button') {
           var index = $(this).closest('tr').index();
           update_member(members[index]);
         }
@@ -100,22 +100,34 @@ function fill_html_with_member(member) {
   // Logic for updating user.
   $('button').click(function() {
     if (this.id == 'update_member_button') {
-      send_update_to_server(editing_member)
+      // Get the newly entered values.
+      var updated_member_f_name =   $('#member_f_name').val();
+      var updated_l_name = $('#member_l_name').val();
+      var updated_member_handicap = $('#member_handicap').val();
+
+      send_update_to_server(editing_member, updated_member_f_name, updated_l_name, updated_member_handicap)
     }
   });
 }
 
-function send_update_to_server(member) {
-  var jsonData = member.jsonify();
+function send_update_to_server(old_member, new_member_f_name, new_member_l_name, new_member_handicap) {
+  var jsonData = {
+    "firstname" :new_member_f_name,
+    "lastname"  :new_member_l_name,
+    "handicap"  :new_member_handicap,
+    "identifier":old_member.get_member_id() // Use the old id, as this will never change
+  };
+
+  var data = JSON.stringify(jsonData)
 
   $.ajax({
     type: "PUT",
-    url: '/edit_member/' + member.get_member_id(),
+    url: '/edit_member/' + old_member.get_member_id(),
     contentType: "application/json",
     dataType: 'json',
-    data: jsonData,
+    data: data,
     success: function(data) {
-      alert(member.get_member_f_name() + " " + member.get_member_l_name() + " has been updated.")
+      alert(new_member_f_name.get_member_f_name() + " " + new_member_l_name.get_member_l_name() + " has been updated.")
     },
     failure: function() {
       alert("Something went wrong.")
