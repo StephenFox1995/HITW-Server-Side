@@ -45,6 +45,12 @@ UPDATE_RESULT_BY_EVENT_ID_AND_MEM_ID = 'UPDATE Result SET member_id=?, event_id=
 # ----------------
 DELETE_RESULT_BY_EVENT_ID_AND_MEM_ID = 'DELETE FROM Result WHERE member_id =? AND event_id = ?'
 
+DELETE_MEMBER = 'DELETE FROM Member WHERE member_id = ?';
+
+#----------------
+
+
+
 
 def get_connection(filepath):
     connection = None
@@ -208,11 +214,12 @@ def delete_result(connection, member_id, event_id):
     connection.commit()
     cursor.close()
 
-
-
-
-
-
+def delete_member(connection, member_id):
+    delete_query = DELETE_MEMBER
+    cursor = connection.cursor()
+    cursor.execute(delete_query, (member_id,))
+    connection.commit()
+    cursor.close()
 
 
 def create_event_from_result(result):

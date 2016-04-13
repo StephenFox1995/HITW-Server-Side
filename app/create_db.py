@@ -26,6 +26,17 @@ CREATE_RESULT_TABLE_STMT = '''CREATE TABLE 'Result' (
 );'''
 
 
+# TRIGGERS
+# --------------
+# Removes all results for a member if that member was deleted from the database
+DELETE_MEMBER_FROM_RESULTS_TRIGGER = '''CREATE TRIGGER delete_member_from_result
+BEFORE DELETE ON Member
+FOR EACH ROW
+BEGIN
+    DELETE FROM Result WHERE member_id = OLD.id;
+END'''
+
+
 def parse_args():
     return sys.argv[1]
 
@@ -63,15 +74,29 @@ def create_result_table(connection):
 
 
 
+
+def create_triggers(connection):
+	try:
+		cursor = connection.cursor()
+		cursor.execute(DELETE_MEMBER_FROM_RESULTS_TRIGGER)
+	except sqlite3.Error, e:
+		print 'ERROR: There was a errror creating triggers.'
+	else:
+		print 'Trigges created successfully.'
+
+
+
+
+
 # Creates the database and all the tables needed.
 def create_sqlite_db(filepath):
-    connection = None
-    connection = sqlite3.connect(filepath)
-    create_event_table(connection)
-    create_member_table(connection)
-    create_result_table(connection)
-
-    connection.close()
+	connection = None
+	connection = sqlite3.connect(filepath)
+	create_event_table(connection)
+	create_member_table(connection)
+	create_result_table(connection)
+	create_triggers(connection)
+	connection.close()
 
 
 
@@ -79,5 +104,5 @@ def create_sqlite_db(filepath):
 # Parse the filepath so the db can be create there.
 db_filepath = parse_args()
 
-# Now the sqlite db at that filepath.
+# Now create the sqlite db at that filepath.
 create_sqlite_db(db_filepath)

@@ -325,22 +325,29 @@ def update_event(identifier):
     return Response(status=FAILURE_CODE)
 
 
-@app.route('/update_member/<identifier>', methods=['PUT'])
-def update_member(identifier):
+@app.route('/edit_member/<identifier>', methods=['PUT', 'DELETE'])
+def edit_member(identifier):
+    member = None
+
     if not identifier:
         return Response(status=MISSING_PARAM_CODE)
 
+    # JSON content for PUT method
     if request.json:
         json = request.json
         member = member_obj_from_json(json, identifier)
-
         if not member:
             return Response(status=MISSING_PARAM_CODE)
 
-        connection = query_db.get_connection(CURRENT_DB_LOCATION)
-        if connection is not None:
+
+    connection = query_db.get_connection(CURRENT_DB_LOCATION)
+    if connection is not None:
+        if request.method == 'PUT':
             query_db.update_member(connection, identifier, member)
             connection.close()
+            return Response(status=SUCCESS_CODE)
+        elif request.method == 'DELETE':
+            query_db.delete_member(connection, identifier);
             return Response(status=SUCCESS_CODE)
     # Failure
     return Response(status=FAILURE_CODE)
@@ -348,7 +355,7 @@ def update_member(identifier):
 
 
 # Update or delete a result from the database.
-@app.route('/edit_result/', methods=['DELETE', 'PUT'])
+@app.route('/edit_result/', methods=['PUT', 'DELETE'])
 def edit_result():
     result = None
     # As this function can take an PUT and DELETE
@@ -358,6 +365,8 @@ def edit_result():
     if request.json:
         json = request.json
         result = result_obj_from_json(json)
+        if not result:
+            return Response(status=MISSING_PARAM_CODE)
 
 
     member_id_key = request.args.get("mem_id")
@@ -371,10 +380,9 @@ def edit_result():
         return Response(status=FAILURE_CODE)
 
     if request.method == 'PUT':
-        if result is not None:
-            query_db.update_result(connection, result, member_id_key, event_id_key)
-            connection.close()
-            return Response(status=SUCCESS_CODE)
+        query_db.update_result(connection, result, member_id_key, event_id_key)
+        connection.close()
+        return Response(status=SUCCESS_CODE)
     elif request.method == 'DELETE':
         query_db.delete_result(connection, member_id_key, event_id_key)
         connection.close()
