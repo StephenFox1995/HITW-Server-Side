@@ -215,7 +215,7 @@ def get_member(identifier):
         member = query_db.get_member(connection, identifier)
         connection.close()
         if member:
-            json = member.jsonify() + '}}'
+            json = member.jsonify()
         else:
             json = empty_json_for_object("member")
         return Response(status=SUCCESS_CODE, response=json, mimetype='application/json')

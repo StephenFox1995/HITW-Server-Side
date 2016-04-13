@@ -1,3 +1,4 @@
+// Parses json for members.
 function parse_member_from_json(data) {
   var members = []
   $.each(data, function(index, element) {

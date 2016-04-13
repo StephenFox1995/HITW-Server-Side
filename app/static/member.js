@@ -17,18 +17,3 @@ function Member(member_id, member_f_name, member_l_name, member_handicap) {
     return this.member_handicap;
   }
 }
-
-// Member.prototype = {
-//   get member_id() {
-//     return this.member_id;
-//   },
-//   get member_f_name() {
-//     return this.member_f_name;
-//   },
-//   get member_l_name() {
-//     return this.member_l_name;
-//   },
-//   get member_handicap() {
-//     return this.member_handicap;
-//   }
-// };
