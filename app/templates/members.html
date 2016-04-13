@@ -105,6 +105,7 @@ function fill_html_with_member(member) {
       var updated_l_name = $('#member_l_name').val();
       var updated_member_handicap = $('#member_handicap').val();
 
+      // Send edited info to server.
       send_update_to_server(editing_member, updated_member_f_name, updated_l_name, updated_member_handicap)
     }
   });
@@ -124,10 +125,12 @@ function send_update_to_server(old_member, new_member_f_name, new_member_l_name,
     type: "PUT",
     url: '/edit_member/' + old_member.get_member_id(),
     contentType: "application/json",
-    dataType: 'json',
     data: data,
     success: function(data) {
-      alert(new_member_f_name.get_member_f_name() + " " + new_member_l_name.get_member_l_name() + " has been updated.")
+
+      $('#update_member_content').remove();
+      alert(new_member_f_name + " " + new_member_l_name + " has been updated.")
+
     },
     failure: function() {
       alert("Something went wrong.")
