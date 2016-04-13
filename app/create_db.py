@@ -29,11 +29,18 @@ CREATE_RESULT_TABLE_STMT = '''CREATE TABLE 'Result' (
 # TRIGGERS
 # --------------
 # Removes all results for a member if that member was deleted from the database
-DELETE_MEMBER_FROM_RESULTS_TRIGGER = '''CREATE TRIGGER delete_member_from_result
+DELETE_MEMBER_FROM_RESULTS_TRIGGER = '''CREATE TRIGGER delete_member_from_results
 BEFORE DELETE ON Member
 FOR EACH ROW
 BEGIN
-    DELETE FROM Result WHERE member_id = OLD.id;
+    DELETE FROM Result WHERE member_id = OLD.member_id;
+END'''
+
+DELETE_RESULT_FOR_EVENT_TRIGGER = '''CREATE TRIGGER delete_results_from_event
+BEFORE DELETE ON Event
+FOR EACH ROW
+BEGIN
+    DELETE FROM Result WHERE event_id = OLD.event_id;
 END'''
 
 
@@ -79,6 +86,7 @@ def create_triggers(connection):
 	try:
 		cursor = connection.cursor()
 		cursor.execute(DELETE_MEMBER_FROM_RESULTS_TRIGGER)
+		cursor.execute(DELETE_RESULT_FOR_EVENT_TRIGGER)
 	except sqlite3.Error, e:
 		print 'ERROR: There was a errror creating triggers.'
 	else:
