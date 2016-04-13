@@ -108,6 +108,9 @@ function fill_html_with_member(member) {
       // Send edited info to server.
       send_update_to_server(editing_member, updated_member_f_name, updated_l_name, updated_member_handicap)
     }
+    if (this.id == 'cancel_update') {
+      $('#update_member_content').remove();
+    }
   });
 }
 
