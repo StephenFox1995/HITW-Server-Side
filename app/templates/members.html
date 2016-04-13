@@ -3,6 +3,8 @@
   <head>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
     <script type="text/javascript" src="{{ url_for('static', filename='jquery.resizableColumns.js') }}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='member.js') }}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='util.js') }}"></script>
     <link rel= "stylesheet" type= "text/css" href= "{{ url_for('static',filename='styles/jquery.resizableColumns.css') }}">
 
     <title>Members</title>
@@ -26,27 +28,31 @@
 </html>
 
 <script>
-$(document).ready(function(){
+var currently_updating_user = false;
+
+
+$(document).ready(function() {
   $.ajax({
     type: "GET",
     url: '/get_all_members/',
     contentType: "application/json",
     dataType: "json",
     success: function(data) {
-      $.each(data, function(index, element) {
-          $.each(element, function(i, json){
-            member_f_name =     json['firstname']
-            member_l_name =     json['lastname']
-            member_handicap =   json['handicap']
-            member_id =         json['member_id']
+      var members = parse_member_from_json(data);
 
-            $('#member_table > tbody').append(
-              '<tr><td>' + member_f_name + '</td>' +
-              '<td>' + member_l_name + '</td>' +
-              '<td>' + member_handicap + '</td>' +
-              '<td><input type="button" id="' + member_id + '" value="Update Member" onclick="update_member()"></tr>')
-          });
-        });
+      members.forEach(function(member) {
+        var member_f_name =     member.get_member_f_name()
+        var member_l_name =     member.get_member_l_name()
+        var member_handicap =   member.get_member_handicap()
+        var member_id =         member.get_member_id()
+        $('#member_table > tbody').append(
+          '<tr><td>' + member_f_name + '</td>' +
+          '<td>' + member_l_name + '</td>' +
+          '<td>' + member_handicap + '</td>' +
+          '<td><input type="button" id="' + member_id + '" value="Update Member" onclick="update_member()"></tr>')
+      });
+
+
     },
     failure: function() {
       alert("Something went wrong.")
@@ -59,12 +65,19 @@ function update_member() {
 }
 
 function display_update_area() {
-  $(function () {
-    $.ajax({
-      url: "../app/static/update_member.html",
-      success: function (data) { $('body').append(data); },
-      dataType: 'html'
+  if (!currently_updating_user) {
+    $(function () {
+      $.ajax({
+        type: 'GET',
+        url: "/update_member/",
+        success: function (data) {
+          $('body').append(data);
+          currently_updating_user = true;
+        },
+        dataType: 'html'
+      });
     });
-  });
+  }
+
 }
 </script>

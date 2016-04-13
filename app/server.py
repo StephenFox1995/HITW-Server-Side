@@ -35,6 +35,11 @@ def see_events_page():
 def see_members_page():
     return render_template('members.html')
 
+@app.route('/update_member/', methods=['GET'])
+def update_member():
+    return render_template('update_member.html')
+
+
 
 
 @app.route('/add_member/', methods=['POST'])
