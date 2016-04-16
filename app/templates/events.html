@@ -28,7 +28,7 @@
 </html>
 
 <script>
-var currently_updating_user = false;
+var currently_editing_event = false;
 var events = [];
 
 $(document).ready(function(){
@@ -38,8 +38,8 @@ $(document).ready(function(){
     contentType: "application/json",
     dataType: "json",
     success: function(data) {
-      eventss = parse_event_from_json(data);
-      eventss.forEach(function(event_) {
+      events = parse_event_from_json(data);
+      events.forEach(function(event_) {
         event_id =       event_.get_event_id()
         event_title =    event_.get_event_title()
         event_location = event_.get_event_location()
@@ -60,7 +60,7 @@ $(document).ready(function(){
             if (this.id == 'edit_event_button') {
               display_edit_area(function() {
                 var index = $(this).closest('tr').index();
-                console.log(index)
+                update_event(events[0])
               });
             }
           });
@@ -73,21 +73,33 @@ $(document).ready(function(){
 });
 
 
-function update_event(event) {
-
+function update_event(hitw_event) {
+  fill_html_with_event(hitw_event)
 }
 
-function fill_html_with_event(event) {
-  var editing_event = event
-  $('#event_title').val(event.get_event_id());
-  $('#event_location').val(event.get_event_location());
-  $('#event_time').val(event.get_event_time());
-  $('#event_date').val(event.get_event_date());
+function fill_html_with_event(hitw_event) {
+  var editing_event = hitw_event
+  $('#event_title').val(hitw_event.get_event_id());
+  $('#event_location').val(hitw_event.get_event_location());
+  $('#event_time').val(hitw_event.get_event_time());
+  $('#event_date').val(hitw_event.get_event_date());
+
+  $('button').click(function() {
+    if (this.id == 'submit_event_edit') {
+      var updated_event_title = $('#event_title').val();
+      var updated_event_location = $('#event_location').val();
+      var updated_event_time = $('#event_date').val();
+      var updayed_event_date = $('#event_date')
+    }
+    if (this.id == 'cancel_editing') {
+      remove_edit_view();
+    }
+  });
 };
 
 
 function display_edit_area(callback) {
-  if (!currently_updating_user) {
+  if (!currently_editing_event) {
     $(function () {
       $.ajax({
         type: 'GET',
@@ -101,5 +113,10 @@ function display_edit_area(callback) {
       });
     });
   }
+}
+
+function remove_edit_view() {
+  $('#edit_event_view').remove();
+  currently_editing_event = false;
 }
 </script>
