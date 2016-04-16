@@ -13,3 +13,20 @@ function parse_member_from_json(data) {
   });
   return members;
 };
+
+// Parses json for events.
+function parse_event_from_json(data) {
+  var events = []
+  $.each(data, function(index, element) {
+    $.each(element, function(i, json) {
+      event_id =       json['identifier']
+      event_title =    json['title']
+      event_location = json['location']
+      event_time =    json['time']
+      event_date =     json['date']
+      var eventHITW = new EventHITW(event_id, event_title, event_location, event_time, event_date)
+      events.push(eventHITW)
+    })
+  });
+  return events;
+}

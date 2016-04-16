@@ -102,8 +102,9 @@ def create_triggers(connection):
 def create_sqlite_db(filepath):
 	connection = None
 	connection = sqlite3.connect(filepath)
-	# Change so the user can write to as
-	# the script is needed to be in superuser mode.
+
+	# Change so we can write to as
+	# the script is needed to be executed in superuser mode.
 	os.system('sudo chmod g+w ' + filepath)
 
 	create_event_table(connection)

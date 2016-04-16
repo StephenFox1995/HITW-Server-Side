@@ -34,9 +34,14 @@ def see_events_page():
 def see_members_page():
     return render_template('members.html')
 
+# TODO: Change update -> edit across code base.
 @app.route('/update_member/', methods=['GET'])
 def update_member():
     return render_template('update_member.html')
+
+@app.route('/edit_event_view/', methods=['GET'])
+def edit_event_view():
+    return render_template('edit_event.html')
 
 
 
@@ -169,7 +174,7 @@ def get_event(identifier):
         event = query_db.get_event(connection, identifier)
         connection.close()
         if event:
-            json = event.jsonify() + '}}'
+            json = event.jsonify() 
         else:
             json = empty_json_for_object("event")
         return Response(status=SUCCESS_CODE, response=json, mimetype='application/json')

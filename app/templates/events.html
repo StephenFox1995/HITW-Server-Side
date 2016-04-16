@@ -5,6 +5,8 @@
     <script type="text/javascript" src="{{ url_for('static', filename='jquery.resizableColumns.js') }}"></script>
     <link rel= "stylesheet" type= "text/css" href= "{{ url_for('static',filename='styles/jquery.resizableColumns.css') }}">
     <title>Events</title>
+    <script type="text/javascript" src="{{ url_for('static', filename='util.js') }}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='eventHITW.js') }}"></script>
   </head>
 
 
@@ -26,6 +28,9 @@
 </html>
 
 <script>
+var currently_updating_user = false;
+var events = [];
+
 $(document).ready(function(){
   $.ajax({
     type: "GET",
@@ -33,25 +38,68 @@ $(document).ready(function(){
     contentType: "application/json",
     dataType: "json",
     success: function(data) {
-      $.each(data, function(index, element) {
-          $.each(element, function(i, json){
-            event_id =       json['identifier']
-            event_title =    json['title']
-            event_location = json['location']
-            event_time =     json['time']
-            event_date =     json['date']
+      eventss = parse_event_from_json(data);
+      eventss.forEach(function(event_) {
+        event_id =       event_.get_event_id()
+        event_title =    event_.get_event_title()
+        event_location = event_.get_event_location()
+        event_time =     event_.get_event_time()
+        event_date =     event_.get_event_date()
 
-            $('#event_table > tbody').append(
-              '<tr><td>' + event_title + '</td>' +
-              '<td>' + event_location + '</td>' +
-              '<td>' + event_time + '</td>' +
-              '<td>' + event_date + '</td> </tr>')
+        $('#event_table > tbody').append(
+          '<tr>'+
+            '<td>' + event_title + '</td>' +
+            '<td>' + event_location + '</td>' +
+            '<td>' + event_time + '</td>' +
+            '<td>' + event_date + '</td>' +
+            '<td><button id="edit_event_button">Edit Event</button></td>' +
+          '</tr>')
+
+          // Add listener.
+          $("button").click(function() {
+            if (this.id == 'edit_event_button') {
+              display_edit_area(function() {
+                var index = $(this).closest('tr').index();
+                console.log(index)
+              });
+            }
           });
-        });
+      });
     },
     failure: function() {
       alert("Something went wrong.")
     }
   });
 });
+
+
+function update_event(event) {
+
+}
+
+function fill_html_with_event(event) {
+  var editing_event = event
+  $('#event_title').val(event.get_event_id());
+  $('#event_location').val(event.get_event_location());
+  $('#event_time').val(event.get_event_time());
+  $('#event_date').val(event.get_event_date());
+};
+
+
+function display_edit_area(callback) {
+  if (!currently_updating_user) {
+    $(function () {
+      $.ajax({
+        type: 'GET',
+        url: "/edit_event_view/",
+        success: function (data) {
+          $('body').append(data);
+          currently_updating_user = true;
+          callback()
+        },
+        dataType: 'html'
+      });
+    });
+  }
+}
 </script>
