@@ -62,6 +62,10 @@ $(document).ready(function() {
           var index = $(this).closest('tr').index();
           update_event(events[index]);
         }
+        if (this.id == 'remove_event') {
+          var index = $(this).closest('tr').index();
+          remove_event(events[index]);
+        }
       });
     },
     failure: function() {
@@ -101,9 +105,30 @@ function fill_html_with_event(hitw_event) {
 };
 
 
+function remove_event(event) {
+  if (confirm("Are you sure you want to delete " +
+  event.get_event_location() + " on " +
+  event.get_event_date() + " at " +
+  event.get_event_time() + "?")) {
+    $.ajax({
+      type: "DELETE",
+      url: '/edit_event/' + event.get_event_id(),
+      success: function(data) {
+        remove_edit_view();
+        alert("Event has been removed.");
+        location.reload(true);
+      },
+      failure: function() {
+        alert("Something went wrong.");
+      }
+    });
+
+  }
+}
+
+
 function display_edit_area(callback) {
   if (!currently_editing_event) {
-    $(function () {
       $.ajax({
         type: 'GET',
         url: "/edit_event_view/",
@@ -114,7 +139,6 @@ function display_edit_area(callback) {
         },
         dataType: 'html'
       });
-    });
   }
 }
 
