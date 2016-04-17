@@ -43,7 +43,9 @@ def update_member():
 def edit_event_view():
     return render_template('edit_event.html')
 
-
+@app.route('/results/<event_id>', methods=['GET'])
+def results(event_id):
+    return render_template('results.html')
 
 
 @app.route('/add_member/', methods=['POST'])
@@ -174,7 +176,7 @@ def get_event(identifier):
         event = query_db.get_event(connection, identifier)
         connection.close()
         if event:
-            json = event.jsonify() 
+            json = event.jsonify()
         else:
             json = empty_json_for_object("event")
         return Response(status=SUCCESS_CODE, response=json, mimetype='application/json')

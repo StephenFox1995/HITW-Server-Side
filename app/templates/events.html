@@ -53,6 +53,7 @@ $(document).ready(function() {
             '<td>' + event_date + '</td>' +
             '<td><button id="edit_event_button">Edit Event</button></td>' +
             '<td><button id="remove_event">Remove Event</button></td>' +
+            '<td><button id="results">Results</button></td>' +
           '</tr>')
       });
 
@@ -66,6 +67,10 @@ $(document).ready(function() {
           var index = $(this).closest('tr').index();
           remove_event(events[index]);
         }
+        if (this.id == 'results') {
+          var index = $(this).closest('tr').index();
+          // TODO: Show results for event.
+        }
       });
     },
     failure: function() {
@@ -73,6 +78,7 @@ $(document).ready(function() {
     }
   });
 });
+
 
 
 function update_event(hitw_event) {
