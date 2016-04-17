@@ -34,7 +34,7 @@ SELECT_RESULT_X_FOR_EVENT = '''SELECT * FROM Result WHERE event_id = ?'''
 
 # UPDATES
 # ------------------
-UPDATE_EVENT_BY_EVENT_ID_AND_MEM_ID = 'UPDATE Event SET event_title=?, event_location=?, event_date=?, event_time=? WHERE event_id=? AND member_id=?;'
+UPDATE_EVENT_BY_EVENT_ID= 'UPDATE Event SET event_title=?, event_location=?, event_date=?, event_time=? WHERE event_id=?;'
 
 UPDATE_MEMBER_BY_MEM_ID = 'UPDATE Member SET member_f_name=?, member_l_name=?, member_handicap=? WHERE member_id=?';
 
@@ -236,8 +236,8 @@ def create_event_from_result(result):
         event_id =       result[0]
         event_title =    result[1]
         event_location = result[2]
-        event_time =     result[3]
-        event_date =     result[4]
+        event_date =     result[3]
+        event_time =     result[4]
         event = Event(event_id, event_title, event_location, event_time, event_date)
         return event
 

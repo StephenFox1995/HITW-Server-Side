@@ -61,7 +61,6 @@ $(document).ready(function() {
         if (this.id == 'edit_event_button') {
           var index = $(this).closest('tr').index();
           update_event(events[index]);
-
         }
       });
     },
@@ -80,7 +79,7 @@ function update_event(hitw_event) {
 
 function fill_html_with_event(hitw_event) {
   var editing_event = hitw_event
-  $('#event_title').val(hitw_event.get_event_id());
+  $('#event_title').val(hitw_event.get_event_title());
   $('#event_location').val(hitw_event.get_event_location());
   $('#event_time').val(hitw_event.get_event_time());
   $('#event_date').val(hitw_event.get_event_date());
@@ -89,8 +88,11 @@ function fill_html_with_event(hitw_event) {
     if (this.id == 'submit_event_edit') {
       var updated_event_title = $('#event_title').val();
       var updated_event_location = $('#event_location').val();
-      var updated_event_time = $('#event_date').val();
-      var updayed_event_date = $('#event_date')
+      var updated_event_time = $('#event_time').val();
+      var updated_event_date = $('#event_date').val();
+
+      // Send edited event info to server.
+      send_update_to_server(editing_event, updated_event_title, updated_event_location, updated_event_time, updated_event_date);
     }
     if (this.id == 'cancel_editing') {
       remove_edit_view();
@@ -119,5 +121,32 @@ function display_edit_area(callback) {
 function remove_edit_view() {
   $('#edit_event_view').remove();
   currently_editing_event = false;
+}
+
+function send_update_to_server(old_event, event_title, event_location, event_time, event_date) {
+  var jsonData = {
+    "title": event_title,
+    "location": event_location,
+    "time": event_time,
+    "date": event_date,
+    "identifier": old_event.get_event_id() // Use the id of the old event as ids cannot be edited.
+  }
+  var data = JSON.stringify(jsonData);
+
+  $.ajax({
+    type: "PUT",
+    url: '/edit_event/' + old_event.get_event_id(),
+    contentType: "application/json",
+    data: data,
+    success: function(data) {
+      remove_edit_view();
+      alert("Event has been updated.");
+      location.reload(true);
+    },
+    failure: function() {
+      alert("Something went wrong.");
+    }
+  });
+
 }
 </script>

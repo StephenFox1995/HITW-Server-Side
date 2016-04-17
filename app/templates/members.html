@@ -129,7 +129,12 @@ function fill_html_with_member(member) {
       var updated_member_handicap = $('#member_handicap').val();
 
       // Send edited info to server.
-      send_update_to_server(editing_member, updated_member_f_name, updated_l_name, updated_member_handicap)
+      send_update_to_server(
+        editing_member,
+        updated_member_f_name,
+        updated_l_name,
+        updated_member_handicap
+      )
     }
     if (this.id == 'cancel_update') {
       remove_update_content();
