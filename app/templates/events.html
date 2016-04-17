@@ -11,7 +11,6 @@
 
 
   <body>
-
     <table class="table table-bordered" data-resizable-columns-id="event_table" id="event_table">
       <thead>
         <tr>
@@ -31,7 +30,7 @@
 var currently_editing_event = false;
 var events = [];
 
-$(document).ready(function(){
+$(document).ready(function() {
   $.ajax({
     type: "GET",
     url: '/get_all_events/',
@@ -53,17 +52,17 @@ $(document).ready(function(){
             '<td>' + event_time + '</td>' +
             '<td>' + event_date + '</td>' +
             '<td><button id="edit_event_button">Edit Event</button></td>' +
+            '<td><button id="remove_event">Remove Event</button></td>' +
           '</tr>')
+      });
 
-          // Add listener.
-          $("button").click(function() {
-            if (this.id == 'edit_event_button') {
-              display_edit_area(function() {
-                var index = $(this).closest('tr').index();
-                update_event(events[0])
-              });
-            }
-          });
+      // Add listener.
+      $("button").click(function() {
+        if (this.id == 'edit_event_button') {
+          var index = $(this).closest('tr').index();
+          update_event(events[index]);
+
+        }
       });
     },
     failure: function() {
@@ -74,7 +73,9 @@ $(document).ready(function(){
 
 
 function update_event(hitw_event) {
-  fill_html_with_event(hitw_event)
+  display_edit_area(function() {
+    fill_html_with_event(hitw_event);
+  });
 }
 
 function fill_html_with_event(hitw_event) {
@@ -106,7 +107,7 @@ function display_edit_area(callback) {
         url: "/edit_event_view/",
         success: function (data) {
           $('body').append(data);
-          currently_updating_user = true;
+          currently_editing_event = true;
           callback()
         },
         dataType: 'html'
