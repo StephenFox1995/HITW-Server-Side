@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
+    <script src="../static/util.js"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='result.js') }}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='member.js') }}"></script>
+    <title>Results</title>
+  </head>
+  <body>
+    <table class="table table-bordered" data-resizable-columns-id="result_table" id="result_table">
+      <thead>
+        <tr>
+          <th data-resizable-column-id="member">Member</th>
+          <th data-resizable-column-id="handicap">Handicap</th>
+        </tr>
+      </thead>
+      <tbody>
+      </tbody>
+    </table>
+  </body>
+</html>
+
+<script type="text/javascript">
+  var results_for_event = getUrlVars()["results_for_event"];
+  $(document).ready(function() {
+    $.ajax({
+      type: "GET",
+      url: '/get_all_results_for_event/' + results_for_event,
+      contentType: "application/json",
+      dataType: "json",
+      success: function(data) {
+        results = parse_result_from_json(data);
+        results.forEach(function(result) {
+          event_id  = result.get_event_id()
+          member_id = result.get_member_id()
+          score =     result.get_result_score()
+
+          $('#result_table > tbody').append(
+            '<tr>'+
+              '<td>' + event_id + '</td>' +
+              '<td>' + score + '</td>' +
+            '</tr>')
+        });
+      },
+      failure: function() {
+        alert("Something went wrong.")
+      }
+    });
+  });
+
+</script>

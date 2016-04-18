@@ -43,8 +43,13 @@ def update_member():
 def edit_event_view():
     return render_template('edit_event.html')
 
-@app.route('/results/<event_id>', methods=['GET'])
-def results(event_id):
+# Use this variable to get the current event
+# the user wants to displaye results for.
+results_for_event = 0
+@app.route('/results/', methods=['GET'])
+def results():
+    event_id = request.args.get('results_for_event')
+    results_for_event = event_id
     return render_template('results.html')
 
 

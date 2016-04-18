@@ -30,3 +30,32 @@ function parse_event_from_json(data) {
   });
   return events;
 }
+
+
+// Parses json for results.
+function parse_result_from_json(data) {
+  var results = []
+  $.each(data, function(index, element) {
+    $.each(element, function(i, json) {
+      event_id =       json['event_id']
+      member_id   =    json['member_id']
+      score          = json['score']
+      var result = new Result(event_id, member_id, score);
+      results.push(result);
+    })
+  });
+  return results;
+}
+
+function getUrlVars()
+{
+    var vars = [], hash;
+    var hashes = window.location.href.slice(window.location.href.indexOf('?') + 1).split('&');
+    for(var i = 0; i < hashes.length; i++)
+    {
+        hash = hashes[i].split('=');
+        vars.push(hash[0]);
+        vars[hash[0]] = hash[1];
+    }
+    return vars;
+}
