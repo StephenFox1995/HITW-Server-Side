@@ -95,7 +95,7 @@ def add_event():
         else:
             connection = query_db.get_connection(current_db_location())
             if connection is not None:
-                query_db.insert_into_event(connection, title, location, time, date)
+                query_db.insert_into_event(connection, title, location, date, time)
                 connection.close()
                 return Response(status=SUCCESS_CODE)
             else: # Connection to database failed
