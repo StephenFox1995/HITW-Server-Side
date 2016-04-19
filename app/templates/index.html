@@ -2,6 +2,14 @@
 <html>
   <head>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
+
+    <!-- Optional theme -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap-theme.min.css" integrity="sha384-fLW2N01lMqjakBkx3l/M9EahuwpSfeNvV63J5ezn3uZzapT0u7EYsXMjQV+0En5r" crossorigin="anonymous">
+
+    <!-- Latest compiled and minified JavaScript -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
     <script src="../static/util.js"></script>
     <title>Homepage</title>
   </head>
@@ -16,29 +24,29 @@
       <tr>
         <td>
           Title
-          <input type="text" id="event_title">
+          <input type="text" class="form-control" id="event_title">
         </td>
       </tr>
       <tr>
         <td> Location
-          <input type="text" id="event_location">
+          <input type="text" class="form-control" id="event_location">
         </td>
       </tr>
       <tr>
         <td>
           Time
-          <input type="text" id="event_time" value="mm:hh">
+          <input type="text" class="form-control" id="event_time" value="mm:hh">
         </td>
       </tr>
       <tr>
         <td>
           Date
-          <input type="text" id="event_date" value="dd/mm/yy">
+          <input type="text" class="form-control" id="event_date" value="dd/mm/yy">
         </td>
       </tr>
       <tr>
         <td>
-          <input type="button" id="add_event_button" value="Add Event">
+          <input class="btn btn-default" type="button" id="add_event_button" value="Add Event">
         </td>
       </tr>
     </table>
@@ -50,29 +58,30 @@
       <tr>
         <td>
           Firstname
-          <input type="text" id="member_f_name">
+          <input type="text" class="form-control" id="member_f_name">
         </td>
       </tr>
       <tr>
         <td>
           Lastname
-          <input type="text" id="member_l_name">
+          <input type="text" class="form-control" id="member_l_name">
         </td>
       </tr>
       <tr>
         <td>
           Handicap
-          <input type="text" id="member_handicap">
+          <input type="text" class="form-control" id="member_handicap">
         </td>
       </tr>
       <tr>
         <td>
-          <input type="button" id="add_member_button" value="Add Member">
+          <input type="button" class="btn btn-default" id="add_member_button" value="Add Member">
         </td>
       </tr>
     </table>
-
-
+    <div id = "alert_placeholder"></div>
+  <body>
+</html>
   <script type="text/javascript">
 
   $(function() {
@@ -96,7 +105,8 @@
           $('#member_f_name').val("")
           $('#member_l_name').val("")
           $('#member_handicap').val("")
-          alert(member_f_name + " " + member_l_name + " has been added.")
+          success(member_f_name + " " + member_l_name + " has been added.");
+
         },
         failure: function() {
           alert("Something went wrong.")
@@ -137,5 +147,9 @@
     });
   });
 
+
+  function success(message) {
+    $("#alert_placeholder").append('<div class="alert alert-success"><a class="close" data-dismiss="alert">x</a><span>' + message + '</span></div>');
+  }
+
 </script>
-</html>
