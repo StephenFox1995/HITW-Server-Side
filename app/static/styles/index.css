@@ -1,0 +1,9 @@
+#button_container {
+  width: 100%;
+  height: 100px;
+  text-align: center;
+}
+
+btn_display {
+  display: inline-block;
+}
