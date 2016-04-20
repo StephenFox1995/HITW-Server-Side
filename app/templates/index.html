@@ -16,6 +16,7 @@
     <script src="../static/util.js"></script>
     <script src="../static/common.js"></script>
     <script src="../static/member.js"></script>
+    <script src="../static/eventHITW.js"></script>
     <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha/css/bootstrap.min.css" rel="stylesheet"/>
     <title>Homepage</title>
   </head>
@@ -139,80 +140,60 @@
   </div>
 <body>
 </html>
-  <script type="text/javascript">
+<script type="text/javascript">
+$(document).ready(function() {
+  $("#add_member_button").click(function() {
+    // Get the values the user has entered for member.
+    var member_f_name = $('#member_f_name').val();
+    var member_l_name = $('#member_l_name').val();
+    var member_handicap = $('#member_handicap').val();
 
-  $(document).ready(function() {
-    $("#add_member_button").click(function() {
-      // Get the values the user has entered for member.
-      var member_f_name = $('#member_f_name').val();
-      var member_l_name = $('#member_l_name').val();
-      var member_handicap = $('#member_handicap').val();
-
-      // Create a new member, set the id to whatever,
-      // as this does not matter when adding the member to
-      // the system as the id will be generated.
-      var member_to_add = new Member(0, member_f_name, member_l_name, member_handicap);
-      ajaxPOST_add_member(member_to_add,
-        function successful(data) {
-          // Set textfields to empty.
-          clear_member_inputs();
-          success(member_f_name + " " + member_l_name + " has been added.");
-        },
-        function failure() {
-          alert("Something went wrong.")
-        }
-      );
-    });
-
-    function clear_member_inputs() {
-      $('#member_f_name').val("")
-      $('#member_l_name').val("")
-      $('#member_handicap').val("")
-    }
+    // Create a new member, set the id to whatever,
+    // as this does not matter when adding the member to
+    // the system as the id will be generated.
+    var member_to_add = new Member(0, member_f_name, member_l_name, member_handicap);
+    ajaxPOST_add_member(member_to_add,
+      function successful(data) {
+        // Set textfields to empty.
+        clear_member_inputs();
+        success(member_f_name + " " + member_l_name + " has been added.");
+      },
+      function failure() {
+        alert("Something went wrong.")
+      }
+    );
   });
 
+  $("#add_event_button").click(function() {
+    var event_title = $('#event_title').val();
+    var event_location = $('#event_location').val();
+    var event_date = $('#event_date').val();
+    var event_time = $('#event_time').val();
 
+    // Create new event, set the id to anython as it is not
+    // used in /add_member/
+    var event_to_add = new EventHITW(0, event_title, event_location, event_time, event_date);
 
-
-  $(function() {
-
-    $("#add_event_button").click(function() {
-      var event_title = $('#event_title').val();
-      var event_location = $('#event_location').val();
-      var event_date = $('#event_date').val();
-      var event_time = $('#event_time').val();
-
-      var jsonData = {
-        "title"     :event_title,
-        "location"  :event_location,
-        "time"      :event_time,
-        "date"      :event_date
-      };
-      var data = JSON.stringify(jsonData)
-      $.ajax({
-            type: "POST",
-            url: '/add_event/',
-            contentType: "application/json",
-            data: data,
-            success: function(data) {
-              // Clear all text fields after success insertion.
-              var event_title = $('#event_title').val();
-              $('#event_title').val("");
-              $('#event_location').val("");
-              $('#event_date').val("dd/mm/yy");
-              $('#event_time').val("mm:hh");
-              success(event_title + " has been added");
-            },
-            failure: function() {
-              alert("Something went wrong.")
-            }
-        });
-    });
+    ajaxPOST_add_event(event_to_add,
+      function successful() {
+        success(event_title + " has been added");
+      },
+      function failure() {
+        alert("Something went wrong.")
+      }
+    );
   });
+});
 
 
-  function success(message) {
-    $("#alert_placeholder").append('<div class="alert alert-success"><a class="close" data-dismiss="alert">x</a><span>' + message + '</span></div>');
-  }
+function clear_member_inputs() {
+  $('#member_f_name').val("")
+  $('#member_l_name').val("")
+  $('#member_handicap').val("")
+}
+
+function success(message) {
+  $("#alert_placeholder").append('<div class="alert alert-success"><a class="close" data-dismiss="alert">x</a><span>' + message + '</span></div>');
+}
 
 </script>
