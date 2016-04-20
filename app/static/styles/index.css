@@ -16,9 +16,9 @@
   background-color: #FFFFFF;
 }
 
-card-container {
-  width: 20%;
-  height: 300px;
+#card_container {
+  width: 100%;
+  text-align: center;
 }
 btn_display {
   display: inline-block;

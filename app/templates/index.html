@@ -14,6 +14,8 @@
     <script src="https://cdn.jsdelivr.net/holder/2.9.0/holder.min.js">
     </script>
     <script src="../static/util.js"></script>
+    <script src="../static/common.js"></script>
+    <script src="../static/member.js"></script>
     <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha/css/bootstrap.min.css" rel="stylesheet"/>
     <title>Homepage</title>
   </head>
@@ -35,7 +37,8 @@
       <button class="btn btn-default" data-toggle="modal"   data-target="#addEventModal">Add Event</button>
     </div>
 
-    <div class="card" style="width:318px;">
+    <div id="card_container">
+      <div class="card" style="width:318px; display: inline-block">
       <img class="card-img-top" data-src="holder.js/318x180" alt="Card image cap">
       <div class="card-block">
         <h4 class="card-title">Upcoming Outing</h4>
@@ -45,12 +48,12 @@
         <li class="list-group-item"><b>Time:</b> 10:30</li>
         <li class="list-group-item"><b>Date:</b> 10/06/16</li>
       </ul>
-    </div>
+  </div>
+  </div>
 
 
 
-
-    <div id = "alert_placeholder"></div>
+  <div id = "alert_placeholder"></div>
 
   <!-- Add Member Modal -->
   <div class="modal fade" id="addMemberModal" role="dialog">
@@ -138,35 +141,40 @@
 </html>
   <script type="text/javascript">
 
-  $(function() {
+  $(document).ready(function() {
     $("#add_member_button").click(function() {
+      // Get the values the user has entered for member.
       var member_f_name = $('#member_f_name').val();
       var member_l_name = $('#member_l_name').val();
       var member_handicap = $('#member_handicap').val();
-      var jsonData = {
-        "firstname" :member_f_name,
-        "lastname"  :member_l_name,
-        "handicap"  :member_handicap
-      };
-      var data = JSON.stringify(jsonData)
-      $.ajax({
-        type: "POST",
-        url: '/add_member/',
-        contentType: "application/json",
-        data: data,
-        success: function(data) {
-          // Clear all text fields after success insertion.
-          $('#member_f_name').val("")
-          $('#member_l_name').val("")
-          $('#member_handicap').val("")
-          success(member_f_name + " " + member_l_name + " has been added.");
 
+      // Create a new member, set the id to whatever,
+      // as this does not matter when adding the member to
+      // the system as the id will be generated.
+      var member_to_add = new Member(0, member_f_name, member_l_name, member_handicap);
+      ajaxPOST_add_member(member_to_add,
+        function successful(data) {
+          // Set textfields to empty.
+          clear_member_inputs();
+          success(member_f_name + " " + member_l_name + " has been added.");
         },
-        failure: function() {
+        function failure() {
           alert("Something went wrong.")
         }
-      });
+      );
     });
+
+    function clear_member_inputs() {
+      $('#member_f_name').val("")
+      $('#member_l_name').val("")
+      $('#member_handicap').val("")
+    }
+  });
+
+
+
+
+  $(function() {
 
     $("#add_event_button").click(function() {
       var event_title = $('#event_title').val();
