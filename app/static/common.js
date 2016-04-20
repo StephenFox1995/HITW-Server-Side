@@ -5,7 +5,7 @@ Attempts to add a member to the database.
                into the database.
 @param failure A callback when an error occurs.
 */
-function ajaxPOST_add_member(member, successful, failure) {
+function ajaxPOST_add_member(member, successful, failed) {
   var member_f_name = member.get_member_f_name();
   var member_l_name = member.get_member_l_name();
   var member_handicap = member.get_member_handicap();
@@ -26,7 +26,7 @@ function ajaxPOST_add_member(member, successful, failure) {
       successful(data);
     },
     failure: function() {
-      failure();
+      failed();
     }
   });
 }
@@ -39,7 +39,7 @@ Attempts to add a event to the database.
                   insertion into the database.
 @param failure A callback when an error occurs.
 */
-function ajaxPOST_add_event(event, successful, failure) {
+function ajaxPOST_add_event(event, successful, failed) {
   var event_title = event.get_event_title();
   var event_location = event.get_event_location();
   var event_time = event.get_event_time();
@@ -62,12 +62,35 @@ function ajaxPOST_add_event(event, successful, failure) {
       successful();
     },
     failure: function() {
-      failure();
+      failed();
     }
   });
 }
-function ajax_get_member(member_id) {
 
+/**
+Attempts to retrieve all members from the database via
+AJAX call.
+@param successful: Callback when a successful GET request
+                   has returned json containing members.
+                   Please note that the json returned may
+                   contain 'null' as the value for members,
+                   if there are no members in the database.
+                   This callback passes one argument which
+                   is the data (json) returned from the server.
+@param failed: An error has occurred.*/
+function ajaxGET_get_all_members(successful, failed) {
+  $.ajax({
+    type: 'GET',
+    url: '/get_all_members/',
+    contentType: 'application/json',
+    dataType: 'json',
+    success: function(data) {
+      successful(data);
+    },
+    failure: function() {
+      failed()
+    }
+  });
 }
 
 function ajax_get_event(event_id) {

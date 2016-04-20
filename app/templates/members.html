@@ -13,6 +13,7 @@
 
     <script type="text/javascript" src="{{ url_for('static', filename='member.js') }}"></script>
     <script type="text/javascript" src="{{ url_for('static', filename='util.js') }}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='common.js') }}"></script>
 
 
     <title>Members</title>
@@ -33,6 +34,46 @@
       <tbody>
       </tbody>
     </table>
+
+    <!-- Add Event Modal -->
+    <div class="modal fade" id="editMemberModal" role="dialog">
+      <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal">&times;</button>
+            <h4 class="modal-title">Edit Member</h4>
+          </div>
+          <div class="modal-body">
+            <table>
+              <tr>
+                <td>
+                  Firstname
+                  <input type="text" class="form-control" id="member_f_name">
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  Lastname
+                  <input type="text" class="form-control" id="member_l_name">
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  Handicap
+                  <input type="text" class="form-control" id="member_handicap" value="mm:hh">
+                </td>
+              </tr>
+            </table>
+          </div>
+          <div class="modal-footer">
+            <input class="btn btn-default"
+              type="button" id="add_event_button" value="Update">
+
+            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+          </div>
+        </div>
+      </div>
+    </div>
   </body>
 </html>
 
@@ -41,47 +82,60 @@ var currently_updating_user = false;
 var members = [] // All the members currently in the table.
 
 $(document).ready(function() {
-  $.ajax({
-    type: "GET",
-    url: '/get_all_members/',
-    contentType: "application/json",
-    dataType: "json",
-    success: function(data) {
-      members = parse_member_from_json(data);
-      members.forEach(function(member) {
-        var member_f_name =     member.get_member_f_name()
-        var member_l_name =     member.get_member_l_name()
-        var member_handicap =   member.get_member_handicap()
-        var member_id =         member.get_member_id()
+  ajaxGET_get_all_members(
+    function successful(data) {
 
-        $('#member_table > tbody').append(
-          '<tr>' +
-            '<td>' + member_f_name + '</td>' +
-            '<td>' + member_l_name + '</td>' +
-            '<td>' + member_handicap + '</td>' +
-            '<td><button id="update_button">Edit Member</button></td>' +
-            '<td><button id="delete_member">Remove Member</button></td>' +
-          '</tr>')
-      });
-      // Add listener.
-      $("button").click(function() {
-        if (this.id == 'update_button') {
-          var index = $(this).closest('tr').index();
-          update_member(members[index]);
-        }
-        if (this.id == 'delete_member') {
-          var index = $(this).closest('tr').index();
-          delete_member(members[index]);
-        }
+      members = parse_member_from_json(data);
+      members.forEach(function(member){
+        // Append member to html.
+        add_member_to_html(member, true);
       });
     },
-    failure: function() {
-      alert("Something went wrong.")
+    function failure() {
+      alert('Something went wrong!');
+    }
+  );
+
+  // Add listener.
+  $("button").click(function() {
+    if (this.id == 'update_button') {
+      var index = $(this).closest('tr').index();
+      update_member(members[index]);
+    }
+    if (this.id == 'delete_member') {
+      var index = $(this).closest('tr').index();
+      delete_member(members[index]);
     }
   });
 });
 
 
+function add_member_to_html(member, present_admin_tools) {
+  if (present_admin_tools) {
+    $('#member_table > tbody').append(
+      '<tr>' +
+        '<td>' + member.get_member_f_name() + '</td>' +
+        '<td>' + member.get_member_l_name() + '</td>' +
+        '<td>' + member.get_member_handicap() + '</td>' +
+        '<td><button id="update_button" onClick="update_button_click(this);" >Edit Member</button></td>' +
+        '<td><button id="delete_member">Remove Member</button></td>' +
+      '</tr>');
+  }
+  else {
+    $('#member_table > tbody').append(
+      '<tr>' +
+        '<td>' + member.get_member_f_name() + '</td>' +
+        '<td>' + member.get_member_l_name() + '</td>' +
+        '<td>' + member.get_member_handicap() + '</td>' +
+      '</tr>');
+  }
+}
+
+// Handler for a click on update button
+function update_button_click(button) {
+  var index = $(button).closest('tr').index();
+  update_member(members[index]);
+}
 function update_member(member) {
   display_update_area(function() {
     fill_html_with_member(member)
@@ -122,6 +176,7 @@ function display_update_area(callback) {
     });
   }
 }
+
 
 function fill_html_with_member(member) {
   var editing_member = member;
