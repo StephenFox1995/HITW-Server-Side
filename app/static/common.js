@@ -120,10 +120,30 @@ function ajaxGET_get_all_events(successful, failed) {
   });
 }
 
-function ajax_get_result_for_event(event_id) {
+function ajaxGET_result_for_event(event_id) { }
 
-}
+function ajaxGET_get_result_for_member(member_id) { }
 
-function ajax_get_result_for_member(member_id) {
 
+function ajaxPOST_update_member(member, successful, failed) {
+  var jsonData = {
+    "firstname" :member.get_member_f_name(),
+    "lastname"  :member.get_member_l_name(),
+    "handicap"  :member.get_member_handicap(),
+    "identifier":member.get_member_id()
+  };
+  var data = JSON.stringify(jsonData)
+
+  $.ajax({
+    type: "PUT",
+    url: '/edit_member/' + member.get_member_id(),
+    contentType: "application/json",
+    data: data,
+    success: function() {
+      successful();
+    },
+    failure: function() {
+      failed();
+    }
+  });
 }

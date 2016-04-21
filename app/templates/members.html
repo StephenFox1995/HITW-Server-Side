@@ -24,11 +24,11 @@
     <table class="table table-hover" id="member_table">
       <thead>
         <tr>
-          <th id="member_f_name">Firstname</th>
-          <th id="member_l_name">Lastname</th>
-          <th id="member_handicap">Handicap</th>
-          <th id="update_member">Update Member</th>
-          <th id="remove_member">Remove Member</th>
+          <th>Firstname</th>
+          <th>Lastname</th>
+          <th>Handicap</th>
+          <th>Update Member</th>
+          <th>Remove Member</th>
         </tr>
       </thead>
       <tbody>
@@ -60,20 +60,19 @@
               <tr>
                 <td>
                   Handicap
-                  <input type="text" class="form-control" id="member_handicap" value="mm:hh">
+                  <input type="text" class="form-control" id="member_handicap">
                 </td>
               </tr>
             </table>
           </div>
           <div class="modal-footer">
-            <input class="btn btn-default"
-              type="button" id="add_event_button" value="Update">
+            <input tpye="button"class="btn btn-default" value="Update"
+             id="update_member_button" onclick="send_update_to_server(this)">
 
             <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
           </div>
         </div>
       </div>
-    </div>
   </body>
 </html>
 
@@ -117,7 +116,7 @@ function add_member_to_html(member, present_admin_tools) {
         '<td>' + member.get_member_f_name() + '</td>' +
         '<td>' + member.get_member_l_name() + '</td>' +
         '<td>' + member.get_member_handicap() + '</td>' +
-        '<td><button id="update_button" onClick="update_button_click(this);" >Edit Member</button></td>' +
+        '<td><button class="btn btn-default" data-toggle="modal" data-target="#editMemberModal" onClick="update_button_click(this);">Edit Member</button></td>' +
         '<td><button id="delete_member">Remove Member</button></td>' +
       '</tr>');
   }
@@ -133,14 +132,10 @@ function add_member_to_html(member, present_admin_tools) {
 
 // Handler for a click on update button
 function update_button_click(button) {
-  var index = $(button).closest('tr').index();
-  update_member(members[index]);
+  var member = get_member_for_button_in_row_index(button, members);
+  fill_edit_modal(member);
 }
-function update_member(member) {
-  display_update_area(function() {
-    fill_html_with_member(member)
-  });
-}
+
 
 function delete_member(member) {
   if (confirm("Are you sure you want to delete " + member.get_member_f_name() + " " + member.get_member_l_name())) {
@@ -160,81 +155,45 @@ function delete_member(member) {
   }
 }
 
-function display_update_area(callback) {
-  if (!currently_updating_user) {
-    $(function () {
-      $.ajax({
-        type: 'GET',
-        url: "/update_member/",
-        success: function (data) {
-          $('body').append(data);
-          currently_updating_user = true;
-          callback()
-        },
-        dataType: 'html'
-      });
-    });
-  }
+function get_member_for_button_in_row_index(button, members) {
+  var index = $(button).closest('tr').index();
+  return members[index];
 }
 
-
-function fill_html_with_member(member) {
+function fill_edit_modal(member) {
   var editing_member = member;
+  $('#update_member_button').data('data-member', member);
   $('#member_f_name').val(editing_member.get_member_f_name());
   $('#member_l_name').val(editing_member.get_member_l_name());
   $('#member_handicap').val(editing_member.get_member_handicap());
-
-  // Logic for updating user.
-  $('button').click(  function() {
-    if (this.id == 'update_member_button') {
-      // Get the newly entered values.
-      var updated_member_f_name =   $('#member_f_name').val();
-      var updated_l_name = $('#member_l_name').val();
-      var updated_member_handicap = $('#member_handicap').val();
-
-      // Send edited info to server.
-      send_update_to_server(
-        editing_member,
-        updated_member_f_name,
-        updated_l_name,
-        updated_member_handicap
-      )
-    }
-    if (this.id == 'cancel_update') {
-      remove_update_content();
-    }
-  });
 }
 
-function send_update_to_server(old_member, new_member_f_name, new_member_l_name, new_member_handicap) {
-  var jsonData = {
-    "firstname" :new_member_f_name,
-    "lastname"  :new_member_l_name,
-    "handicap"  :new_member_handicap,
-    "identifier":old_member.get_member_id() // Use the old id, as this will never change
-  };
+function send_update_to_server(button) {
+  // Get the member that is being edited.
+  var member = $("#update_member_button").data("data-member");
+  // Get the newly entered values.
+  var updated_member_f_name =   $('#member_f_name').val();
+  var updated_l_name =          $('#member_l_name').val();
+  var updated_member_handicap = $('#member_handicap').val();
 
-  var data = JSON.stringify(jsonData)
+  member.set_member_f_name(updated_member_f_name);
+  member.set_member_l_name(updated_l_name);
+  member.set_member_handicap(updated_member_handicap);
 
-  $.ajax({
-    type: "PUT",
-    url: '/edit_member/' + old_member.get_member_id(),
-    contentType: "application/json",
-    data: data,
-    success: function(data) {
-      remove_update_content();
-      alert(new_member_f_name + " " + new_member_l_name + " has been updated.")
-      location.reload(true)
+
+  ajaxPOST_update_member(member,
+    function success() {
+      location.reload(true);
     },
-    failure: function() {
-      alert("Something went wrong.")
-    }
-  });
+    function failure() { }
+  );
 }
 
-function remove_update_content() {
-  $('#update_member_content').remove();
-  currently_updating_user = false;
+
+function empty_update_member_fields() {
+  $('#member_f_name').val('');
+  $('#member_l_name').val('')
+  $('#member_handicap').val('');
 }
 
 
