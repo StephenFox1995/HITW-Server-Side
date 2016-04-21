@@ -125,7 +125,7 @@ function ajaxGET_result_for_event(event_id) { }
 function ajaxGET_get_result_for_member(member_id) { }
 
 
-function ajaxPOST_update_member(member, successful, failed) {
+function ajaxPUT_update_member(member, successful, failed) {
   var jsonData = {
     "firstname" :member.get_member_f_name(),
     "lastname"  :member.get_member_l_name(),
@@ -145,5 +145,21 @@ function ajaxPOST_update_member(member, successful, failed) {
     failure: function() {
       failed();
     }
+  });
+}
+
+
+function ajaxDELETE_delete_member(member_id, successful, failed) {
+  $(function () {
+    $.ajax({
+      type: "DELETE",
+      url: '/edit_member/' + member_id,
+      success: function() {
+        successful();
+      },
+      failure: function() {
+        failed();
+      }
+    });
   });
 }

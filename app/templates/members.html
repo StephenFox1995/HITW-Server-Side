@@ -94,18 +94,6 @@ $(document).ready(function() {
       alert('Something went wrong!');
     }
   );
-
-  // Add listener.
-  $("button").click(function() {
-    if (this.id == 'update_button') {
-      var index = $(this).closest('tr').index();
-      update_member(members[index]);
-    }
-    if (this.id == 'delete_member') {
-      var index = $(this).closest('tr').index();
-      delete_member(members[index]);
-    }
-  });
 });
 
 
@@ -117,7 +105,7 @@ function add_member_to_html(member, present_admin_tools) {
         '<td>' + member.get_member_l_name() + '</td>' +
         '<td>' + member.get_member_handicap() + '</td>' +
         '<td><button class="btn btn-default" data-toggle="modal" data-target="#editMemberModal" onClick="update_button_click(this);">Edit Member</button></td>' +
-        '<td><button id="delete_member">Remove Member</button></td>' +
+        '<td><button class="btn btn-default" onClick="delete_button_click(this)">Remove Member</button></td>' +
       '</tr>');
   }
   else {
@@ -137,21 +125,15 @@ function update_button_click(button) {
 }
 
 
-function delete_member(member) {
+function delete_button_click(button) {
+  var member = get_member_for_button_in_row_index(button, members);
   if (confirm("Are you sure you want to delete " + member.get_member_f_name() + " " + member.get_member_l_name())) {
-    $(function () {
-      $.ajax({
-        type: "DELETE",
-        url: '/edit_member/' + member.get_member_id(),
-        success: function(data) {
-          alert(member.get_member_f_name() + " " + member.get_member_l_name() + " has been removed.")
-          location.reload(true)
-        },
-        failure: function() {
-          alert("Something went wrong.")
-        }
-      });
-    });
+    ajaxDELETE_delete_member(member.get_member_id(),
+      function success() {
+        location.reload(true)
+      },
+      function failure() {}
+    );
   }
 }
 
@@ -180,21 +162,12 @@ function send_update_to_server(button) {
   member.set_member_l_name(updated_l_name);
   member.set_member_handicap(updated_member_handicap);
 
-
-  ajaxPOST_update_member(member,
+  ajaxPUT_update_member(member,
     function success() {
       location.reload(true);
     },
     function failure() { }
   );
 }
-
-
-function empty_update_member_fields() {
-  $('#member_f_name').val('');
-  $('#member_l_name').val('')
-  $('#member_handicap').val('');
-}
-
 
 </script>
