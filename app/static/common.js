@@ -88,13 +88,36 @@ function ajaxGET_get_all_members(successful, failed) {
       successful(data);
     },
     failure: function() {
-      failed()
+      failed();
     }
   });
 }
 
-function ajax_get_event(event_id) {
-
+/**
+Attempts to retrieve all events from the database via
+AJAX call.
+@param
+@param successful: Callback when a successful GET request
+                   has returned json containing events.
+                   Please note that the json returned may
+                   contain 'null' as the value for members,
+                   if there are no events in the database.
+                   This callback passes one argument which
+                   is the data (json) returned from the server.
+@param failed: An error has occurred.*/
+function ajaxGET_get_all_events(successful, failed) {
+  $.ajax({
+    type: 'GET',
+    url: '/get_all_events/',
+    contentType: 'application/json',
+    dataType: 'json',
+    success: function(data) {
+      successful(data);
+    },
+    failure: function() {
+      failed();
+    }
+  });
 }
 
 function ajax_get_result_for_event(event_id) {

@@ -10,7 +10,7 @@
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
     <script type="text/javascript" src="{{ url_for('static', filename='util.js') }}"></script>
     <script type="text/javascript" src="{{ url_for('static', filename='eventHITW.js') }}"></script>
-
+    <script type="text/javascript" src="{{ url_for('static', filename='common.js') }}"></script>
     <title>Events</title>
   </head>
 
@@ -39,66 +39,64 @@ var currently_editing_event = false;
 var events = [];
 
 $(document).ready(function() {
-  $.ajax({
-    type: "GET",
-    url: '/get_all_events/',
-    contentType: "application/json",
-    dataType: "json",
-    success: function(data) {
+  ajaxGET_get_all_events(
+    function successful(data) {
       events = parse_event_from_json(data);
-      events.forEach(function(event_) {
-        event_id =       event_.get_event_id()
-        event_title =    event_.get_event_title()
-        event_location = event_.get_event_location()
-        event_time =     event_.get_event_time()
-        event_date =     event_.get_event_date()
-
-        $('#event_table > tbody').append(
-          '<tr>'+
-            '<td>' + event_title + '</td>' +
-            '<td>' + event_location + '</td>' +
-            '<td>' + event_time + '</td>' +
-            '<td>' + event_date + '</td>' +
-            '<td><button id="edit_event_button">Edit Event</button></td>' +
-            '<td><button id="remove_event">Remove Event</button></td>' +
-            '<td>' +
-              '<form id="show_results_for_event" action="{{url_for("results")}}" method="GET">' +
-                '<input type="hidden" id="results_for_event_id" name="results_for_event">' +
-                '<input type="submit" value="Results">' +
-                '</form>' +
-            '</td>'+
-          '</tr>')
-      });
-
-      // Add listener.
-      $("button").click(function() {
-        if (this.id == 'edit_event_button') {
-          var index = $(this).closest('tr').index();
-          update_event(events[index]);
-        }
-        if (this.id == 'remove_event') {
-          var index = $(this).closest('tr').index();
-          remove_event(events[index]);
-        }
-      });
-
-      $("#show_results_for_event").submit(function(e) {
-        var form = $("#show_results_for_event");
-        var index = $(this).closest('tr').index();
-
-        // Pass the event id via GET request to next page.
-        var event = events[index];
-        var event_id = event.get_event_id();
-        $("input[id=results_for_event_id]").val(event_id);
+      events.forEach(function(event){
+        add_event_to_html(event);
       });
     },
-    failure: function() {
-      alert("Something went wrong.")
+    function failure() { }
+  );
+
+
+  // Add listener.
+  $("button").click(function() {
+    if (this.id == 'edit_event_button') {
+      var index = $(this).closest('tr').index();
+      update_event(events[index]);
     }
+    if (this.id == 'remove_event') {
+      var index = $(this).closest('tr').index();
+      remove_event(events[index]);
+    }
+  });
+
+  $("#show_results_for_event").submit(function(e) {
+    var form = $("#show_results_for_event");
+    var index = $(this).closest('tr').index();
+
+    // Pass the event id via GET request to next page.
+    var event = events[index];
+    var event_id = event.get_event_id();
+    $("input[id=results_for_event_id]").val(event_id);
   });
 });
 
 
+function add_event_to_html(event) {
+  event_id =       event.get_event_id()
+  event_title =    event.get_event_title()
+  event_location = event.get_event_location()
+  event_time =     event.get_event_time()
+  event_date =     event.get_event_date()
+
+  $('#event_table > tbody').append(
+    '<tr>'+
+      '<td>' + event_title + '</td>' +
+      '<td>' + event_location + '</td>' +
+      '<td>' + event_time + '</td>' +
+      '<td>' + event_date + '</td>' +
+      '<td><button id="edit_event_button">Edit Event</button></td>' +
+      '<td><button id="remove_event">Remove Event</button></td>' +
+      '<td>' +
+        '<form id="show_results_for_event" action="{{url_for("results")}}" method="GET">' +
+          '<input type="hidden" id="results_for_event_id" name="results_for_event">' +
+          '<input type="submit" value="Results">' +
+          '</form>' +
+      '</td>'+
+    '</tr>')
+}
 
 function update_event(hitw_event) {
   display_edit_area(function() {
