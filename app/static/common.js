@@ -93,6 +93,21 @@ function ajaxGET_get_all_members(successful, failed) {
   });
 }
 
+function ajaxGET_get_member(member_id, successful, failed) {
+  $.ajax({
+    type: 'GET',
+    url: '/get_member/' + member_id,
+    contentType: 'application/json',
+    dataType: 'json',
+    success: function(data) {
+      successful(data);
+    },
+    failure: function() {
+      failed();
+    }
+  });
+}
+
 /**
 Attempts to retrieve all events from the database via
 AJAX call.
@@ -120,7 +135,20 @@ function ajaxGET_get_all_events(successful, failed) {
   });
 }
 
-function ajaxGET_result_for_event(event_id) { }
+function ajaxGET_results_for_event(event_id, successful, failed) {
+  $.ajax({
+      type: "GET",
+      url: '/get_all_results_for_event/' + event_id,
+      contentType: "application/json",
+      dataType: "json",
+      success: function(data) {
+        successful(data);
+      },
+      failure: function() {
+        failed();
+      }
+    });
+}
 
 function ajaxGET_get_result_for_member(member_id) { }
 
@@ -208,6 +236,11 @@ function ajaxDELETE_delete_member(member_id, successful, failed) {
 }
 
 
+/**Attempts to delete an event from the database via an AJAX call.
+@param event_id The id of the event to delete.
+@param successful A callback upon successful deletion.
+@param failed A callback when an error has occurred.
+*/
 function ajaxDELETE_delete_event(event_id, successful, failed) {
   $.ajax({
     type: "DELETE",

@@ -28,6 +28,10 @@ function Member(member_id, member_f_name, member_l_name, member_handicap) {
   this.set_member_handicap = function(member_handicap) {
     this.member_handicap = member_handicap;
   }
+
+  this.get_member_fullname = function() {
+    return this.member_f_name + ' ' + this.member_l_name;
+  }
   this.jsonify = function() {
     var jsonData = {
       "firstname" :this.get_member_f_name(),

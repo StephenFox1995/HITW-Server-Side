@@ -13,15 +13,20 @@
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
     <script type="text/javascript" src="{{ url_for('static', filename='result.js') }}"></script>
     <script type="text/javascript" src="{{ url_for('static', filename='member.js') }}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='common.js') }}"></script>
+
 
     <title>Results</title>
   </head>
   <body>
-    <table class="table table-bordered" data-resizable-columns-id="result_table" id="result_table">
+    <table class="table table-responsive" id="result_table">
       <thead>
         <tr>
-          <th data-resizable-column-id="member">Member</th>
-          <th data-resizable-column-id="handicap">Handicap</th>
+          <th>Player</th>
+          <th>Current Handicap</th>
+          <th>Result</th>
+          <th>Edit Result</th>
+          <th>Remove Result</th>
         </tr>
       </thead>
       <tbody>
@@ -31,31 +36,83 @@
 </html>
 
 <script type="text/javascript">
-  var results_for_event = getUrlVars()["results_for_event"];
-  $(document).ready(function() {
-    $.ajax({
-      type: "GET",
-      url: '/get_all_results_for_event/' + results_for_event,
-      contentType: "application/json",
-      dataType: "json",
-      success: function(data) {
+var results = []
+var members_results_map = {}
+var event_id = {{ event_id }}
+
+$(document).ready(function() {
+    ajaxGET_results_for_event(event_id,
+      function success(data) {
+
+        // Get all the results.
         results = parse_result_from_json(data);
         results.forEach(function(result) {
-          event_id  = result.get_event_id()
-          member_id = result.get_member_id()
-          score =     result.get_result_score()
 
-          $('#result_table > tbody').append(
-            '<tr>'+
-              '<td>' + event_id + '</td>' +
-              '<td>' + score + '</td>' +
-            '</tr>')
+          // Now get the member associated with that result.
+          get_member_for_result(result,
+            function(member) {
+              members_results_map[member] = result;
+              add_result_info_to_html(result, member);
+            }
+          );
         });
       },
-      failure: function() {
-        alert("Something went wrong.")
+      function failure() {
+
       }
-    });
-  });
+    );
+  }
+);
+
+function get_member_for_result(result, callback) {
+    // Get the member_id and get all
+    // details about that user.
+    member_id = result.get_member_id();
+    ajaxGET_get_member(member_id,
+      function successful(data) {
+        var member = new Member(data.identifier, data.firstname, data.lastname, data.handicap);
+        callback(member);
+      },
+      function failure() { }
+    );
+}
+
+function add_result_info_to_html(result, member) {
+  var member_name = member.get_member_fullname();
+  var current_handicap = member.get_member_handicap();
+
+  $('#result_table > tbody').append(
+    '<tr>'+
+      '<td>' + member_name + '</td>' +
+      '<td>' + current_handicap + '</td>' +
+      '<td>' + result.get_result_score() + '</td>' +
+    '</tr>')
+
+}
+  // $(document).ready(function() {
+  //   $.ajax({
+  //     type: "GET",
+  //     url: '/get_all_results_for_event/' + results_for_event,
+  //     contentType: "application/json",
+  //     dataType: "json",
+  //     success: function(data) {
+  //       results = parse_result_from_json(data);
+  //       results.forEach(function(result) {
+  //         event_id  = result.get_event_id()
+  //         member_id = result.get_member_id()
+  //         score =     result.get_result_score()
+  //
+  //         $('#result_table > tbody').append(
+  //           '<tr>'+
+  //             '<td>' + event_id + '</td>' +
+  //             '<td>' + score + '</td>' +
+  //           '</tr>')
+  //       });
+  //     },
+  //     failure: function() {
+  //       alert("Something went wrong.")
+  //     }
+  //   });
+  // });
 
 </script>

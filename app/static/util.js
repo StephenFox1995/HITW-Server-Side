@@ -14,6 +14,8 @@ function parse_member_from_json(data) {
   return members;
 };
 
+
+
 // Parses json for events.
 function parse_event_from_json(data) {
   var events = []

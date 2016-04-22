@@ -1,4 +1,5 @@
-from flask import Flask, Response, render_template
+from flask import Flask, Response, render_template, redirect, url_for
+
 from flask import request
 from event import Event
 from member import Member
@@ -34,23 +35,18 @@ def see_events_page():
 def see_members_page():
     return render_template('members.html')
 
-# TODO: Change update -> edit across code base.
-@app.route('/update_member/', methods=['GET'])
-def update_member():
-    return render_template('update_member.html')
 
-@app.route('/edit_event_view/', methods=['GET'])
-def edit_event_view():
-    return render_template('edit_event.html')
+@app.route('/results_for_event/<identifier>', methods=['GET'])
+def results_for_event(identifier):
+    if not identifier:
+        return Response(status=MISSING_PARAM_CODE)
+    # Set this so the client can consume
+    return redirect(url_for('results', id=identifier))
 
-# Use this variable to get the current event
-# the user wants to displaye results for.
-results_for_event = 0
-@app.route('/results/', methods=['GET'])
-def results():
-    event_id = request.args.get('results_for_event')
-    results_for_event = event_id
-    return render_template('results.html')
+
+@app.route('/results/<int:id>', methods=['GET'])
+def results(id):
+    return render_template('results.html', event_id=id)
 
 
 @app.route('/add_member/', methods=['POST'])

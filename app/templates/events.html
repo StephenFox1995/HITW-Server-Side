@@ -16,7 +16,7 @@
 
 
   <body>
-    <table class="table table-hover" id="event_table" id="event_table">
+    <table class="table table-responsive" id="event_table">
       <thead>
         <tr>
           <th>Event Title</th>
@@ -25,7 +25,7 @@
           <th>Event Date</th>
           <th>Edit Event</th>
           <th>Remove Event</th>
-          <th>Results</th>
+          <th>See Results</th>
         </tr>
       </thead>
       <tbody>
@@ -93,17 +93,6 @@ $(document).ready(function() {
     },
     function failure() { }
   );
-
-
-  $("#show_results_for_event").submit(function(e) {
-    var form = $("#show_results_for_event");
-    var index = $(this).closest('tr').index();
-
-    // Pass the event id via GET request to next page.
-    var event = events[index];
-    var event_id = event.get_event_id();
-    $("input[id=results_for_event_id]").val(event_id);
-  });
 });
 
 
@@ -127,10 +116,8 @@ function add_event_to_html(event) {
         '<button class="btn btn-default" onClick="delete_button_click(this)">Remove Event</button>' +
       '</td>' +
       '<td>' +
-        '<form id="show_results_for_event" action="{{url_for("results")}}" method="GET">' +
-          '<input type="hidden" id="results_for_event_id" name="results_for_event">' +
-          '<input type="submit" value="Results">' +
-          '</form>' +
+        '<button class="btn btn-default" onClick="show_results_for_event(this)">See Results</button>' +
+      '</td>' +
       '</td>'+
     '</tr>')
 }
@@ -139,6 +126,13 @@ function add_event_to_html(event) {
 function get_event_for_button_index(button, events) {
   var index = $(button).closest('tr').index();
   return events[index];
+}
+
+
+function show_results_for_event(button) {
+  // Get the event associated with the button index in the table.
+  var event = get_event_for_button_index(button, events);
+  window.location.replace('/results_for_event/' + event.get_event_id());
 }
 
 function update_event_button_click(button) {
