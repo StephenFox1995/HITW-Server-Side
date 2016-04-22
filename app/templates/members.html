@@ -66,7 +66,7 @@
             </table>
           </div>
           <div class="modal-footer">
-            <input tpye="button"class="btn btn-default" value="Update"
+            <input type="button"class="btn btn-default" value="Update"
              id="update_member_button" onclick="send_update_to_server(this)">
 
             <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
@@ -83,7 +83,6 @@ var members = [] // All the members currently in the table.
 $(document).ready(function() {
   ajaxGET_get_all_members(
     function successful(data) {
-
       members = parse_member_from_json(data);
       members.forEach(function(member){
         // Append member to html.

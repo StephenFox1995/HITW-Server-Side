@@ -124,7 +124,13 @@ function ajaxGET_result_for_event(event_id) { }
 
 function ajaxGET_get_result_for_member(member_id) { }
 
-
+/**
+Attempts to update information about a member within
+the database via and AJAX call.
+@param member A member object with all the new info to update.
+@param successful A callback upon successful update.
+@param failed A callback when an error has occurred.
+*/
 function ajaxPUT_update_member(member, successful, failed) {
   var jsonData = {
     "firstname" :member.get_member_f_name(),
@@ -148,7 +154,44 @@ function ajaxPUT_update_member(member, successful, failed) {
   });
 }
 
+/**
+Attempts to update information about an event within the database
+via an AJAX cal.
+@param event The event to update.
+@param successful A callback upon a successful update.
+@param failed A callback when an error has occurred.
+*/
+function ajaxPUT_update_event(event, successful, failed) {
+  // Send edited event info to server.
+  var jsonData = {
+    "title": event.get_event_title(),
+    "location": event.get_event_location(),
+    "time": event.get_event_time(),
+    "date": event.get_event_date(),
+    "identifier": event.get_event_id() // Use the id of the old event as ids cannot be edited.
+  }
+  var data = JSON.stringify(jsonData);
 
+  $.ajax({
+    type: "PUT",
+    url: '/edit_event/' + event.get_event_id(),
+    contentType: "application/json",
+    data: data,
+    success: function(data) {
+      successful(data);
+    },
+    failure: function() {
+      failed();
+    }
+  });
+}
+
+/**
+Attempts to delete a member from the database via an AJAX call.
+@param member_id The member_id of the member to delete.
+@param successful A callback upon successful deletion.
+@param failed A callback when an error has occurred.
+*/
 function ajaxDELETE_delete_member(member_id, successful, failed) {
   $(function () {
     $.ajax({
@@ -161,5 +204,19 @@ function ajaxDELETE_delete_member(member_id, successful, failed) {
         failed();
       }
     });
+  });
+}
+
+
+function ajaxDELETE_delete_event(event_id, successful, failed) {
+  $.ajax({
+    type: "DELETE",
+    url: '/edit_event/' + event_id,
+    success: function(data) {
+      successful(data);
+    },
+    failure: function() {
+      failed();
+    }
   });
 }

@@ -19,18 +19,63 @@
     <table class="table table-hover" id="event_table" id="event_table">
       <thead>
         <tr>
-          <th id="event_title">Event Title</th>
-          <th id="event_location">Event Location</th>
-          <th id="event_time">Event Time</th>
-          <th id="event_date">Event Date</th>
-          <th id="edit_event">Edit Event</th>
-          <th id="remove_event">Remove Event</th>
-          <th id="results">Results</th>
+          <th>Event Title</th>
+          <th>Event Location</th>
+          <th>Event Time</th>
+          <th>Event Date</th>
+          <th>Edit Event</th>
+          <th>Remove Event</th>
+          <th>Results</th>
         </tr>
       </thead>
       <tbody>
       </tbody>
     </table>
+
+    <!-- Add Event Modal -->
+    <div class="modal fade" id="editEventModal" role="dialog">
+      <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal">&times;</button>
+            <h4 class="modal-title">Edit Event</h4>
+          </div>
+          <div class="modal-body">
+            <table>
+              <tr>
+                <td>
+                  Event Title
+                  <input type="text" class="form-control" id="event_title">
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  Event Location
+                  <input type="text" class="form-control" id="event_location">
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  Event Time
+                  <input type="text" class="form-control" id="event_time">
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  Event Date
+                  <input type="text" class="form-control" id="event_date">
+                </td>
+              </tr>
+            </table>
+          </div>
+          <div class="modal-footer">
+            <input tpye="button"class="btn btn-default" value="Update"
+            onclick="send_update_to_server(this)" id="update_event_button">
+
+            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+          </div>
+        </div>
+      </div>
   </body>
 </html>
 
@@ -49,18 +94,6 @@ $(document).ready(function() {
     function failure() { }
   );
 
-
-  // Add listener.
-  $("button").click(function() {
-    if (this.id == 'edit_event_button') {
-      var index = $(this).closest('tr').index();
-      update_event(events[index]);
-    }
-    if (this.id == 'remove_event') {
-      var index = $(this).closest('tr').index();
-      remove_event(events[index]);
-    }
-  });
 
   $("#show_results_for_event").submit(function(e) {
     var form = $("#show_results_for_event");
@@ -87,8 +120,12 @@ function add_event_to_html(event) {
       '<td>' + event_location + '</td>' +
       '<td>' + event_time + '</td>' +
       '<td>' + event_date + '</td>' +
-      '<td><button id="edit_event_button">Edit Event</button></td>' +
-      '<td><button id="remove_event">Remove Event</button></td>' +
+      '<td>' +
+        '<button class="btn btn-default" data-toggle="modal"  data-target="#editEventModal" onClick="update_event_button_click(this);">Edit Event</button>' +
+      '</td>' +
+      '<td>' +
+        '<button class="btn btn-default" onClick="delete_button_click(this)">Remove Event</button>' +
+      '</td>' +
       '<td>' +
         '<form id="show_results_for_event" action="{{url_for("results")}}" method="GET">' +
           '<input type="hidden" id="results_for_event_id" name="results_for_event">' +
@@ -98,102 +135,73 @@ function add_event_to_html(event) {
     '</tr>')
 }
 
-function update_event(hitw_event) {
-  display_edit_area(function() {
-    fill_html_with_event(hitw_event);
-  });
+
+function get_event_for_button_index(button, events) {
+  var index = $(button).closest('tr').index();
+  return events[index];
 }
 
-function fill_html_with_event(hitw_event) {
-  var editing_event = hitw_event
-  $('#event_title').val(hitw_event.get_event_title());
-  $('#event_location').val(hitw_event.get_event_location());
-  $('#event_time').val(hitw_event.get_event_time());
-  $('#event_date').val(hitw_event.get_event_date());
+function update_event_button_click(button) {
+  var event = get_event_for_button_index(button, events);
+  fill_edit_modal(event);
+}
 
-  $('button').click(function() {
-    if (this.id == 'submit_event_edit') {
-      var updated_event_title = $('#event_title').val();
-      var updated_event_location = $('#event_location').val();
-      var updated_event_time = $('#event_time').val();
-      var updated_event_date = $('#event_date').val();
+function fill_edit_modal(event) {
+  // Attach an event to the update button,
+  // so that when it is clicked we know what event
+  // to update.
+  $('#update_event_button').data('data-event', event);
+  $('#event_title').val(event.get_event_title());
+  $('#event_location').val(event.get_event_location());
+  $('#event_time').val(event.get_event_time());
+  $('#event_date').val(event.get_event_date());
+}
 
-      // Send edited event info to server.
-      send_update_to_server(editing_event, updated_event_title, updated_event_location, updated_event_time, updated_event_date);
+
+
+function send_update_to_server(button) {
+  var event = $('#update_event_button').data('data-event');
+
+  // Get the newly entered values.
+  var updated_event_title = $('#event_title').val();
+  var updated_event_location = $('#event_location').val();
+  var updated_event_time = $('#event_time').val();
+  var updated_event_date = $('#event_date').val();
+
+  // Set the events attributes to the new attributes.
+  event.set_event_title(updated_event_title);
+  event.set_event_location(updated_event_location);
+  event.set_event_time(updated_event_time);
+  event.set_event_date(updated_event_date);
+
+  // Send a PUT request with the updated event.
+  ajaxPUT_update_event(event,
+    function success(data) {
+      location.reload(true);
+    },
+    function failure() {
+
     }
-    if (this.id == 'cancel_editing') {
-      remove_edit_view();
-    }
-  });
-};
+  );
+}
 
+function delete_button_click(button) {
+  var event = get_event_for_button_index(button, events);
+  remove_event(event);
+}
 
 function remove_event(event) {
   if (confirm("Are you sure you want to delete " +
   event.get_event_location() + " on " +
   event.get_event_date() + " at " +
   event.get_event_time() + "?")) {
-    $.ajax({
-      type: "DELETE",
-      url: '/edit_event/' + event.get_event_id(),
-      success: function(data) {
-        remove_edit_view();
-        alert("Event has been removed.");
+
+    ajaxDELETE_delete_event(event.get_event_id(),
+      function successful(data) {
         location.reload(true);
       },
-      failure: function() {
-        alert("Something went wrong.");
-      }
-    });
-
+      function failure() {}
+    );
   }
-}
-
-
-function display_edit_area(callback) {
-  if (!currently_editing_event) {
-      $.ajax({
-        type: 'GET',
-        url: "/edit_event_view/",
-        success: function (data) {
-          $('body').append(data);
-          currently_editing_event = true;
-          callback()
-        },
-        dataType: 'html'
-      });
-  }
-}
-
-function remove_edit_view() {
-  $('#edit_event_view').remove();
-  currently_editing_event = false;
-}
-
-function send_update_to_server(old_event, event_title, event_location, event_time, event_date) {
-  var jsonData = {
-    "title": event_title,
-    "location": event_location,
-    "time": event_time,
-    "date": event_date,
-    "identifier": old_event.get_event_id() // Use the id of the old event as ids cannot be edited.
-  }
-  var data = JSON.stringify(jsonData);
-
-  $.ajax({
-    type: "PUT",
-    url: '/edit_event/' + old_event.get_event_id(),
-    contentType: "application/json",
-    data: data,
-    success: function(data) {
-      remove_edit_view();
-      alert("Event has been updated.");
-      location.reload(true);
-    },
-    failure: function() {
-      alert("Something went wrong.");
-    }
-  });
-
 }
 </script>
