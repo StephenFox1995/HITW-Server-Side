@@ -153,14 +153,24 @@ function before_result_modal() {
   // Set the functionality for when the user adds the result.
   $("#add_result_button").click(function() {
     var member_fullname = $("#result_member_id").val();
+    var score = $("#result_score_id").val();
+
     // Check that the user has actually selected
     // a member to add the result for.
-    if (member_fullname == "" || member_fullname == null) {
+    if (member_fullname == "" ||
+        member_fullname == null ||
+        score == "" ||
+        score == null) {
       // Just return (silly user)
       return;
     } else {
       var member = members_to_fullname_map[member_fullname];
-      console.log(member);
+      var member_id = member.get_member_id();
+      var event_id = current_event.get_event_id();
+
+      add_result(event_id, member_id, score,
+        function success(data) { },
+        function failed() { });
     }
   });
 
@@ -180,6 +190,12 @@ function before_result_modal() {
   );
 }
 
+function add_result(event_id, member_id, score, successful, failed) {
+  ajaxPOST_add_result(event_id, member_id, score,
+    function success(data) { successful(data); },
+    function failed() { failed(); }
+  );
+}
 
 function set_typeahead_data_source(data_source) {
   $("#result_member_id").typeahead({

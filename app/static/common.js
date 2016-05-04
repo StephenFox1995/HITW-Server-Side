@@ -68,6 +68,37 @@ function ajaxPOST_add_event(event, successful, failed) {
 }
 
 /**
+Attempts to add a result to the database.
+@param event_id The id of the event to add the result.
+@param member_id The id of the member to add the result for.
+@param score The score associated with the result.
+@param successful A callback upon a successful
+                  insertion into the database.
+@param failure A callback when an error occurs.
+*/
+function ajaxPOST_add_result(event_id, member_id, score, successful, failed) {
+  var jsonData = {
+    "event_id": event_id,
+    "member_id": member_id,
+    "score": score
+  }
+  var data = JSON.stringify(jsonData);
+
+  $.ajax({
+    type: 'POST',
+    url: '/add_result/',
+    contentType: 'application/json',
+    data: data,
+    success: function(data) {
+      successful(data);
+    },
+    failure: function() {
+      failed();
+    }
+  });
+
+}
+/**
 Attempts to retrieve all members from the database via
 AJAX call.
 @param successful: Callback when a successful GET request
