@@ -135,6 +135,28 @@ function ajaxGET_get_all_events(successful, failed) {
   });
 }
 
+/**
+Attempts to retrieve an event from the database via
+AJAX call.
+@param event_id: The id of the event to GET.
+@param successful: Callback upon a successful GET request
+@param failed: An error has occurred.
+*/
+function ajaxGET_get_event(event_id, successful, failed) {
+  $.ajax({
+    type: 'GET',
+    url: '/get_event/' + event_id,
+    contentType: 'application/json',
+    dataType: 'json',
+    success: function(data) {
+      successful(data);
+    },
+    failure: function() {
+      failed();
+    }
+  });
+}
+
 function ajaxGET_results_for_event(event_id, successful, failed) {
   $.ajax({
       type: "GET",
