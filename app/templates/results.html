@@ -169,7 +169,7 @@ function before_result_modal() {
       var event_id = current_event.get_event_id();
 
       add_result(event_id, member_id, score,
-        function success(data) { },
+        function success(data) { location.reload(true) },
         function failed() { });
     }
   });
