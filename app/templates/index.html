@@ -125,13 +125,13 @@
             <tr>
               <td>
                 Date
-                <input type="text" class="form-control" id="event_date" value="dd/mm/yy">
+                <input class="form-control" data-provide="datepicker" id="event_date" value="dd/mm/yy">
               </td>
             </tr>
           </table>
         </div>
         <div class="modal-footer">
-          <input class="btn btn-default" type="button" id="add_event_button" value="Add Event">
+          <input class="btn btn-default"  type="button" id="add_event_button" value="Add Event">
 
           <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
         </div>
@@ -142,6 +142,12 @@
 </html>
 <script type="text/javascript">
 $(document).ready(function() {
+  $('.datepicker').datepicker({
+    format: 'mm/dd/yyyy',
+    startDate: '-3d'
+  });
+
+
   $("#add_member_button").click(function() {
     // Get the values the user has entered for member.
     var member_f_name = $('#member_f_name').val();
@@ -170,7 +176,7 @@ $(document).ready(function() {
     var event_date = $('#event_date').val();
     var event_time = $('#event_time').val();
 
-    // Create new event, set the id to anython as it is not
+    // Create new event, set the id to anything as it is not
     // used in /add_member/
     var event_to_add = new EventHITW(0, event_title, event_location, event_time, event_date);
 

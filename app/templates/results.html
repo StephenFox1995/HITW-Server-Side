@@ -1,8 +1,10 @@
 <!DOCTYPE html>
 <html>
   <head>
+
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
     <script src="../static/util.js"></script>
+
     <!-- Latest compiled and minified CSS -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
 
@@ -14,24 +16,69 @@
     <script type="text/javascript" src="{{ url_for('static', filename='result.js') }}"></script>
     <script type="text/javascript" src="{{ url_for('static', filename='member.js') }}"></script>
     <script type="text/javascript" src="{{ url_for('static', filename='common.js') }}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='typeahead.js') }}"></script>
 
+    <link rel="stylesheet" href="../static/styles/index.css">
 
     <title>Results</title>
   </head>
   <body>
+    <button class="btn btn-default" data-toggle="modal" data-target="#addResultModal" onclick="before_result_modal()">Add Result</button>
+
+    Member
+    <input type="text" class="form-control" id="result_member_id" data-provide="typeahead">
     <table class="table table-responsive" id="result_table">
       <thead>
         <tr>
           <th>Player</th>
           <th>Current Handicap</th>
           <th>Result</th>
-          <th>Edit Result</th>
           <th>Remove Result</th>
         </tr>
       </thead>
       <tbody>
       </tbody>
     </table>
+
+
+    <!-- Add Member Modal -->
+    <div class="modal fade" id="addResultModal" role="dialog">
+      <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal">&times;</button>
+            <h4 class="modal-title">Add Member</h4>
+          </div>
+          <div class="modal-body">
+            <table>
+              <tr>
+                <td>
+                  Member
+                  <input type="text" class="form-control" id="result_member_id">
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  Event
+                  <input type="text" class="form-control" id="result_event_id">
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  Score
+                  <input type="text" class="form-control" id="result_score_id">
+                </td>
+              </tr>
+
+            </table>
+          </div>
+          <div class="modal-footer">
+            <input type="button" class="btn btn-default" id="add_member_button" value="Add Member">
+            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+          </div>
+        </div>
+      </div>
+    </div>
   </body>
 </html>
 
@@ -39,28 +86,29 @@
 var results = []
 var members_results_map = {}
 var event_id = {{ event_id }}
+var members_names_for_typeahead = []
 
 $(document).ready(function() {
-    ajaxGET_results_for_event(event_id,
-      function success(data) {
 
-        // Get all the results.
-        results = parse_result_from_json(data);
-        results.forEach(function(result) {
-
-          // Now get the member associated with that result.
-          get_member_for_result(result,
-            function(member) {
-              members_results_map[member] = result;
-              add_result_info_to_html(result, member);
-            }
-          );
+  ajaxGET_results_for_event(event_id,
+    function success(data) {
+      // Get all the results.
+      results = parse_result_from_json(data);
+      results.forEach(function(result) {
+        // Now get the member associated with that result.
+        get_member_for_result(result,
+          function(member) {
+            members_results_map[member] = result;
+            add_result_info_to_html(result, member);
+          });
         });
       },
-      function failure() {
-
-      }
+      function failure() { }
     );
+    $("input").typeahead({
+      source: members_names_for_typeahead,
+      minLength: 1
+    });
   }
 );
 
@@ -87,32 +135,24 @@ function add_result_info_to_html(result, member) {
       '<td>' + current_handicap + '</td>' +
       '<td>' + result.get_result_score() + '</td>' +
     '</tr>')
-
 }
-  // $(document).ready(function() {
-  //   $.ajax({
-  //     type: "GET",
-  //     url: '/get_all_results_for_event/' + results_for_event,
-  //     contentType: "application/json",
-  //     dataType: "json",
-  //     success: function(data) {
-  //       results = parse_result_from_json(data);
-  //       results.forEach(function(result) {
-  //         event_id  = result.get_event_id()
-  //         member_id = result.get_member_id()
-  //         score =     result.get_result_score()
-  //
-  //         $('#result_table > tbody').append(
-  //           '<tr>'+
-  //             '<td>' + event_id + '</td>' +
-  //             '<td>' + score + '</td>' +
-  //           '</tr>')
-  //       });
-  //     },
-  //     failure: function() {
-  //       alert("Something went wrong.")
-  //     }
-  //   });
-  // });
+
+
+function before_result_modal() {
+  // Get all members from the database so we can use them for typeahead functionality.
+  ajaxGET_get_all_members(
+    function success(data) {
+      members = parse_member_from_json(data);
+      members.forEach(function(member) {
+        members_names_for_typeahead.push(member.get_member_fullname());
+      });
+    },
+    function failure() {
+
+    }
+  );
+}
+
+
 
 </script>
