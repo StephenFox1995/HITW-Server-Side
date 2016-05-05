@@ -27,6 +27,12 @@ CREATE_RESULT_TABLE_STMT = '''CREATE TABLE 'Result' (
 	FOREIGN KEY(member_id) REFERENCES Member(member_id)
 );'''
 
+CREATE_EVENT_IMAGE_TABLE_STMT = '''CREATE TABLE 'EventImage' (
+	event_id INTEGER,
+	image_data BLOB,
+	FOREIGN KEY(event_id) REFERENCES EVENT(event_id)
+);'''
+
 
 # TRIGGERS
 # --------------
@@ -81,6 +87,16 @@ def create_result_table(connection):
     else:
         print "TABLE: 'Result' created successfully"
 
+def create_event_image_table(connection):
+	try:
+		cursor = None
+		cursor = connection.cursor()
+		cursor.execute(CREATE_EVENT_IMAGE_TABLE_STMT)
+	except sqlite3.Error, e:
+		print "ERROR: There was an error creating table 'EventImage'"
+	else:
+		print "TABLE: 'EventImage' create successfully"
+
 
 
 
@@ -91,12 +107,15 @@ def create_triggers(connection):
 		cursor.execute(DELETE_RESULT_FOR_EVENT_TRIGGER)
 	except sqlite3.Error, e:
 		print 'ERROR: There was a errror creating triggers.'
+		print "Reason: ", e
 	else:
 		print 'Trigges created successfully.'
 
 
 
 
+# TODO: if a table already exists in the etc/hitw/config
+# 		remeber to delete that entry so there's no duplicates.
 
 # Creates the database and all the tables needed.
 def create_sqlite_db(filepath):
@@ -110,6 +129,7 @@ def create_sqlite_db(filepath):
 	create_event_table(connection)
 	create_member_table(connection)
 	create_result_table(connection)
+	create_event_image_table(connection)
 	create_triggers(connection)
 	connection.close()
 
