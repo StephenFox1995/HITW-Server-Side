@@ -374,38 +374,42 @@ def edit_member(identifier):
 @app.route('/edit_result/', methods=['PUT', 'DELETE'])
 def edit_result():
     result = None
-    # As this function can take an PUT and DELETE
-    # request, json content can't be garaunteed.
-    # For this reason, keep executing the code
-    # as it may be a DELETE.
-    if request.json:
+
+    if request.method == 'PUT':
         json = request.json
         result = result_obj_from_json(json)
+        # All fields of the result object should be filled.
         if not result:
             return Response(status=MISSING_PARAM_CODE)
 
+        connection = query_db.get_connection(current_db_location())
+        if connection is None:
+            return Response(status=FAILURE_CODE)
 
-    member_id_key = request.args.get("mem_id")
-    event_id_key = request.args.get("event_id")
-
-    if not member_id_key or not event_id_key:
-        return Response(status=MISSING_PARAM_CODE)
-
-    connection = query_db.get_connection(current_db_location())
-    if connection is None:
-        return Response(status=FAILURE_CODE)
-
-    if request.method == 'PUT':
         query_db.update_result(connection, result, member_id_key, event_id_key)
         connection.close()
         return Response(status=SUCCESS_CODE)
+
     elif request.method == 'DELETE':
-        query_db.delete_result(connection, member_id_key, event_id_key)
+        json = request.json
+        member_id = json.get("member_id")
+        event_id = json.get("event_id")
+
+        if not member_id or not event_id:
+            return Response(status=MISSING_PARAM_CODE)
+
+        connection = query_db.get_connection(current_db_location())
+        if connection is None:
+            return Response(status=FAILURE_CODE)
+
+        connection = query_db.get_connection(current_db_location())
+        query_db.delete_result(connection, member_id, event_id)
         connection.close()
         return Response(status=SUCCESS_CODE)
 
-    # Failure
-    return Response(status=FAILURE_CODE)
+    else:
+        # Failure
+        return Response(status=FAILURE_CODE)
 
 
 

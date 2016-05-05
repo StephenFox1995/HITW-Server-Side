@@ -61,3 +61,9 @@ function getUrlVars()
     }
     return vars;
 }
+
+
+function get_object_for_button_index(button, array) {
+  var index = $(button).closest('tr').index();
+  return array[index];
+}

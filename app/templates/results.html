@@ -18,6 +18,7 @@
     <script type="text/javascript" src="{{ url_for('static', filename='common.js') }}"></script>
     <script type="text/javascript" src="{{ url_for('static', filename='typeahead.js') }}"></script>
     <script type="text/javascript" src="{{ url_for('static', filename='eventHITW.js') }}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='util.js') }}"></script>
 
     <link rel="stylesheet" href="../static/styles/index.css">
 
@@ -107,17 +108,16 @@ $(document).ready(function() {
       results = parse_result_from_json(data);
       results.forEach(function(result) {
         // Now get the member associated with that result.
-        get_member_for_result(result,
-          function(member) {
-            members_results_map[member] = result;
-            add_result_info_to_html(result, member);
-          });
+      get_member_for_result(result,
+        function(member) {
+          members_results_map[member] = result;
+          add_result_info_to_html(result, member);
         });
-      },
-      function failure() { }
+      });
+    },
+    function failure() { }
     );
-  }
-);
+  });
 
 function get_member_for_result(result, callback) {
     // Get the member_id and get all
@@ -141,6 +141,7 @@ function add_result_info_to_html(result, member) {
       '<td>' + member_name + '</td>' +
       '<td>' + current_handicap + '</td>' +
       '<td>' + result.get_result_score() + '</td>' +
+      '<td><button class="btn btn-default" onClick="delete_result_click(this)">Remove Result</button></td>' +
     '</tr>')
 }
 
@@ -204,4 +205,11 @@ function set_typeahead_data_source(data_source) {
   });
 }
 
+function delete_result_click(button) {
+  var result = get_object_for_button_index(button, results)
+  // Delete the result
+  ajaxDELETE_delete_result(result.get_event_id(), result.get_member_id(),
+  function success() { location.reload(true); },
+  function failure() { })
+}
 </script>

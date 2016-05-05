@@ -295,6 +295,7 @@ function ajaxDELETE_delete_member(member_id, successful, failed) {
 @param failed A callback when an error has occurred.
 */
 function ajaxDELETE_delete_event(event_id, successful, failed) {
+
   $.ajax({
     type: "DELETE",
     url: '/edit_event/' + event_id,
@@ -304,5 +305,24 @@ function ajaxDELETE_delete_event(event_id, successful, failed) {
     failure: function() {
       failed();
     }
+  });
+}
+
+
+
+function ajaxDELETE_delete_result(event_id, member_id, successful, failed) {
+  var jsonData = {
+    "event_id": event_id,
+    "member_id": member_id
+  }
+  var data = JSON.stringify(jsonData);
+
+  $.ajax({
+    type: "DELETE",
+    url: '/edit_result/',
+    contentType: "application/json",
+    data: data,
+    success: function(data) { successful(data); },
+    failure: function() { failed(); }
   });
 }
