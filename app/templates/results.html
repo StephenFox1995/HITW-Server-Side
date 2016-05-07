@@ -19,6 +19,7 @@
     <script type="text/javascript" src="{{ url_for('static', filename='typeahead.js') }}"></script>
     <script type="text/javascript" src="{{ url_for('static', filename='eventHITW.js') }}"></script>
     <script type="text/javascript" src="{{ url_for('static', filename='util.js') }}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='gallery.js') }}"></script>
 
     <link rel="stylesheet" href="../static/styles/index.css">
 
@@ -32,8 +33,8 @@
           <a href="/" class="navbar-brand" href="#">McCaffrey's Hole In The Wall Golf Society</a>
         </div>
         <ul class="nav navbar-nav">
-          <li><a href="/see_events_page/"><h4>See events</h4></a></li>
-          <li><a href="/see_members_page/"><h4>See members</h4></a></li>
+          <li><a href="/events_list/"><h4>See events</h4></a></li>
+          <li><a href="/members_list/"><h4>See members</h4></a></li>
         </ul>
       </div>
     </nav>
@@ -93,6 +94,9 @@
         </div>
       </div>
     </div>
+
+    <div class='container'></div>
+
   </body>
 </html>
 
@@ -105,12 +109,15 @@ var members_results_map = {};
 
 $(document).ready(function() {
   // Set the current event.
-  current_event = ajaxGET_get_event(event_id,
+  ajaxGET_get_event(event_id,
     function successful(data) {
       current_event = new EventHITW(data.identifier, data.title, data.location, data.time, data.date);
     },
     function failed() { }
   );
+
+  var images = ["//placehold.it/600x350", "//placehold.it/600x350", "//placehold.it/600x350", "//placehold.it/600x350"];
+  addGallery('container', images);
 
   // Get all the results for the event.
   ajaxGET_results_for_event(event_id,
