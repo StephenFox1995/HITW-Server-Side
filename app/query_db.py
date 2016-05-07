@@ -7,9 +7,11 @@ from result import Result
 #-------------------
 INSER_INTO_EVENT = '''INSERT INTO Event(event_id, event_title, event_location, event_date, event_time) VALUES(NULL, ?, ?, ?, ?)'''
 
-INSERT_INTO_MEMBER = '''INSERT INTO Member(member_id, member_f_name, member_l_name, member_handicap) VALUES(NULL, ?, ?, ?)'''
+INSERT_INTO_MEMBER = '''INSERT INTO Member(member_id, member_f_name, member_l_name, member_handicap) VALUES(NULL, ?, ?, ?);'''
 
-INSERT_INTO_RESULT = '''INSERT INTO Result(event_id, member_id, score) VALUES(?, ?, ?)'''
+INSERT_INTO_RESULT = '''INSERT INTO Result(event_id, member_id, score) VALUES(?, ?, ?);'''
+
+INSERT_INTO_EVENT_IMAGE = '''INSERT INTO EVENTIMAGE(event_id, image_data) VALUES(?, ?, ?);'''
 #-------------------
 
 
@@ -19,6 +21,7 @@ SELECT_ALL_EVENTS = '''SELECT * FROM Event'''
 
 SELECT_EVENT_X = '''SELECT * FROM EVENT WHERE event_id = ?'''
 
+SELECT_UPCOMING_EVENT = '''SELECT * FROM EVENT WHERE '''
 
 SELECT_ALL_MEMBERS = '''SELECT * FROM Member'''
 
@@ -74,6 +77,12 @@ def insert_into_member(connection, firstname, lastname, handicap):
 def insert_into_result(connection, event_id, player_id, score):
     cursor = connection.cursor()
     cursor.execute(INSERT_INTO_RESULT, (event_id, player_id, score))
+    connection.commit()
+    cursor.close()
+
+def insert_into_event_image(connection, event_id, image_data):
+    cursor = connection.cursor()
+    cursor.execute(INSERT_INTO_EVENT_IMAGE, (event_id, image_data))
     connection.commit()
     cursor.close()
 

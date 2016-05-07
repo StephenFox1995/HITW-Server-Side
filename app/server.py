@@ -4,6 +4,7 @@ from flask import request
 from event import Event
 from member import Member
 from result import Result
+import image_util
 import query_db
 import config
 
@@ -27,13 +28,13 @@ MISSING_PARAM_CODE = 422 # Missing param error
 def index():
     return render_template('index.html')
 
-@app.route('/see_events_page/', methods=['GET'])
+@app.route('/events_list/', methods=['GET'])
 def see_events_page():
-    return render_template('events.html')
+    return render_template('eventslist.html')
 
-@app.route('/see_members_page/', methods=['GET'])
+@app.route('/members_list/', methods=['GET'])
 def see_members_page():
-    return render_template('members.html')
+    return render_template('memberslist.html')
 
 
 @app.route('/results_for_event/<identifier>', methods=['GET'])
@@ -136,8 +137,32 @@ def add_result():
 
 
 
+@app.route('/add_event_image/', methods=['POST'])
+def add_event_image():
+
+    if request.json:
+        json = request.json
+
+        event_id = json.get("event_id")
+        image_base64_data = json.get("image_data")
+
+        # Decode the data to insert it into the database.
+        image_base64_decoded = image_util.base64_decode(image_base64_data)
+
+        connection = query_db.get_connection(current_db_location())
+        if connection is not None:
+            query_db.insert_into_event_image(connection, event_id, image_base64_decoded)
+            connection.close()
+            return Response(status=SUCCESS_CODE)
+        else: # Connection to database failed
+            return Response(status=FAILURE_CODE)
 
 
+
+
+@app.route('/get_upcoming_event/', methods=['GET'])
+def get_upcoming_event():
+    connection = query_db.get_connection(current_db_location())
 
 
 @app.route('/get_all_events/', methods=['GET'])
