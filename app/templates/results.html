@@ -5,6 +5,7 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
     <script src="../static/util.js"></script>
 
+
     <!-- Latest compiled and minified CSS -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
 
@@ -22,6 +23,7 @@
     <script type="text/javascript" src="{{ url_for('static', filename='gallery.js') }}"></script>
 
     <link rel="stylesheet" href="../static/styles/index.css">
+    <link rel="stylesheet" href="../static/styles/heading.css">
 
     <title>Results</title>
   </head>
@@ -38,6 +40,8 @@
         </ul>
       </div>
     </nav>
+
+    <div id="header"></div>
 
     <button class="btn btn-default" data-toggle="modal" data-target="#addResultModal" onclick="before_result_modal()">Add Result</button>
 
@@ -108,16 +112,15 @@ var current_event;
 var members_results_map = {};
 
 $(document).ready(function() {
+
   // Set the current event.
   ajaxGET_get_event(event_id,
     function successful(data) {
       current_event = new EventHITW(data.identifier, data.title, data.location, data.time, data.date);
+      $("#header").append('<h1>' + current_event.get_event_title() + '</h1>');
     },
     function failed() { }
   );
-
-  var images = ["//placehold.it/600x350", "//placehold.it/600x350", "//placehold.it/600x350", "//placehold.it/600x350"];
-  addGallery('container', images);
 
   // Get all the results for the event.
   ajaxGET_results_for_event(event_id,
@@ -133,9 +136,11 @@ $(document).ready(function() {
         });
       });
     },
-    function failure() { }
-    );
-  });
+    function failure() { });
+
+    var images = ["//placehold.it/600x350", "//placehold.it/600x350", "//placehold.it/600x350", "//placehold.it/600x350", "//placehold.it/600x350", "//placehold.it/600x350", "//placehold.it/600x350", "//placehold.it/600x350", "//placehold.it/600x350", "//placehold.it/600x350", "//placehold.it/600x350", "//placehold.it/600x350"]
+    addGallery('.container', images);
+});
 
 function get_member_for_result(result, callback) {
     // Get the member_id and get all
@@ -149,6 +154,8 @@ function get_member_for_result(result, callback) {
       function failure() { }
     );
 }
+
+
 
 function add_result_info_to_html(result, member) {
   var member_name = member.get_member_fullname();
