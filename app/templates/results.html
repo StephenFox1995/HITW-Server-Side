@@ -149,6 +149,12 @@ $(document).ready(function() {
     },
     function failure() { });
 
+  ajaxGET_get_all_event_images(event_id,
+    function successful(data) {
+      console.log("s")
+    },
+    function failure() {}
+  );
     var images = ["//placehold.it/600x350", "//placehold.it/600x350", "//placehold.it/600x350", "//placehold.it/600x350", "//placehold.it/600x350", "//placehold.it/600x350", "//placehold.it/600x350", "//placehold.it/600x350", "//placehold.it/600x350", "//placehold.it/600x350", "//placehold.it/600x350", "//placehold.it/600x350"]
     addGallery('.container', images);
 });

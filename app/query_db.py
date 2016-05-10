@@ -23,6 +23,8 @@ SELECT_ALL_EVENTS = '''SELECT * FROM Event'''
 
 SELECT_EVENT_X = '''SELECT * FROM EVENT WHERE event_id = ?'''
 
+SELECT_ALL_EVENT_IMAGES_FOR_EVENT = '''SELECT * FROM EVENTIMAGE WHERE event_id = ?'''
+
 SELECT_UPCOMING_EVENT = '''SELECT * FROM EVENT WHERE '''
 
 SELECT_ALL_MEMBERS = '''SELECT * FROM Member'''
@@ -34,6 +36,7 @@ SELECT_ALL_RESULTS = '''SELECT * FROM Result'''
 
 SELECT_RESULT_X_FROM_MEMBER_ID = '''SELECT * FROM Result WHERE member_id = ?'''
 SELECT_RESULT_X_FOR_EVENT = '''SELECT * FROM Result WHERE event_id = ?'''
+
 #-------------------
 
 
@@ -83,11 +86,9 @@ def insert_into_result(connection, event_id, player_id, score):
     cursor.close()
 
 def insert_into_event_image(connection, event_id, image_data):
-    print "Event id is:"
-    print event_id
     cursor = connection.cursor()
     # Add the image data as a compressed blob; (zlib puts it in the correct format for blobs).
-    cursor.execute(INSERT_INTO_EVENT_IMAGE, (event_id, sqlite3.Binary(zlib.compress(image_data))))
+    cursor.execute(INSERT_INTO_EVENT_IMAGE, (event_id, image_data))
     connection.commit()
     cursor.close()
 
@@ -115,6 +116,20 @@ def get_event(connection, identifier):
         event = create_event_from_result(row)
     cursor.close()
     return event
+
+def get_all_event_images(connection, identifier):
+    cursor = connection.cursor()
+    cursor.execute(SELECT_ALL_EVENT_IMAGES_FOR_EVENT, (identifier));
+    rows = cursor.fetchall()
+
+    decompressed_blobs = []
+    image = ''
+    for image_data in rows:
+        image = image_data[1]
+        decompressed_blobs.append(image);
+    cursor.close()
+    return decompressed_blobs
+
 
 
 def get_all_members(connection):
@@ -179,6 +194,8 @@ def get_all_results_for_member(connection, identifier):
             results.append(result)
     cursor.close()
     return results
+
+
 
 
 

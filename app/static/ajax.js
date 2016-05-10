@@ -189,6 +189,21 @@ function ajaxGET_get_all_events(successful, failed) {
   });
 }
 
+
+function ajaxGET_get_all_event_images(event_id, successful, failed) {
+  $.ajax({
+    type: 'GET',
+    url: '/get_all_event_images/' + event_id,
+    dataType: 'json',
+    success: function(data) {
+      successful(data);
+    },
+    failure: function() {
+      failed();
+    }
+  });
+}
+
 /**
 Attempts to retrieve an event from the database via
 AJAX call.

@@ -2,7 +2,7 @@
 import os
 import json
 
-DEFAULT_CONFIG_LOCATION = '/etc/hitw/'
+DEFAULT_CONFIG_LOCATION = '/etc/hitw'
 CONFIG_FILE = 'config'
 
 def write_db_filepath(filepath):
@@ -19,7 +19,6 @@ def write_db_filepath(filepath):
 
 def get_db_filepath():
     filepath = DEFAULT_CONFIG_LOCATION + CONFIG_FILE
-    print filepath
     with open(DEFAULT_CONFIG_LOCATION + CONFIG_FILE, 'r') as config_file:
         json_data = json.load(config_file)
     config_file.close()

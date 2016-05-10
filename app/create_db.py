@@ -29,7 +29,7 @@ CREATE_RESULT_TABLE_STMT = '''CREATE TABLE 'Result' (
 
 CREATE_EVENT_IMAGE_TABLE_STMT = '''CREATE TABLE 'EventImage' (
 	event_id INTEGER,
-	image_data BLOB,
+	image_data STRING,
 	FOREIGN KEY(event_id) REFERENCES EVENT(event_id)
 );'''
 
@@ -53,7 +53,10 @@ END'''
 
 
 def parse_args():
-    return sys.argv[1]
+    if sys.argv == None:
+        print "You must specify a filepath!"
+    else:
+        return sys.argv[1]
 
 def create_event_table(connection):
     try:

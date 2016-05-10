@@ -7,6 +7,7 @@ from result import Result
 import image_util
 import query_db
 import config
+import json
 
 
 
@@ -139,19 +140,15 @@ def add_result():
 
 @app.route('/add_event_image/', methods=['POST'])
 def add_event_image():
-
     if request.json:
         json = request.json
 
         event_id = json.get("event_id")
         image_base64_data = json.get("image_data")
 
-        # Decode the data to insert it into the database.
-        image_base64_decoded = image_util.base64_decode(image_base64_data)
-
         connection = query_db.get_connection(current_db_location())
         if connection is not None:
-            query_db.insert_into_event_image(connection, event_id, image_base64_decoded)
+            query_db.insert_into_event_image(connection, event_id, image_base64_data)
             connection.close()
             return Response(status=SUCCESS_CODE)
         else: # Connection to database failed
@@ -208,6 +205,30 @@ def get_event(identifier):
         return Response(status=SUCCESS_CODE, response=json, mimetype='application/json')
     # Failure
     return Response(status=FAILURE_CODE)
+
+
+@app.route('/get_all_event_images/<identifier>', methods=['GET'])
+def get_all_event_images(identifier):
+    if not identifier:
+        return Response(status=MISSING_PARAM_CODE)
+
+    json = '{ "event_images": ['
+    connection = query_db.get_connection(current_db_location())
+    if connection is not None:
+        event_images_data = query_db.get_all_event_images(connection, identifier)
+
+        for count, image_data in enumerate(event_images_data, start=1):
+            json += jsonify_event_image_data(image_data[1])
+
+            if count is not len(event_images_data):
+                json += ',' + '\r\n'
+            else:
+                json += '] }'
+        return Response(status=SUCCESS_CODE, response=json, mimetype='application/json')
+    else:
+        return Response(status=FAILURE_CODE)
+
+
 
 
 @app.route('/get_all_members/', methods=['GET'])
@@ -482,6 +503,9 @@ def result_obj_from_json(json):
     return result
 
 
+def jsonify_event_image_data(event_image_data):
+    data = { 'image' : event_image_data }
+    return json.dumps(data)
 
 
 def empty_json_for_array(array):
