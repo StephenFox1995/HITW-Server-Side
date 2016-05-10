@@ -218,7 +218,7 @@ def get_all_event_images(identifier):
         event_images_data = query_db.get_all_event_images(connection, identifier)
 
         for count, image_data in enumerate(event_images_data, start=1):
-            json += jsonify_event_image_data(image_data[1])
+            json += jsonify_event_image_data(image_data)
 
             if count is not len(event_images_data):
                 json += ',' + '\r\n'
