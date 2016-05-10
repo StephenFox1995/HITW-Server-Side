@@ -16,12 +16,12 @@
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
     <script type="text/javascript" src="{{ url_for('static', filename='result.js') }}"></script>
     <script type="text/javascript" src="{{ url_for('static', filename='member.js') }}"></script>
-    <script type="text/javascript" src="{{ url_for('static', filename='common.js') }}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='ajax.js') }}"></script>
     <script type="text/javascript" src="{{ url_for('static', filename='typeahead.js') }}"></script>
     <script type="text/javascript" src="{{ url_for('static', filename='eventHITW.js') }}"></script>
     <script type="text/javascript" src="{{ url_for('static', filename='util.js') }}"></script>
     <script type="text/javascript" src="{{ url_for('static', filename='gallery.js') }}"></script>
-
+    <script type="text/javascript" src="{{ url_for('static', filename='base64.js') }}"></script>
     <link rel="stylesheet" href="../static/styles/index.css">
     <link rel="stylesheet" href="../static/styles/heading.css">
 
@@ -45,6 +45,8 @@
 
     <button class="btn btn-default" data-toggle="modal" data-target="#addResultModal" onclick="before_result_modal()">Add Result</button>
 
+    <label class="control-label">Select File</label>
+    <input id="upload_image" type="file" class="file" data-show-preview="false">
 
     <table class="table table-responsive" id="result_table">
       <thead>
@@ -112,6 +114,15 @@ var current_event;
 var members_results_map = {};
 
 $(document).ready(function() {
+  $('#upload_image').on('change', function() {
+    var file = this.files[0];
+    file.convertToBase64(function(image_base64_data) {
+      var strippedBase64 = strip_meta_data_base64(image_base64_data);
+      alert(strippedBase64);
+      post_event_image_data(current_event.get_event_id(), strippedBase64);
+    });
+  });
+
 
   // Set the current event.
   ajaxGET_get_event(event_id,
@@ -155,7 +166,11 @@ function get_member_for_result(result, callback) {
     );
 }
 
-
+function post_event_image_data(event_id, image_data) {
+  ajaxPOST_add_event_image(event_id, image_data,
+    function successful() { alert("success"); },
+    function failure() { alert("failed"); });
+}
 
 function add_result_info_to_html(result, member) {
   var member_name = member.get_member_fullname();

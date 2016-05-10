@@ -1,7 +1,9 @@
 import sqlite3
+import zlib
 from event import Event
 from member import Member
 from result import Result
+
 
 # INSERTS
 #-------------------
@@ -11,7 +13,7 @@ INSERT_INTO_MEMBER = '''INSERT INTO Member(member_id, member_f_name, member_l_na
 
 INSERT_INTO_RESULT = '''INSERT INTO Result(event_id, member_id, score) VALUES(?, ?, ?);'''
 
-INSERT_INTO_EVENT_IMAGE = '''INSERT INTO EVENTIMAGE(event_id, image_data) VALUES(?, ?, ?);'''
+INSERT_INTO_EVENT_IMAGE = '''INSERT INTO EVENTIMAGE(event_id, image_data) VALUES(?, ?);'''
 #-------------------
 
 
@@ -81,8 +83,11 @@ def insert_into_result(connection, event_id, player_id, score):
     cursor.close()
 
 def insert_into_event_image(connection, event_id, image_data):
+    print "Event id is:"
+    print event_id
     cursor = connection.cursor()
-    cursor.execute(INSERT_INTO_EVENT_IMAGE, (event_id, image_data))
+    # Add the image data as a compressed blob; (zlib puts it in the correct format for blobs).
+    cursor.execute(INSERT_INTO_EVENT_IMAGE, (event_id, sqlite3.Binary(zlib.compress(image_data))))
     connection.commit()
     cursor.close()
 

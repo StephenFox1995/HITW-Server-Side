@@ -67,6 +67,27 @@ function ajaxPOST_add_event(event, successful, failed) {
   });
 }
 
+function ajaxPOST_add_event_image(event_id, image_data, successful, failed) {
+  var jsonData = {
+    'event_id': event_id,
+    'image_data': image_data
+  }
+  var data = JSON.stringify(jsonData);
+
+  $.ajax({
+    type: 'POST',
+    url: '/add_event_image/',
+    contentType: 'application/json',
+    data: data,
+    success: function(data) {
+      successful();
+    },
+    failure: function() {
+      failed();
+    }
+  });
+}
+
 /**
 Attempts to add a result to the database.
 @param event_id The id of the event to add the result.
@@ -96,8 +117,10 @@ function ajaxPOST_add_result(event_id, member_id, score, successful, failed) {
       failed();
     }
   });
-
 }
+
+
+
 /**
 Attempts to retrieve all members from the database via
 AJAX call.

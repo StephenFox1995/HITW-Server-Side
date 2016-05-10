@@ -53,8 +53,7 @@ function getUrlVars()
 {
     var vars = [], hash;
     var hashes = window.location.href.slice(window.location.href.indexOf('?') + 1).split('&');
-    for(var i = 0; i < hashes.length; i++)
-    {
+    for(var i = 0; i < hashes.length; i++) {
         hash = hashes[i].split('=');
         vars.push(hash[0]);
         vars[hash[0]] = hash[1];
@@ -62,6 +61,13 @@ function getUrlVars()
     return vars;
 }
 
+/**
+Strips the data:image/jpeg;base64 from the beginning of a base64 encoded string.
+@param base64string The base 64 encoded data.
+*/
+function strip_meta_data_base64(base64string) {
+  return base64string.replace(/^data:image\/(png|jpeg);base64,/, "");
+}
 
 function get_object_for_button_index(button, array) {
   var index = $(button).closest('tr').index();
