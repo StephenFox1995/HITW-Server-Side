@@ -34,6 +34,18 @@ function parse_event_from_json(data) {
 }
 
 
+function parse_event_images_from_json(data) {
+  var event_images = []
+  $.each(data, function(index, element) {
+    $.each(element, function(i, json) {
+      image_data = json['image'];
+      event_images.push(image_data);
+    })
+  });
+  return event_images;
+}
+
+
 // Parses json for results.
 function parse_result_from_json(data) {
   var results = []

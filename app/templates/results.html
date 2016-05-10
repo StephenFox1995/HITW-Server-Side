@@ -151,13 +151,23 @@ $(document).ready(function() {
 
   ajaxGET_get_all_event_images(event_id,
     function successful(data) {
-      console.log("s")
+      var event_images = parse_event_images_from_json(data);
+      display_images(event_images);
     },
     function failure() {}
   );
-    var images = ["//placehold.it/600x350", "//placehold.it/600x350", "//placehold.it/600x350", "//placehold.it/600x350", "//placehold.it/600x350", "//placehold.it/600x350", "//placehold.it/600x350", "//placehold.it/600x350", "//placehold.it/600x350", "//placehold.it/600x350", "//placehold.it/600x350", "//placehold.it/600x350"]
-    addGallery('.container', images);
 });
+
+
+function display_images(images) {
+  var image_prefix = 'data:image/png;base64, '
+  var correct_format_image = []
+  images.forEach(function(image) {
+    correct_format_image.push(image_prefix + image);
+  });
+  addGallery('.container', correct_format_image);
+}
+
 
 function get_member_for_result(result, callback) {
     // Get the member_id and get all
