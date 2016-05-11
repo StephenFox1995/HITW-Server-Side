@@ -42,7 +42,7 @@
 
     <div id="card_container">
       <div class="card" style="width:318px; display: inline-block">
-      <img class="card-img-top" data-src="holder.js/318x180" alt="Card image cap">
+      <img class="card-img-top" src="http://www.hotelsailing.com/wp-content/uploads/2014/10/golf.jpg" width="317" height="180" alt="Card image cap">
       <div class="card-block">
         <h4 class="card-title" id="upcoming_event_title"></h4>
       </div>
@@ -147,7 +147,6 @@ $(document).ready(function() {
 
   ajaxGET_get_upcoming_event(
     function successful(data) {
-
       $("#upcoming_event_title").append('<b>' + data['title'] + '</b>');
       $("#upcoming_event_location").append('<b>Location:</b> ' + data['location']);
       $("#upcoming_event_time").append('<b>Time:</b> ' + data['time']);
