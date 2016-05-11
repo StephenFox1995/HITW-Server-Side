@@ -14,7 +14,7 @@
     <script src="https://cdn.jsdelivr.net/holder/2.9.0/holder.min.js">
     </script>
     <script src="../static/util.js"></script>
-    <script src="../static/common.js"></script>
+    <script src="../static/ajax.js"></script>
     <script src="../static/member.js"></script>
     <script src="../static/eventHITW.js"></script>
     <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha/css/bootstrap.min.css" rel="stylesheet"/>
@@ -44,12 +44,12 @@
       <div class="card" style="width:318px; display: inline-block">
       <img class="card-img-top" data-src="holder.js/318x180" alt="Card image cap">
       <div class="card-block">
-        <h4 class="card-title">Upcoming Outing</h4>
+        <h4 class="card-title" id="upcoming_event_title"></h4>
       </div>
       <ul class="list-group list-group-flush">
-        <li class="list-group-item"><b>Location:</b> CastleKnock Golf Course</li>
-        <li class="list-group-item"><b>Time:</b> 10:30</li>
-        <li class="list-group-item"><b>Date:</b> 10/06/16</li>
+        <li class="list-group-item" id="upcoming_event_location"></li>
+        <li class="list-group-item" id="upcoming_event_time"></li>
+        <li class="list-group-item" id="upcoming_event_date"></li>
       </ul>
   </div>
   </div>
@@ -144,6 +144,16 @@
 </html>
 <script type="text/javascript">
 $(document).ready(function() {
+
+  ajaxGET_get_upcoming_event(
+    function successful(data) {
+
+      $("#upcoming_event_title").append('<b>' + data['title'] + '</b>');
+      $("#upcoming_event_location").append('<b>Location:</b> ' + data['location']);
+      $("#upcoming_event_time").append('<b>Time:</b> ' + data['time']);
+      $("#upcoming_event_date").append('<b>Date:</b> ' + data['date']);
+    },
+    function failure() {});
 
 
   $("#add_member_button").click(function() {

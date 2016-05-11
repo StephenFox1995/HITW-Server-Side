@@ -156,10 +156,23 @@ def add_event_image():
 
 
 
-
+# TODO: Create function to create json from array of events.
 @app.route('/get_upcoming_event/', methods=['GET'])
 def get_upcoming_event():
     connection = query_db.get_connection(current_db_location())
+    if connection is not None:
+
+        event = query_db.get_upcoming_event(connection)
+        connection.close();
+
+        if event:
+            json = event.jsonify()
+        else:
+            json = empty_json_for_object("event")
+        return Response(status=SUCCESS_CODE, response=json, mimetype='application/json')
+    # Failure
+    return Response(status=FAILURE_CODE)
+
 
 
 @app.route('/get_all_events/', methods=['GET'])
@@ -188,12 +201,12 @@ def get_all_events():
     return Response(status=FAILURE_CODE)
 
 
+
 @app.route('/get_event/<identifier>', methods=['GET'])
 def get_event(identifier):
     if not identifier:
         return Response(status=MISSING_PARAM_CODE)
 
-    json = '{ "event:" {'
     connection = query_db.get_connection(current_db_location())
     if connection is not None:
         event = query_db.get_event(connection, identifier)
@@ -207,6 +220,8 @@ def get_event(identifier):
     return Response(status=FAILURE_CODE)
 
 
+
+# TODO: Correct compression of images.
 @app.route('/get_all_event_images/<identifier>', methods=['GET'])
 def get_all_event_images(identifier):
     if not identifier:
@@ -262,7 +277,6 @@ def get_member(identifier):
     if not identifier:
         return Response(status=MISSING_PARAM_CODE)
 
-    json = '{ "member:" {'
     connection = query_db.get_connection(current_db_location())
     if connection is not None:
         member = query_db.get_member(connection, identifier)

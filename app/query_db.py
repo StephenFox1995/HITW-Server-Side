@@ -25,7 +25,7 @@ SELECT_EVENT_X = '''SELECT * FROM EVENT WHERE event_id = ?'''
 
 SELECT_ALL_EVENT_IMAGES_FOR_EVENT = '''SELECT * FROM EVENTIMAGE WHERE event_id = ?'''
 
-SELECT_UPCOMING_EVENT = '''SELECT * FROM EVENT WHERE '''
+SELECT_UPCOMING_EVENT = '''SELECT * FROM EVENT WHERE event_date <= date('now') ORDER BY event_date DESC;'''
 
 SELECT_ALL_MEMBERS = '''SELECT * FROM Member'''
 
@@ -100,7 +100,7 @@ def get_all_events(connection):
     events = []
     if rows:
         for row in rows:
-            event = create_event_from_result(row)
+            event = create_event_from_sql_result(row)
             events.append(event)
     cursor.close()
     return events
@@ -113,9 +113,22 @@ def get_event(connection, identifier):
 
     event = None
     if row:
-        event = create_event_from_result(row)
+        event = create_event_from_sql_result(row)
     cursor.close()
     return event
+
+
+def get_upcoming_event(connection):
+    cursor = connection.cursor()
+    cursor.execute(SELECT_UPCOMING_EVENT)
+    rows = cursor.fetchall()
+
+    if rows:
+        # Get the first element, this will be the upcoming event.
+        event = create_event_from_sql_result(rows[0])
+    cursor.close()
+    return event
+
 
 def get_all_event_images(connection, identifier):
     cursor = connection.cursor()
@@ -198,7 +211,6 @@ def get_all_results_for_member(connection, identifier):
 
 
 
-
 def update_event(connection, identifier, event):
     update_query = UPDATE_EVENT_BY_EVENT_ID
     # Just use update with all the fields even
@@ -262,7 +274,7 @@ def delete_event(connection, event_id):
     cursor.close()
 
 
-def create_event_from_result(result):
+def create_event_from_sql_result(result):
     if result:
         event_id =       result[0]
         event_title =    result[1]

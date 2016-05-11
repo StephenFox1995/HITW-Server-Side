@@ -10,13 +10,15 @@ function addGallery(element, images) {
 
 // Returns the ccs for a gallery item.
 function galleryItem(url) {
-  return '<div class="col-lg-3 col-sm-4 col-xs-6"><a title="Image 1" href="#"><img class="thumbnail img-responsive" src="' + url + '"></a></div>';
+  return '<li class="col-lg-6 col-md-6 col-sm-6 col-xs-6">' +
+            '<img class="thumbnail img-responsive" src="' + url + '">' +
+         '</li>';
 }
 
 // Reuturns the css for a gallery item.
 function galleryBody() {
   var body =
       '<h1>Gallery</h1>' +
-      '<div class="row"></div>'
+      '<ul class="row" style="display:inline-block"></ul>'
   return body;
 }

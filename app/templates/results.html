@@ -14,6 +14,8 @@
 
     <!-- Latest compiled and minified JavaScript -->
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
+
+
     <script type="text/javascript" src="{{ url_for('static', filename='result.js') }}"></script>
     <script type="text/javascript" src="{{ url_for('static', filename='member.js') }}"></script>
     <script type="text/javascript" src="{{ url_for('static', filename='ajax.js') }}"></script>
@@ -22,8 +24,11 @@
     <script type="text/javascript" src="{{ url_for('static', filename='util.js') }}"></script>
     <script type="text/javascript" src="{{ url_for('static', filename='gallery.js') }}"></script>
     <script type="text/javascript" src="{{ url_for('static', filename='base64.js') }}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='jquery.bsPhotoGallery.js') }}"></script>
     <link rel="stylesheet" href="../static/styles/index.css">
     <link rel="stylesheet" href="../static/styles/heading.css">
+    <link rel="stylesheet" href="../static/styles/gallery.css">
+
 
     <title>Results</title>
   </head>
@@ -45,8 +50,9 @@
 
     <button class="btn btn-default" data-toggle="modal" data-target="#addResultModal" onclick="before_result_modal()">Add Result</button>
 
-    <label class="control-label">Select File</label>
+
     <input id="upload_image" type="file" class="file" data-show-preview="false">
+    <!--<div class="btn btn-default btn-file" id="upload_image"> Add Images <input type="file"></div>-->
 
     <table class="table table-responsive" id="result_table">
       <thead>
@@ -101,7 +107,17 @@
       </div>
     </div>
 
-    <div class='container'></div>
+    <div class='container'>
+    </div>
+
+    <div class="modal fade" id="galleryModal" tabindex="-1" role="dialog" aria-labelledby="galleryModal" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-body">
+          </div>
+        </div>
+      </div>
+    </div>
 
   </body>
 </html>
@@ -114,11 +130,11 @@ var current_event;
 var members_results_map = {};
 
 $(document).ready(function() {
+  // Add listener for uploading files.
   $('#upload_image').on('change', function() {
     var file = this.files[0];
     file.convertToBase64(function(image_base64_data) {
       var strippedBase64 = strip_meta_data_base64(image_base64_data);
-      alert(strippedBase64);
       post_event_image_data(current_event.get_event_id(), strippedBase64);
     });
   });
@@ -128,7 +144,9 @@ $(document).ready(function() {
   ajaxGET_get_event(event_id,
     function successful(data) {
       current_event = new EventHITW(data.identifier, data.title, data.location, data.time, data.date);
-      $("#header").append('<h1>' + current_event.get_event_title() + '</h1>');
+      if (current_event.get_event_title() != undefined) {
+        $("#header").append('<h1>' + current_event.get_event_title() + '</h1>');
+      }
     },
     function failed() { }
   );
@@ -149,6 +167,7 @@ $(document).ready(function() {
     },
     function failure() { });
 
+
   ajaxGET_get_all_event_images(event_id,
     function successful(data) {
       var event_images = parse_event_images_from_json(data);
@@ -156,6 +175,23 @@ $(document).ready(function() {
     },
     function failure() {}
   );
+
+  $('ul.first').bsPhotoGallery({
+    "classes" : "col-lg-2 col-md-4 col-sm-3 col-xs-4 col-xxs-12",
+    "hasModal" : true
+  });
+
+  $('li img').on('click',function(){
+    var src = $(this).attr('src');
+    var img = '<img src="' + src + '" class="img-responsive"/>';
+    $('#galleryModal').modal();
+    $('#galleryModal').on('shown.bs.modal', function(){
+      $('#galleryModal .modal-body').html(img);
+    });
+    $('#galleryModal').on('hidden.bs.modal', function(){
+      $('#galleryModal .modal-body').html('');
+    });
+  });
 });
 
 
@@ -184,8 +220,8 @@ function get_member_for_result(result, callback) {
 
 function post_event_image_data(event_id, image_data) {
   ajaxPOST_add_event_image(event_id, image_data,
-    function successful() { alert("success"); },
-    function failure() { alert("failed"); });
+    function successful() { location.reload(true); },
+    function failure() { alert("Image upload failed."); });
 }
 
 function add_result_info_to_html(result, member) {

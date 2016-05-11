@@ -189,6 +189,21 @@ function ajaxGET_get_all_events(successful, failed) {
   });
 }
 
+function ajaxGET_get_upcoming_event(successful, failed) {
+  $.ajax({
+    type: 'GET',
+    url: '/get_upcoming_event/',
+    contentType: 'application/json',
+    dataType: 'json',
+    success: function(data) {
+      successful(data);
+    },
+    failure: function() {
+      failed();
+    }
+  });
+}
+
 
 function ajaxGET_get_all_event_images(event_id, successful, failed) {
   $.ajax({

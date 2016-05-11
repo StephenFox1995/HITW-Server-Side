@@ -8,9 +8,9 @@
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap-theme.min.css" integrity="sha384-fLW2N01lMqjakBkx3l/M9EahuwpSfeNvV63J5ezn3uZzapT0u7EYsXMjQV+0En5r" crossorigin="anonymous">
     <link rel="stylesheet" href="../static/styles/file_input.css">
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
-    <script type="text/javascript" src="{{ url_for('static', filename='util.js') }}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='ajax.js') }}"></script>
     <script type="text/javascript" src="{{ url_for('static', filename='eventHITW.js') }}"></script>
-    <script type="text/javascript" src="{{ url_for('static', filename='common.js') }}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='util.js') }}"></script>
     <title>Events</title>
   </head>
 
@@ -139,8 +139,6 @@ function add_event_to_html(event) {
       '<td>' +
         '<button class="btn btn-default" onClick="show_results_for_event(this)">See Results</button>' +
       '</td>' +
-      '<td>' + '<div class="btn btn-default btn-file"> Add Images <input type="file"></div>'  +'</td>' +
-      '</td>'+
     '</tr>')
 }
 
