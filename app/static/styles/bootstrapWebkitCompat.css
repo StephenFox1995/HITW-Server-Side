@@ -1,4 +1,3 @@
-parent {
-    overflow-y: scroll; /* has to be scroll, not auto */
-    -webkit-overflow-scrolling: touch;
+.table-responsive .table {
+    max-width: none;
 }
