@@ -25,6 +25,7 @@
     <script type="text/javascript" src="{{ url_for('static', filename='gallery.js') }}"></script>
     <script type="text/javascript" src="{{ url_for('static', filename='base64.js') }}"></script>
     <script type="text/javascript" src="{{ url_for('static', filename='jquery.bsPhotoGallery.js') }}"></script>
+    <link rel="stylesheet" href="../static/styles/bootstrapWebkitCompat.css">
     <link rel="stylesheet" href="../static/styles/index.css">
     <link rel="stylesheet" href="../static/styles/heading.css">
     <link rel="stylesheet" href="../static/styles/gallery.css">
@@ -54,7 +55,7 @@
     <input id="upload_image" type="file" class="file" data-show-preview="false">
     <!--<div class="btn btn-default btn-file" id="upload_image"> Add Images <input type="file"></div>-->
 
-    <div class ="table-responsive" style="-webkit-overflow-scrolling: touch;">
+    <div class ="table-responsive">
       <table class="table" id="result_table">
         <thead>
           <tr>
