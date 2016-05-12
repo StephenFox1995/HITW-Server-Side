@@ -37,6 +37,12 @@ def see_events_page():
 def see_members_page():
     return render_template('memberslist.html')
 
+@app.route('/admin/', methods=['GET'])
+def admin_page():
+# TODO: If a session exists return the login page.
+# Otherwise return the admin page
+    return render_template('login.html')
+
 
 @app.route('/results_for_event/<identifier>', methods=['GET'])
 def results_for_event(identifier):

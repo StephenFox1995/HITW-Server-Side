@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
   <head>
-
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
     <script src="../static/util.js"></script>
 
@@ -24,36 +24,47 @@
     <script type="text/javascript" src="{{ url_for('static', filename='util.js') }}"></script>
     <script type="text/javascript" src="{{ url_for('static', filename='gallery.js') }}"></script>
     <script type="text/javascript" src="{{ url_for('static', filename='base64.js') }}"></script>
-    <script type="text/javascript" src="{{ url_for('static', filename='jquery.bsPhotoGallery.js') }}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='photo-gallery.js') }}"></script>
     <link rel="stylesheet" href="../static/styles/bootstrapWebkitCompat.css">
     <link rel="stylesheet" href="../static/styles/index.css">
     <link rel="stylesheet" href="../static/styles/heading.css">
     <link rel="stylesheet" href="../static/styles/gallery.css">
 
-
     <title>Results</title>
   </head>
-  <body>
-
-    <nav class="navbar navbar-default">
-      <div class="container-fluid">
-        <div class="navbar-header">
-          <a href="/" class="navbar-brand" href="#">McCaffrey's Hole In The Wall Golf Society</a>
-        </div>
+  <div class="navbar navbar-default">
+    <div class="container">
+      <div class="navbar-header">
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="/">McCaffrey's Hole In The Wall Golf Society</a>
+      </div>
+      <div class="collapse navbar-collapse">
         <ul class="nav navbar-nav">
-          <li><a href="/events_list/"><h4>See events</h4></a></li>
-          <li><a href="/members_list/"><h4>See members</h4></a></li>
+          <li><a href="/">Home</a></li>
+          <li class="active">
+            <a href="/events_list" data-toggle="collapse" data-target=".navbar-collapse.in">Events</a>
+          </li>
+          <li><a href="/members_list" data-toggle="collapse" data-target=".navbar-collapse.in">Members</a></li>
         </ul>
       </div>
-    </nav>
+    </div>
+  </div>
 
-    <div id="header"></div>
+  <body>
 
     <button class="btn btn-default" data-toggle="modal" data-target="#addResultModal" onclick="before_result_modal()">Add Result</button>
 
 
-    <input id="upload_image" type="file" class="file" data-show-preview="false">
-    <!--<div class="btn btn-default btn-file" id="upload_image"> Add Images <input type="file"></div>-->
+    <div class="fileinput fileinput-new" data-provides="fileinput">
+      <span class="btn btn-default btn-file">
+        <span>Choose file</span>
+        <input type="file" id="upload_image" />
+      </span>
+    </div>
 
     <div class ="table-responsive">
       <table class="table" id="result_table">
@@ -110,7 +121,7 @@
       </div>
     </div>
 
-    <div class='container'>
+    <div class='galleryContainer'>
     </div>
 
     <div class="modal fade" id="galleryModal" tabindex="-1" role="dialog" aria-labelledby="galleryModal" aria-hidden="true">
@@ -121,7 +132,6 @@
         </div>
       </div>
     </div>
-
   </body>
 </html>
 
@@ -178,23 +188,6 @@ $(document).ready(function() {
     },
     function failure() {}
   );
-
-  $('ul.first').bsPhotoGallery({
-    "classes" : "col-lg-2 col-md-4 col-sm-3 col-xs-4 col-xxs-12",
-    "hasModal" : true
-  });
-
-  $('li img').on('click',function(){
-    var src = $(this).attr('src');
-    var img = '<img src="' + src + '" class="img-responsive"/>';
-    $('#galleryModal').modal();
-    $('#galleryModal').on('shown.bs.modal', function(){
-      $('#galleryModal .modal-body').html(img);
-    });
-    $('#galleryModal').on('hidden.bs.modal', function(){
-      $('#galleryModal .modal-body').html('');
-    });
-  });
 });
 
 
@@ -204,7 +197,7 @@ function display_images(images) {
   images.forEach(function(image) {
     correct_format_image.push(image_prefix + image);
   });
-  addGallery('.container', correct_format_image);
+  addGallery('.galleryContainer', correct_format_image);
 }
 
 

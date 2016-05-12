@@ -9,9 +9,9 @@ function addGallery(element, images) {
 }
 
 // Returns the ccs for a gallery item.
-function galleryItem(url) {
-  return '<li class="col-lg-6 col-md-6 col-sm-6 col-xs-6">' +
-            '<img class="thumbnail img-responsive" src="' + url + '">' +
+function galleryItem(src) {
+  return '<li class="col-lg-2 col-md-2 col-sm-3 col-xs-4">' +
+            '<img class="img-responsive" src="' + src + '">' +
          '</li>';
 }
 
@@ -19,6 +19,7 @@ function galleryItem(url) {
 function galleryBody() {
   var body =
       '<h1>Gallery</h1>' +
-      '<ul class="row" style="display:inline-block"></ul>'
+      '<ul class="row" style="width: inherit;"></ul>'
+
   return body;
 }
