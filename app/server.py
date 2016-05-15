@@ -479,6 +479,15 @@ def edit_result():
 
 
 
+#"{ "username": "sfox",
+#    "password": "golfcart123456"}"
+@app.route("/login/", methods=["POST"])
+def login():
+    if request.json:
+        pass
+
+
+
 
 # Attempts to create new Event object
 # from json, if any of the fields

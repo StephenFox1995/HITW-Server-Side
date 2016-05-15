@@ -123,6 +123,7 @@ def get_upcoming_event(connection):
     cursor.execute(SELECT_UPCOMING_EVENT)
     rows = cursor.fetchall()
 
+    event = None
     if rows:
         # Get the first element, this will be the upcoming event.
         event = create_event_from_sql_result(rows[0])

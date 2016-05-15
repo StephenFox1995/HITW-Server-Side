@@ -52,11 +52,7 @@ BEGIN
 END'''
 
 
-def parse_args():
-    if sys.argv == None:
-        print "You must specify a filepath!"
-    else:
-        return sys.argv[1]
+
 
 def create_event_table(connection):
     try:
@@ -137,12 +133,19 @@ def create_sqlite_db(filepath):
 	connection.close()
 
 
-
+def parse_args():
+	args = ()
+	db_filepath = sys.argv[1]
+	fbapp_key = sys.argv[2]
+	# return the filepath and facebook key from the arguments.
+	args = (db_filepath, fbapp_key)
+	return args
 
 # Parse the filepath so the db can be create there.
-db_filepath = parse_args()
+args = parse_args()
 
-config.write_db_filepath(db_filepath)
+config.write_db_filepath(args[0])
+# config.write_fb_app_key(args[1])
 
 # Now create the sqlite db at that filepath.
-create_sqlite_db(db_filepath)
+create_sqlite_db(args[0])
