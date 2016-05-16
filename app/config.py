@@ -1,4 +1,3 @@
-
 import os
 import json
 
@@ -13,6 +12,8 @@ def write_db_filepath(filepath):
     f.close()
 
 
+
+# Retunrs the filepath of the database.
 def get_db_filepath():
     filepath = DEFAULT_CONFIG_LOCATION + CONFIG_FILE
     with open(DEFAULT_CONFIG_LOCATION + CONFIG_FILE, 'r') as config_file:
@@ -20,19 +21,14 @@ def get_db_filepath():
         config_file.close()
     return parse_db_location(json_data)
 
+
 def parse_db_location(json):
     return json['db_location']
 
 
-# def write_fb_app_key(appkey):
-#     fb_key_info = '{"fbapp_key":"' + appkey + '"}\n'
-#     f = get_config_file()
-#     f.write(fb_key_info)
-#     f.close()
 
-
+# Returns a opened file reference to read/write configurations.
 def get_config_file():
-
     # Check and see if the directory already exists.
     if not os.path.exists(DEFAULT_CONFIG_LOCATION):
         os.makedirs(DEFAULT_CONFIG_LOCATION)

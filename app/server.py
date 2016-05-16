@@ -7,6 +7,7 @@ from result import Result
 import image_util
 import query_db
 import config
+import auth
 import json
 
 
@@ -479,12 +480,24 @@ def edit_result():
 
 
 
-#"{ "username": "sfox",
-#    "password": "golfcart123456"}"
-@app.route("/login/", methods=["POST"])
+#"{ "fbID": "2390480285092850"}
+# Response:
+#   {"isAdmin": true/false}
+@app.route("/isAdmin/", methods=["POST"])
 def login():
     if request.json:
-        pass
+        json = request.json
+        fb_id = json.get('fbID')
+
+        # Check to see if that fb id is the
+        # id of the admin stored on disk.
+        if auth.is_admin(fb_id) == True:
+            return '{"isAdmin" : true }'
+        else:
+            return '{"isAdmin" : false }'
+    else:
+        # Failure
+        return Response(status=FAILURE_CODE)
 
 
 

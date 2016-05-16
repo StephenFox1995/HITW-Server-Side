@@ -379,3 +379,29 @@ function ajaxDELETE_delete_result(event_id, member_id, successful, failed) {
     failure: function() { failed(); }
   });
 }
+
+
+
+/** Sends a POST request to the server requesting a decision
+    on whether the given facebook_id is the admin.
+    @param facebook_id The requesting facebook_id
+    @param successful A callback when the POST request was
+                      successful with the data returned from the server.
+    @param faield The post request was unsuccessful.
+*/
+function ajaxPOST_is_admin(facebook_id, successful, failed) {
+  var jsonData = {
+    "fb_id": facebook_id
+  };
+  var data = JSON.stringify(jsonData);
+
+  $.ajax({
+    type: "POST",
+    url: '/isAdmin/',
+    contentType: "application/json",
+    data: data,
+    success: function(data) { successful(data); },
+    failure: function() { failed(); }
+  });
+
+}
