@@ -14,16 +14,16 @@ import json
 
 
 
-
-app = Flask(__name__)
-def current_db_location():
-    return config.get_db_filepath()
-
-
 # Reponse codes.
 SUCCESS_CODE = 200 # Success
 FAILURE_CODE = 500 # Internal Server Error
 MISSING_PARAM_CODE = 422 # Missing param error
+
+
+app = Flask(__name__)
+
+
+
 
 
 @app.route('/', methods=['GET'])
@@ -480,21 +480,20 @@ def edit_result():
 
 
 
-#"{ "fbID": "2390480285092850"}
-# Response:
-#   {"isAdmin": true/false}
 @app.route("/isAdmin/", methods=["POST"])
 def login():
     if request.json:
         json = request.json
-        fb_id = json.get('fbID')
+        fb_id = json.get('fb_id')
 
         # Check to see if that fb id is the
         # id of the admin stored on disk.
+        data = ''
         if auth.is_admin(fb_id) == True:
-            return '{"isAdmin" : true }'
+            data = '{"isAdmin" : true }'
         else:
-            return '{"isAdmin" : false }'
+            data = '{"isAdmin" : false }'
+        return Response(status=SUCCESS_CODE, response=data, mimetype='application/json')
     else:
         # Failure
         return Response(status=FAILURE_CODE)
@@ -556,6 +555,9 @@ def empty_json_for_array(array):
 def empty_json_for_object(object):
     return '{ ' + '"' + object + '"'': null}'
 
+
+def current_db_location():
+    return config.get_db_filepath()
 
 
 if __name__ == "__main__":
