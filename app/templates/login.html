@@ -12,6 +12,8 @@
     <!-- Latest compiled and minified JavaScript -->
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
     <script type="text/javascript" src="{{ url_for('static', filename='ajax.js') }}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='eventHITW.js') }}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='member.js') }}"></script>
   </head>
 
   <div class="navbar navbar-default">
@@ -42,6 +44,93 @@
     </fb:login-button>
     <div id="status">
     </div>
+
+
+    <!-- Add Member Modal -->
+    <div class="modal fade" id="addMemberModal" role="dialog">
+      <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal">&times;</button>
+            <h4 class="modal-title">Add Member</h4>
+          </div>
+          <div class="modal-body">
+            <table>
+              <tr>
+                <td>
+                  Firstname
+                  <input type="text" class="form-control" id="member_f_name">
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  Lastname
+                  <input type="text" class="form-control" id="member_l_name">
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  Handicap
+                  <input type="text" class="form-control" id="member_handicap">
+                </td>
+              </tr>
+
+            </table>
+          </div>
+          <div class="modal-footer">
+            <input type="button" class="btn btn-default" id="add_member_button" value="Add Member">
+            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Add Event Modal -->
+    <div class="modal fade" id="addEventModal" role="dialog">
+      <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal">X</button>
+            <h4 class="modal-title">Add Event</h4>
+          </div>
+          <div class="modal-body">
+            <table>
+              <tr>
+                <td>
+                  Title
+                  <input type="text" class="form-control" id="event_title">
+                </td>
+              </tr>
+              <tr>
+                <td> Location
+                  <input type="text" class="form-control" id="event_location">
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  Time
+                  <input type="text" class="form-control" id="event_time" value="mm:hh">
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  Date
+                  <input class="form-control" data-provide="datepicker" id="event_date" value="dd/mm/yy">
+                </td>
+              </tr>
+            </table>
+          </div>
+          <div class="modal-footer">
+            <input class="btn btn-default"  type="button" id="add_event_button" value="Add Event">
+
+            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div id="adminControls"></div>
+    <div id = "alert_placeholder"></div>
   </body>
 </html>
 
@@ -125,6 +214,7 @@
       function success(data) {
         if (data.isAdmin === true) {
           $('#status').append("You are logged in as administrator.")
+          showAdminControls();
         } else {
           $('#status').append("There was an error logging you in, returning to homepage....");
 
@@ -134,4 +224,66 @@
       },
       function failed(){ alert("Could not sign you in!.")});
   }
+
+  function showAdminControls() {
+    $('#adminControls').append(
+      '<div class="btn_display" style="text-align:center">' +
+        '<button class="btn btn-default" data-toggle="modal"' + 'data-target="#addMemberModal">Add Member</button>' +
+        '<button class="btn btn-default" data-toggle="modal"' +  'data-target="#addEventModal">Add Event</button>' +
+      '</div>');
+  }
+
+
+  $("#add_member_button").click(function() {
+    // Get the values the user has entered for member.
+    var member_f_name = $('#member_f_name').val();
+    var member_l_name = $('#member_l_name').val();
+    var member_handicap = $('#member_handicap').val();
+
+    // Create a new member, set the id to whatever,
+    // as this does not matter when adding the member to
+    // the system as the id will be generated.
+    var member_to_add = new Member(0, member_f_name, member_l_name, member_handicap);
+    ajaxPOST_add_member(member_to_add,
+      function successful(data) {
+        // Set textfields to empty.
+        clear_member_inputs();
+        success(member_f_name + " " + member_l_name + " has been added.");
+      },
+      function failure() {
+        alert("Something went wrong.")
+      }
+    );
+  });
+
+  $("#add_event_button").click(function() {
+    var event_title = $('#event_title').val();
+    var event_location = $('#event_location').val();
+    var event_date = $('#event_date').val();
+    var event_time = $('#event_time').val();
+
+    // Create new event, set the id to anything as it is not
+    // used in /add_member/
+    var event_to_add = new EventHITW(0, event_title, event_location, event_time, event_date);
+
+    ajaxPOST_add_event(event_to_add,
+      function successful() {
+        success(event_title + " has been added");
+      },
+      function failure() {
+        alert("Something went wrong.")
+      }
+    );
+  });
+
+
+function clear_member_inputs() {
+  $('#member_f_name').val("")
+  $('#member_l_name').val("")
+  $('#member_handicap').val("")
+}
+
+function success(message) {
+  $("#alert_placeholder").append('<div class="alert alert-success"><a class="close" data-dismiss="alert">x</a><span>' + message + '</span></div>');
+}
 </script>
