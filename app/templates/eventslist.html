@@ -114,7 +114,7 @@ var fbResponse = null;
 
 $(document).ready(function() {
 
-  getFacebookLoginStatus((response) => {
+  getFacebookLoginStatus(function(response) {
     if (response.status === 'connected') {
       ajaxPOST_is_admin(response.authResponse.userID,
         function success(data) {

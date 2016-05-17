@@ -108,7 +108,7 @@ var fbResponse = null;
 
 $(document).ready(function() {
 
-  getFacebookLoginStatus((response) => {
+  getFacebookLoginStatus(function(response) {
     // Keep reference to the response.
     fbResponse = response;
     if (response.status === 'connected') {

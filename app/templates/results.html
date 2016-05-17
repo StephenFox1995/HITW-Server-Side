@@ -25,8 +25,9 @@
     <script type="text/javascript" src="{{ url_for('static', filename='gallery.js') }}"></script>
     <script type="text/javascript" src="{{ url_for('static', filename='base64.js') }}"></script>
     <script type="text/javascript" src="{{ url_for('static', filename='photo-gallery.js') }}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='facebook.js') }}"></script>
     <link rel="stylesheet" href="../static/styles/bootstrapWebkitCompat.css">
-    <link rel="stylesheet" href="../static/styles/index.css">
+    <link rel="stylesheet" href="../static/styles/results.css">
     <link rel="stylesheet" href="../static/styles/heading.css">
     <link rel="stylesheet" href="../static/styles/gallery.css">
 
@@ -73,7 +74,6 @@
             <th>Player</th>
             <th>Current Handicap</th>
             <th>Result</th>
-            <th>Remove Result</th>
           </tr>
         </thead>
         <tbody>
@@ -141,6 +141,7 @@ var members_to_fullname_map = {};
 var event_id = {{ event_id }};
 var current_event;
 var members_results_map = {};
+var fbResponse = null;
 
 $(document).ready(function() {
   // Add listener for uploading files.
@@ -153,6 +154,31 @@ $(document).ready(function() {
   });
 
 
+  getFacebookLoginStatus(function(response) {
+    fbResponse = response;
+    if (response.status === 'connected') {
+      ajaxPOST_is_admin(response.authResponse.userID,
+        function success(data) {
+          if (data.isAdmin) {
+            loadResultsToHTMLWithAdminControls(true);
+          }
+          else {
+            loadResultsToHTMLWithAdminControls(false);
+          }
+        },
+        function failure() {
+          loadResultsToHTMLWithAdminControls(false);
+        });
+    }
+    else {
+      loadResultsToHTMLWithAdminControls(false);
+    }
+  });
+
+});
+
+
+function loadResultsToHTMLWithAdminControls(showAdminControls) {
   // Set the current event.
   ajaxGET_get_event(event_id,
     function successful(data) {
@@ -174,21 +200,20 @@ $(document).ready(function() {
       get_member_for_result(result,
         function(member) {
           members_results_map[member] = result;
-          add_result_info_to_html(result, member);
+          add_result_info_to_html(result, member, showAdminControls);
         });
       });
     },
     function failure() { });
 
-
-  ajaxGET_get_all_event_images(event_id,
-    function successful(data) {
-      var event_images = parse_event_images_from_json(data);
-      display_images(event_images);
-    },
-    function failure() {}
-  );
-});
+    ajaxGET_get_all_event_images(event_id,
+      function successful(data) {
+        var event_images = parse_event_images_from_json(data);
+        display_images(event_images);
+      },
+      function failure() {}
+    );
+}
 
 
 function display_images(images) {
@@ -220,17 +245,27 @@ function post_event_image_data(event_id, image_data) {
     function failure() { alert("Image upload failed."); });
 }
 
-function add_result_info_to_html(result, member) {
+function add_result_info_to_html(result, member, showAdminControls) {
   var member_name = member.get_member_fullname();
   var current_handicap = member.get_member_handicap();
 
-  $('#result_table > tbody').append(
-    '<tr>'+
-      '<td>' + member_name + '</td>' +
-      '<td>' + current_handicap + '</td>' +
-      '<td>' + result.get_result_score() + '</td>' +
-      '<td><button class="btn btn-default" onClick="delete_result_click(this)">Remove Result</button></td>' +
-    '</tr>')
+  if (showAdminControls) {
+    $('#result_table > tbody').append(
+      '<tr>'+
+        '<td>' + member_name + '</td>' +
+        '<td>' + current_handicap + '</td>' +
+        '<td>' + result.get_result_score() + '</td>' +
+        '<td><button class="btn btn-default" onClick="delete_result_click(this)">Remove Result</button></td>' +
+      '</tr>')
+  } else {
+    $('#result_table > tbody').append(
+      '<tr>'+
+        '<td>' + member_name + '</td>' +
+        '<td>' + current_handicap + '</td>' +
+        '<td>' + result.get_result_score() + '</td>' +
+      '</tr>')
+  }
+
 }
 
 

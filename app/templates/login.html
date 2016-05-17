@@ -136,7 +136,7 @@
 </html>
 
 <script>
-$(document).on('ready', () => {
+$(document).on('ready', function() {
   getFacebookLoginStatus(statusChangeCallback);
 });
 
@@ -171,7 +171,7 @@ function verifyAdminUser(fbResponse) {
         showAdminControls();
       } else {
         $('#status').html("You don't have access to log into this app, returning to homepage....");
-        setTimeout(() => { window.location = '/'; }, 1000)
+        setTimeout(function() { window.location = '/'; }, 1000)
       }
     },
     function failed(){ alert("Could not sign you in!.")});
