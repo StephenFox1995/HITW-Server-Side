@@ -482,6 +482,7 @@ def edit_result():
 
 @app.route("/isAdmin/", methods=["POST"])
 def login():
+
     if request.json:
         json = request.json
         fb_id = json.get('fb_id')

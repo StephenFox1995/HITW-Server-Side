@@ -399,6 +399,7 @@ function ajaxPOST_is_admin(facebook_id, successful, failed) {
     type: "POST",
     url: '/isAdmin/',
     contentType: "application/json",
+    dataType: "json",
     data: data,
     success: function(data) { successful(data); },
     failure: function() { failed(); }

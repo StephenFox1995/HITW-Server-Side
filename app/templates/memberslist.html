@@ -111,11 +111,21 @@ $(document).ready(function() {
   getFacebookLoginStatus((response) => {
     // Keep reference to the response.
     fbResponse = response;
-    // Only if the user is currently signed in with the app
-    // and have admin controls
+
     if (response.status === 'connected') {
-      loadMembersToHTML(true);
-    } else {
+      ajaxPOST_is_admin(response.authResponse.userID,
+        function success(data) {
+          if (data.isAdmin) {
+            loadMembersToHTML(true); // Loads HTML with admin controls
+          }
+          else {
+            loadMembersToHTML(false);
+          }
+        },
+        function failure() {
+          alert("An error occurred") });
+    }
+    else {
       loadMembersToHTML(false);
     }
   });

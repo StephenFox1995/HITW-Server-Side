@@ -175,7 +175,7 @@ function verifyAdminUser(fbResponse) {
         $('#status').html("You are logged in as administrator.");
         showAdminControls();
       } else {
-        $('#status').html("There was an error logging you in, returning to homepage....");
+        $('#status').html("You don't have access to log into this app, returning to homepage....");
         setTimeout(() => { window.location = '/'; }, 1000)
       }
     },
