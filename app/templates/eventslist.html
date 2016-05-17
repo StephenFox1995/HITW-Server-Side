@@ -13,7 +13,6 @@
     <script type="text/javascript" src="{{ url_for('static', filename='eventHITW.js') }}"></script>
     <script type="text/javascript" src="{{ url_for('static', filename='util.js') }}"></script>
     <script type="text/javascript" src="{{ url_for('static', filename='facebook.js') }}"></script>
-    <link rel="stylesheet" href="../static/styles/bootstrapWebkitCompat.css">
 
     <title>Events</title>
   </head>
@@ -133,27 +132,17 @@ $(document).ready(function() {
 });
 
 function loadEventsToHTMLWithAdminControls(showAdminControls) {
-  if (showAdminControls) {
-    addAdminHeaderToEventTable();
-  }
   ajaxGET_get_all_events(
     function successful(data) {
       events = parse_event_from_json(data);
       events.forEach(function(event){
-        add_event_to_html(event);
+        add_event_to_html(event, showAdminControls);
       });
     },
     function failure() { }
   );
 }
 
-function addAdminHeaderToEventTable() {
-  $('event_table > thead > tr').append(
-    '<th>Edit Event</th>' +
-    '<th>Remove Event</th>'
-  );
-
-}
 
 function add_event_to_html(event, showAdminControls) {
   event_id =       event.get_event_id()
