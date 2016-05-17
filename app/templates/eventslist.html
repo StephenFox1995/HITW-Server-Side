@@ -12,6 +12,7 @@
     <script type="text/javascript" src="{{ url_for('static', filename='ajax.js') }}"></script>
     <script type="text/javascript" src="{{ url_for('static', filename='eventHITW.js') }}"></script>
     <script type="text/javascript" src="{{ url_for('static', filename='util.js') }}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='facebook.js') }}"></script>
     <link rel="stylesheet" href="../static/styles/bootstrapWebkitCompat.css">
 
     <title>Events</title>
@@ -51,8 +52,6 @@
             <th>Event Location</th>
             <th>Event Time</th>
             <th>Event Date</th>
-            <th>Edit Event</th>
-            <th>Remove Event</th>
             <th>See Results</th>
           </tr>
         </thead>
@@ -111,15 +110,32 @@
 <script>
 var currently_editing_event = false;
 var events = [];
-var images;
+var fbResponse = null;
 
 
 $(document).ready(function() {
-  $('input[type="file"]').on('change', function(e){
-    var fileName = e.target.files[0].name;
-    console.log('The file "' + fileName +  '" has been selected.');
+
+  getFacebookLoginStatus((response) => {
+    if (response.status === 'connected') {
+      ajaxPOST_is_admin(response.authResponse.userID,
+        function success(data) {
+          if (data.isAdmin) {
+            // Add correct table heading
+            loadEventsToHTMLWithAdminControls(true);
+          } else {
+            loadEventsToHTMLWithAdminControls(false);
+          }
+        });
+    }
+    else { loadEventsToHTMLWithAdminControls(false); }
   });
 
+});
+
+function loadEventsToHTMLWithAdminControls(showAdminControls) {
+  if (showAdminControls) {
+    addAdminHeaderToEventTable();
+  }
   ajaxGET_get_all_events(
     function successful(data) {
       events = parse_event_from_json(data);
@@ -129,32 +145,53 @@ $(document).ready(function() {
     },
     function failure() { }
   );
-});
+}
 
+function addAdminHeaderToEventTable() {
+  $('event_table > thead > tr').append(
+    '<th>Edit Event</th>' +
+    '<th>Remove Event</th>'
+  );
 
-function add_event_to_html(event) {
+}
+
+function add_event_to_html(event, showAdminControls) {
   event_id =       event.get_event_id()
   event_title =    event.get_event_title()
   event_location = event.get_event_location()
   event_time =     event.get_event_time()
   event_date =     event.get_event_date()
 
-  $('#event_table > tbody').append(
-    '<tr>'+
-      '<td>' + event_title + '</td>' +
-      '<td>' + event_location + '</td>' +
-      '<td>' + event_time + '</td>' +
-      '<td>' + event_date + '</td>' +
-      '<td>' +
-        '<button class="btn btn-default" data-toggle="modal"  data-target="#editEventModal" onClick="update_event_button_click(this);">Edit Event</button>' +
-      '</td>' +
-      '<td>' +
-        '<button class="btn btn-default" onClick="delete_button_click(this)">Remove Event</button>' +
-      '</td>' +
-      '<td>' +
-        '<button class="btn btn-default" onClick="show_results_for_event(this)">See Results</button>' +
-      '</td>' +
-    '</tr>')
+  if (showAdminControls) {
+    $('#event_table > tbody').append(
+      '<tr>'+
+        '<td>' + event_title + '</td>' +
+        '<td>' + event_location + '</td>' +
+        '<td>' + event_time + '</td>' +
+        '<td>' + event_date + '</td>' +
+        '<td>' +
+          '<button class="btn btn-default" data-toggle="modal"  data-target="#editEventModal" onClick="update_event_button_click(this);">Edit Event</button>' +
+        '</td>' +
+        '<td>' +
+          '<button class="btn btn-default" onClick="delete_button_click(this)">Remove Event</button>' +
+        '</td>' +
+        '<td>' +
+          '<button class="btn btn-default" onClick="show_results_for_event(this)">See Results</button>' +
+        '</td>' +
+      '</tr>');
+  }
+  else {
+    $('#event_table > tbody').append(
+      '<tr>'+
+        '<td>' + event_title + '</td>' +
+        '<td>' + event_location + '</td>' +
+        '<td>' + event_time + '</td>' +
+        '<td>' + event_date + '</td>' +
+        '<td>' +
+          '<button class="btn btn-default" onClick="show_results_for_event(this)">See Results</button>' +
+        '</td>' +
+      '</tr>');
+  }
 }
 
 $("#event_table tbody").on("click", "tr", function(e) {

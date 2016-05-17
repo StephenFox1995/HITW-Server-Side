@@ -115,18 +115,13 @@ $(document).ready(function() {
       ajaxPOST_is_admin(response.authResponse.userID,
         function success(data) {
           if (data.isAdmin) {
-            loadMembersToHTML(true); // Loads HTML with admin controls
+            loadMembersToHTMLWithAdminControls(true); // Loads HTML with admin controls
           }
-          else {
-            loadMembersToHTML(false);
-          }
+          else { loadMembersToHTMLWithAdminControls(false); }
         },
-        function failure() {
-          alert("An error occurred") });
+        function failure() { alert("An error occurred") });
     }
-    else {
-      loadMembersToHTML(false);
-    }
+    else { loadMembersToHTMLWithAdminControls(false); }
   });
 });
 
@@ -134,11 +129,13 @@ $(document).ready(function() {
   Loads members from the server to HTML.
   @param showAdminControls Flag on whether admin controls should be shown.
 */
-function loadMembersToHTML(showAdminControls) {
+function loadMembersToHTMLWithAdminControls(showAdminControls) {
+  if (showAdminControls) {
+    addAdminHeaderToMemberTable();
+  }
+
   ajaxGET_get_all_members(
     function successful(data) {
-      addAdminHeaderToMemberTable();
-
       members = parse_member_from_json(data);
       members.forEach(function(member) {
         add_member_to_html(member, showAdminControls);
