@@ -14,6 +14,7 @@
     <script type="text/javascript" src="{{ url_for('static', filename='ajax.js') }}"></script>
     <script type="text/javascript" src="{{ url_for('static', filename='eventHITW.js') }}"></script>
     <script type="text/javascript" src="{{ url_for('static', filename='member.js') }}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='facebook.js') }}"></script>
   </head>
 
   <div class="navbar navbar-default">
@@ -135,145 +136,102 @@
 </html>
 
 <script>
+$(document).on('ready', () => {
+  getFacebookLoginStatus(statusChangeCallback);
+});
 
 
-// This is called with the results from from FB.getLoginStatus().
-  function statusChangeCallback(response) {
-    // The response object is returned with a status field that lets the
-    // app know the current login status of the person.
-    // Full docs on the response object can be found in the documentation
-    // for FB.getLoginStatus().
-    if (response.status === 'connected') {
-      // Logged into your app and Facebook.
-      verifyAdminUser(response);
-    } else if (response.status === 'not_authorized') {
-      // The person is logged into Facebook, but not your app.
-      document.getElementById('status').innerHTML = 'Please log ' +
-        'into this app.';
-    } else {
-      // The person is not logged into Facebook, so we're not sure if
-      // they are logged into this app or not.
-      document.getElementById('status').innerHTML = 'Please log ' +
-        'into Facebook.';
-    }
+//This is called with the results from from FB.getLoginStatus().
+function statusChangeCallback(response) {
+  // The response object is returned with a status field that lets the
+  // app know the current login status of the person.
+  // Full docs on the response object can be found in the documentation
+  // for FB.getLoginStatus().
+  if (response.status === 'connected') {
+    // Logged into your app and Facebook.
+    verifyAdminUser(response);
+  } else if (response.status === 'not_authorized') {
+    // The person is logged into Facebook, but not your app.
+    $('#status').html('Please log into this app.');
+  } else {
+    // The person is not logged into Facebook, so we're not sure if
+    // they are logged into this app or not.
+    $('#status').html('Please log into Facebook.');
+  }
+}
+
+function checkLoginState() {
+  getFacebookLoginStatus(statusChangeCallback);
+}
+
+
+function verifyAdminUser(fbResponse) {
+  var authResponse = fbResponse.authResponse;
+  var userID = authResponse.userID;
+
+  ajaxPOST_is_admin(userID,
+    function success(data) {
+      if (data.isAdmin === true) {
+        $('#status').html("You are logged in as administrator.");
+        showAdminControls();
+      } else {
+        $('#status').html("There was an error logging you in, returning to homepage....");
+        setTimeout(() => { window.location = '/'; }, 1000)
+      }
+    },
+    function failed(){ alert("Could not sign you in!.")});
   }
 
-  // This function is called when someone finishes with the Login
-  // Button.  See the onlogin handler attached to it in the sample
-  // code below.
-  function checkLoginState() {
-    FB.getLoginStatus(function(response) {
-      statusChangeCallback(response);
+
+function showAdminControls() {
+  $('#adminControls').append(
+    '<div class="btn_display" style="text-align:center">' +
+      '<button class="btn btn-default" data-toggle="modal"' + 'data-target="#addMemberModal">Add Member</button>' +
+      '<button class="btn btn-default" data-toggle="modal"' +  'data-target="#addEventModal">Add Event</button>' +
+    '</div>');
+  }
+
+
+$("#add_member_button").click(function() {
+  // Get the values the user has entered for member.
+  var member_f_name = $('#member_f_name').val();
+  var member_l_name = $('#member_l_name').val();
+  var member_handicap = $('#member_handicap').val();
+
+  // Create a new member, set the id to whatever,
+  // as this does not matter when adding the member to
+  // the system as the id will be generated.
+  var member_to_add = new Member(0, member_f_name, member_l_name, member_handicap);
+  ajaxPOST_add_member(member_to_add,
+    function successful(data) {
+      // Set textfields to empty.
+      clear_member_inputs();
+      success(member_f_name + " " + member_l_name + " has been added.");
+    },
+    function failure() {
+      alert("Something went wrong.")
     });
-  }
-
-  window.fbAsyncInit = function() {
-  FB.init({
-    appId      : '1739585199624396',
-    cookie     : true,  // enable cookies to allow the server to access
-                        // the session
-    xfbml      : true,  // parse social plugins on this page
-    version    : 'v2.5' // use graph api version 2.5
   });
 
-  // Now that we've initialized the JavaScript SDK, we call
-  // FB.getLoginStatus().  This function gets the state of the
-  // person visiting this page and can return one of three states to
-  // the callback you provide.  They can be:
-  //
-  // 1. Logged into your app ('connected')
-  // 2. Logged into Facebook, but not your app ('not_authorized')
-  // 3. Not logged into Facebook and can't tell if they are logged into
-  //    your app or not.
-  //
-  // These three cases are handled in the callback function.
-
-  FB.getLoginStatus(function(response) {
-    statusChangeCallback(response);
-  });
-
-  };
-
-  // Load the SDK asynchronously
-  (function(d, s, id) {
-    var js, fjs = d.getElementsByTagName(s)[0];
-    if (d.getElementById(id)) return;
-    js = d.createElement(s); js.id = id;
-    js.src = "//connect.facebook.net/en_US/sdk.js";
-    fjs.parentNode.insertBefore(js, fjs);
-  }(document, 'script', 'facebook-jssdk'));
 
 
+$("#add_event_button").click(function() {
+  var event_title = $('#event_title').val();
+  var event_location = $('#event_location').val();
+  var event_date = $('#event_date').val();
+  var event_time = $('#event_time').val();
 
-  function verifyAdminUser(fbResponse) {
-    var authResponse = fbResponse.authResponse;
-    var userID = authResponse.userID;
+  // Create new event, set the id to anything as it is not
+  // used in /add_member/
+  var event_to_add = new EventHITW(0, event_title, event_location, event_time, event_date);
 
-
-    ajaxPOST_is_admin(userID,
-      function success(data) {
-        if (data.isAdmin === true) {
-          $('#status').append("You are logged in as administrator.")
-          showAdminControls();
-        } else {
-          $('#status').append("There was an error logging you in, returning to homepage....");
-
-          setTimeout(() => { window.location = '/'; }, 1000)
-        }
-
-      },
-      function failed(){ alert("Could not sign you in!.")});
-  }
-
-  function showAdminControls() {
-    $('#adminControls').append(
-      '<div class="btn_display" style="text-align:center">' +
-        '<button class="btn btn-default" data-toggle="modal"' + 'data-target="#addMemberModal">Add Member</button>' +
-        '<button class="btn btn-default" data-toggle="modal"' +  'data-target="#addEventModal">Add Event</button>' +
-      '</div>');
-  }
-
-
-  $("#add_member_button").click(function() {
-    // Get the values the user has entered for member.
-    var member_f_name = $('#member_f_name').val();
-    var member_l_name = $('#member_l_name').val();
-    var member_handicap = $('#member_handicap').val();
-
-    // Create a new member, set the id to whatever,
-    // as this does not matter when adding the member to
-    // the system as the id will be generated.
-    var member_to_add = new Member(0, member_f_name, member_l_name, member_handicap);
-    ajaxPOST_add_member(member_to_add,
-      function successful(data) {
-        // Set textfields to empty.
-        clear_member_inputs();
-        success(member_f_name + " " + member_l_name + " has been added.");
-      },
-      function failure() {
-        alert("Something went wrong.")
-      }
-    );
-  });
-
-  $("#add_event_button").click(function() {
-    var event_title = $('#event_title').val();
-    var event_location = $('#event_location').val();
-    var event_date = $('#event_date').val();
-    var event_time = $('#event_time').val();
-
-    // Create new event, set the id to anything as it is not
-    // used in /add_member/
-    var event_to_add = new EventHITW(0, event_title, event_location, event_time, event_date);
-
-    ajaxPOST_add_event(event_to_add,
-      function successful() {
-        success(event_title + " has been added");
-      },
-      function failure() {
-        alert("Something went wrong.")
-      }
-    );
+  ajaxPOST_add_event(event_to_add,
+    function successful() {
+      success(event_title + " has been added");
+    },
+    function failure() {
+      alert("Something went wrong.")
+    });
   });
 
 

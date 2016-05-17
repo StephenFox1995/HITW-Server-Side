@@ -17,8 +17,7 @@
     <script type="text/javascript" src="{{ url_for('static', filename='member.js') }}"></script>
     <script type="text/javascript" src="{{ url_for('static', filename='ajax.js') }}"></script>
     <script type="text/javascript" src="{{ url_for('static', filename='util.js') }}"></script>
-    <script src="../static/bootstrapWebkitCompat.css"></script>
-    <link rel="stylesheet" href="../static/styles/bootstrapWebkitCompat.css">
+    <script type="text/javascript" src="{{ url_for('static', filename='facebook.js') }}"></script>
 
     <title>Members</title>
   </head>
@@ -54,8 +53,6 @@
             <th>Firstname</th>
             <th>Lastname</th>
             <th>Handicap</th>
-            <th>Update Member</th>
-            <th>Remove Member</th>
           </tr>
         </thead>
         <tbody>
@@ -107,25 +104,47 @@
 <script>
 var currently_updating_user = false;
 var members = [] // All the members currently in the table.
+var fbResponse = null;
 
 $(document).ready(function() {
+
+  getFacebookLoginStatus((response) => {
+    // Keep reference to the response.
+    fbResponse = response;
+    // Only if the user is currently signed in with the app
+    // and have admin controls
+    if (response.status === 'connected') {
+      loadMembersToHTML(true);
+    } else {
+      loadMembersToHTML(false);
+    }
+  });
+});
+
+/**
+  Loads members from the server to HTML.
+  @param showAdminControls Flag on whether admin controls should be shown.
+*/
+function loadMembersToHTML(showAdminControls) {
   ajaxGET_get_all_members(
     function successful(data) {
       members = parse_member_from_json(data);
       members.forEach(function(member){
-        // Append member to html.
-        add_member_to_html(member, true);
+        add_member_to_html(member, showAdminControls);
       });
     },
     function failure() {
       alert('Something went wrong!');
     }
   );
-});
-
+}
 
 function add_member_to_html(member, present_admin_tools) {
   if (present_admin_tools) {
+    $('#member_table > thead').append(
+      '<th>Update Member</th>' +
+      '<th>Remove Member</th>');
+
     $('#member_table > tbody').append(
       '<tr>' +
         '<td>' + member.get_member_f_name() + '</td>' +

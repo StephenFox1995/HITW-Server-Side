@@ -6,8 +6,6 @@ import json
 # Returns a flag which determines if the user id
 # is the id of the admin user.
 def is_admin(auth_attempt_id):
-    print auth_attempt_id
-    print  get_auth_id()
     if auth_attempt_id == get_auth_id():
         return True
     else:
