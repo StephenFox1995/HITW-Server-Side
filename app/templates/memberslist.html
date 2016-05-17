@@ -111,7 +111,6 @@ $(document).ready(function() {
   getFacebookLoginStatus((response) => {
     // Keep reference to the response.
     fbResponse = response;
-
     if (response.status === 'connected') {
       ajaxPOST_is_admin(response.authResponse.userID,
         function success(data) {
@@ -138,8 +137,10 @@ $(document).ready(function() {
 function loadMembersToHTML(showAdminControls) {
   ajaxGET_get_all_members(
     function successful(data) {
+      addAdminHeaderToMemberTable();
+
       members = parse_member_from_json(data);
-      members.forEach(function(member){
+      members.forEach(function(member) {
         add_member_to_html(member, showAdminControls);
       });
     },
@@ -151,10 +152,6 @@ function loadMembersToHTML(showAdminControls) {
 
 function add_member_to_html(member, present_admin_tools) {
   if (present_admin_tools) {
-    $('#member_table > thead').append(
-      '<th>Update Member</th>' +
-      '<th>Remove Member</th>');
-
     $('#member_table > tbody').append(
       '<tr>' +
         '<td>' + member.get_member_f_name() + '</td>' +
@@ -172,6 +169,12 @@ function add_member_to_html(member, present_admin_tools) {
         '<td>' + member.get_member_handicap() + '</td>' +
       '</tr>');
   }
+}
+
+function addAdminHeaderToMemberTable() {
+  $('#member_table > thead > tr').append(
+    '<th>Update Member</th>' +
+    '<th>Remove Member</th>');
 }
 
 // Handler for a click on update button
