@@ -184,10 +184,10 @@ function update_button_click(button) {
 function delete_button_click(button) {
   var member = get_member_for_button_in_row_index(button, members);
   if (confirm("Are you sure you want to delete " + member.get_member_f_name() + " " + member.get_member_l_name())) {
-    ajaxDELETE_delete_member(member.get_member_id(),
-      function success() {
-        location.reload(true)
-      },
+
+    var userToken = getFacebookUserToken().userID;
+    ajaxDELETE_delete_member(userToken, member.get_member_id(),
+      function success() { location.reload(true); },
       function failure() {}
     );
   }
@@ -218,10 +218,10 @@ function send_update_to_server(button) {
   member.set_member_l_name(updated_l_name);
   member.set_member_handicap(updated_member_handicap);
 
-  ajaxPUT_update_member(member,
-    function success() {
-      location.reload(true);
-    },
+  var userToken = getFacebookUserToken().userID;
+
+  ajaxPUT_update_member(userToken, member,
+    function success() { location.reload(true); },
     function failure() { }
   );
 }

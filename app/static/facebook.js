@@ -23,3 +23,7 @@ function getFacebookLoginStatus(response) {
     fjs.parentNode.insertBefore(js, fjs);
   }(document, 'script', 'facebook-jssdk'));
 }
+
+function getFacebookUserToken() {
+  return FB.getAuthResponse();
+}

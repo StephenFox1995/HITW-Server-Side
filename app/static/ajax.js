@@ -5,12 +5,13 @@ Attempts to add a member to the database.
                into the database.
 @param failure A callback when an error occurs.
 */
-function ajaxPOST_add_member(member, successful, failed) {
+function ajaxPOST_add_member(accessToken, member, successful, failed) {
   var member_f_name = member.get_member_f_name();
   var member_l_name = member.get_member_l_name();
   var member_handicap = member.get_member_handicap();
 
   var jsonData = {
+    'accessToken': accessToken,
     'firstname': member_f_name,
     'lastname' : member_l_name,
     'handicap' : member_handicap
@@ -39,13 +40,14 @@ Attempts to add a event to the database.
                   insertion into the database.
 @param failure A callback when an error occurs.
 */
-function ajaxPOST_add_event(event, successful, failed) {
+function ajaxPOST_add_event(accessToken, event, successful, failed) {
   var event_title = event.get_event_title();
   var event_location = event.get_event_location();
   var event_time = event.get_event_time();
   var event_date = event.get_event_date();
 
   var jsonData = {
+    'accessToken': accessToken,
     'title'     :event_title,
     'location'  :event_location,
     'time'      :event_time,
@@ -265,8 +267,9 @@ the database via and AJAX call.
 @param successful A callback upon successful update.
 @param failed A callback when an error has occurred.
 */
-function ajaxPUT_update_member(member, successful, failed) {
+function ajaxPUT_update_member(authToken, member, successful, failed) {
   var jsonData = {
+    "accessToken" : authToken,
     "firstname" :member.get_member_f_name(),
     "lastname"  :member.get_member_l_name(),
     "handicap"  :member.get_member_handicap(),
@@ -295,14 +298,15 @@ via an AJAX cal.
 @param successful A callback upon a successful update.
 @param failed A callback when an error has occurred.
 */
-function ajaxPUT_update_event(event, successful, failed) {
+function ajaxPUT_update_event(accessToken, event, successful, failed) {
   // Send edited event info to server.
   var jsonData = {
-    "title": event.get_event_title(),
-    "location": event.get_event_location(),
-    "time": event.get_event_time(),
-    "date": event.get_event_date(),
-    "identifier": event.get_event_id() // Use the id of the old event as ids cannot be edited.
+    "accessToken" : accessToken,
+    "title"       : event.get_event_title(),
+    "location"    : event.get_event_location(),
+    "time"        : event.get_event_time(),
+    "date"        : event.get_event_date(),
+    "identifier"  : event.get_event_id() // Use the id of the old event as ids cannot be edited.
   }
   var data = JSON.stringify(jsonData);
 
@@ -326,17 +330,20 @@ Attempts to delete a member from the database via an AJAX call.
 @param successful A callback upon successful deletion.
 @param failed A callback when an error has occurred.
 */
-function ajaxDELETE_delete_member(member_id, successful, failed) {
+function ajaxDELETE_delete_member(accessToken, member_id, successful, failed) {
+  var jsonData = {
+    "accessToken" : accessToken
+  }
+  var data = JSON.stringify(jsonData);
+
   $(function () {
     $.ajax({
       type: "DELETE",
       url: '/edit_member/' + member_id,
-      success: function() {
-        successful();
-      },
-      failure: function() {
-        failed();
-      }
+      contentType: "application/json",
+      data: data,
+      success: function() { successful(); },
+      failure: function() { failed(); }
     });
   });
 }
@@ -347,17 +354,19 @@ function ajaxDELETE_delete_member(member_id, successful, failed) {
 @param successful A callback upon successful deletion.
 @param failed A callback when an error has occurred.
 */
-function ajaxDELETE_delete_event(event_id, successful, failed) {
+function ajaxDELETE_delete_event(accessToken, event_id, successful, failed) {
+  var jsonData = {
+    "accessToken" : accessToken
+  }
+  var data = JSON.stringify(jsonData);
 
   $.ajax({
     type: "DELETE",
     url: '/edit_event/' + event_id,
-    success: function(data) {
-      successful(data);
-    },
-    failure: function() {
-      failed();
-    }
+    contentType: "application/json",
+    data: data,
+    success: function(data) { successful(data); },
+    failure: function() { failed(); }
   });
 }
 

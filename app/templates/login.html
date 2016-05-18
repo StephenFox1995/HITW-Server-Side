@@ -197,7 +197,9 @@ $("#add_member_button").click(function() {
   // as this does not matter when adding the member to
   // the system as the id will be generated.
   var member_to_add = new Member(0, member_f_name, member_l_name, member_handicap);
-  ajaxPOST_add_member(member_to_add,
+  var userToken = getFacebookUserToken().userID;
+
+  ajaxPOST_add_member(userToken, member_to_add,
     function successful(data) {
       // Set textfields to empty.
       clear_member_inputs();
@@ -220,7 +222,9 @@ $("#add_event_button").click(function() {
   // used in /add_member/
   var event_to_add = new EventHITW(0, event_title, event_location, event_time, event_date);
 
-  ajaxPOST_add_event(event_to_add,
+  var userToken = getFacebookUserToken().userID;
+
+  ajaxPOST_add_event(userToken, event_to_add,
     function successful() {
       success(event_title + " has been added");
     },

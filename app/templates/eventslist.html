@@ -110,10 +110,7 @@
 var currently_editing_event = false;
 var events = [];
 var fbResponse = null;
-
-
 $(document).ready(function() {
-
   getFacebookLoginStatus(function(response) {
     if (response.status === 'connected') {
       ajaxPOST_is_admin(response.authResponse.userID,
@@ -128,8 +125,9 @@ $(document).ready(function() {
     }
     else { loadEventsToHTMLWithAdminControls(false); }
   });
-
 });
+
+
 
 function loadEventsToHTMLWithAdminControls(showAdminControls) {
   ajaxGET_get_all_events(
@@ -144,13 +142,13 @@ function loadEventsToHTMLWithAdminControls(showAdminControls) {
 }
 
 
+
 function add_event_to_html(event, showAdminControls) {
   event_id =       event.get_event_id()
   event_title =    event.get_event_title()
   event_location = event.get_event_location()
   event_time =     event.get_event_time()
   event_date =     event.get_event_date()
-
   if (showAdminControls) {
     $('#event_table > tbody').append(
       '<tr>'+
@@ -182,7 +180,6 @@ function add_event_to_html(event, showAdminControls) {
       '</tr>');
   }
 }
-
 $("#event_table tbody").on("click", "tr", function(e) {
     console.log($(e).index());
 });
@@ -200,10 +197,13 @@ function show_results_for_event(button) {
   window.location.replace('/results_for_event/' + event.get_event_id());
 }
 
+
+
 function update_event_button_click(button) {
   var event = get_event_for_button_index(button, events);
   fill_edit_modal(event);
 }
+
 
 function fill_edit_modal(event) {
   // Attach an event to the update button,
@@ -217,48 +217,44 @@ function fill_edit_modal(event) {
 }
 
 
-
 function send_update_to_server(button) {
   var event = $('#update_event_button').data('data-event');
-
   // Get the newly entered values.
   var updated_event_title = $('#event_title').val();
   var updated_event_location = $('#event_location').val();
   var updated_event_time = $('#event_time').val();
   var updated_event_date = $('#event_date').val();
-
   // Set the events attributes to the new attributes.
   event.set_event_title(updated_event_title);
   event.set_event_location(updated_event_location);
   event.set_event_time(updated_event_time);
   event.set_event_date(updated_event_date);
 
-  // Send a PUT request with the updated event.
-  ajaxPUT_update_event(event,
-    function success(data) {
-      location.reload(true);
-    },
-    function failure() {
+  var userToken = getFacebookUserToken().userID;
 
-    }
+  // Send a PUT request with the updated event.
+  ajaxPUT_update_event(userToken, event,
+    function success(data) { location.reload(true); },
+    function failure() { }
   );
 }
+
 
 function delete_button_click(button) {
   var event = get_event_for_button_index(button, events);
   remove_event(event);
 }
 
+
 function remove_event(event) {
   if (confirm("Are you sure you want to delete " +
   event.get_event_location() + " on " +
   event.get_event_date() + " at " +
   event.get_event_time() + "?")) {
+    var userToken = getFacebookUserToken().userID;
 
-    ajaxDELETE_delete_event(event.get_event_id(),
-      function successful(data) {
-        location.reload(true);
-      },
+    ajaxDELETE_delete_event(userToken, event.get_event_id(),
+      function successful(data) { location.reload(true); },
       function failure() {}
     );
   }
