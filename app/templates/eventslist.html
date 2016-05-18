@@ -49,7 +49,6 @@
             <th>Event Location</th>
             <th>Event Time</th>
             <th>Event Date</th>
-            <th>See Results</th>
           </tr>
         </thead>
         <tbody>
@@ -109,6 +108,9 @@ var currently_editing_event = false;
 var events = [];
 var fbResponse = null;
 $(document).ready(function() {
+  $("#event_table").on("click", "tbody tr", function() {
+    handleRowClick($(this).index());
+  });
 
   getFacebookLoginStatus(function(response) {
     if (response.status === 'connected') {
@@ -172,10 +174,6 @@ function add_event_to_html(event, showAdminControls) {
         '<td>' + event_date + '</td>' +
       '</tr>');
   }
-
-  $("#event_table tbody tr").on("click", function() {
-    handleRowClick($(this).index());
-  });
 }
 
 function handleRowClick(index) {
