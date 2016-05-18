@@ -41,9 +41,7 @@
   </div>
   <body>
 
-
-
-      <div class ="table-responsive">
+    <div class ="table-responsive">
       <table class="table table-hover" id="event_table">
         <thead>
           <tr>
@@ -111,6 +109,7 @@ var currently_editing_event = false;
 var events = [];
 var fbResponse = null;
 $(document).ready(function() {
+
   getFacebookLoginStatus(function(response) {
     if (response.status === 'connected') {
       ajaxPOST_is_admin(response.authResponse.userID,
@@ -162,9 +161,6 @@ function add_event_to_html(event, showAdminControls) {
         '<td>' +
           '<button class="btn btn-default" onClick="delete_button_click(this)">Remove Event</button>' +
         '</td>' +
-        '<td>' +
-          '<button class="btn btn-default" onClick="show_results_for_event(this)">See Results</button>' +
-        '</td>' +
       '</tr>');
   }
   else {
@@ -174,15 +170,17 @@ function add_event_to_html(event, showAdminControls) {
         '<td>' + event_location + '</td>' +
         '<td>' + event_time + '</td>' +
         '<td>' + event_date + '</td>' +
-        '<td>' +
-          '<button class="btn btn-default" onClick="show_results_for_event(this)">See Results</button>' +
-        '</td>' +
       '</tr>');
   }
+
+  $("#event_table tbody tr").on("click", function() {
+    handleRowClick($(this).index());
+  });
 }
-$("#event_table tbody").on("click", "tr", function(e) {
-    console.log($(e).index());
-});
+
+function handleRowClick(index) {
+  show_results_for_event(events[index]);
+}
 
 
 function get_event_for_button_index(button, events) {
@@ -191,9 +189,7 @@ function get_event_for_button_index(button, events) {
 }
 
 
-function show_results_for_event(button) {
-  // Get the event associated with the button index in the table.
-  var event = get_event_for_button_index(button, events);
+function show_results_for_event(event) {
   window.location.replace('/results_for_event/' + event.get_event_id());
 }
 
