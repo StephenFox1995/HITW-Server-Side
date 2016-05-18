@@ -18,11 +18,10 @@ import json
 SUCCESS_CODE = 200 # Success
 FAILURE_CODE = 500 # Internal Server Error
 MISSING_PARAM_CODE = 422 # Missing param error
+PERMISSION_DENIED = 403 # Persmission denied.
 
 
 app = Flask(__name__)
-
-
 
 
 
@@ -62,6 +61,12 @@ def results(id):
 def add_member():
     if request.json:
         json = request.json
+        access_token = json.get("accessToken")
+
+        # Check that this is an admin user.
+        if auth.is_admin(access_token) is False:
+            return Response(status=PERMISSION_DENIED)
+
         firstname = json.get("firstname")
         lastname = json.get("lastname")
         handicap = json.get("handicap")
@@ -88,6 +93,12 @@ def add_member():
 def add_event():
     if request.json:
         json = request.json
+
+        access_token = json.get("accessToken")
+
+        # Check that this is an admin user.
+        if auth.is_admin(access_token) is False:
+            return Response(status=PERMISSION_DENIED)
 
         title = json.get("title")
         location = json.get("location")
@@ -120,8 +131,11 @@ def add_result():
     if request.json:
         json = request.json
 
-        # TODO: Check that the member actually exists.
-        # TODO: Check there already isnt result for the user for a given event.
+        access_token = json.get("accessToken")
+        # Check that this is an admin user.
+        if auth.is_admin(access_token) is False:
+            return Response(status=PERMISSION_DENIED)
+
         event_id = json.get("event_id")
         member_id = json.get("member_id")
         score = json.get("score")
@@ -150,6 +164,12 @@ def add_event_image():
     if request.json:
         json = request.json
 
+        access_token = json.get("accessToken")
+
+        # Check that this is an admin user.
+        if auth.is_admin(access_token) is False:
+            return Response(status=PERMISSION_DENIED)
+
         event_id = json.get("event_id")
         image_base64_data = json.get("image_data")
 
@@ -170,7 +190,7 @@ def get_upcoming_event():
     if connection is not None:
 
         event = query_db.get_upcoming_event(connection)
-        connection.close();
+        connection.close()
 
         if event:
             json = event.jsonify()
@@ -391,6 +411,12 @@ def edit_event(identifier):
 
     if request.json:
         json = request.json
+
+        access_token = json.get("accessToken")
+        # Check that this is an admin user.
+        if auth.is_admin(access_token) is False:
+            return Response(status=PERMISSION_DENIED)
+
         event = event_obj_from_json(json, identifier)
         if not event:
             return Response(status=MISSING_PARAM_CODE)
@@ -418,6 +444,12 @@ def edit_member(identifier):
     # JSON content for PUT method
     if request.json:
         json = request.json
+
+        access_token = json.get("accessToken")
+        # Check that this is an admin user.
+        if auth.is_admin(access_token) is False:
+            return Response(status=PERMISSION_DENIED)
+
         member = member_obj_from_json(json, identifier)
         if not member:
             return Response(status=MISSING_PARAM_CODE)
@@ -430,7 +462,7 @@ def edit_member(identifier):
             connection.close()
             return Response(status=SUCCESS_CODE)
         elif request.method == 'DELETE':
-            query_db.delete_member(connection, identifier);
+            query_db.delete_member(connection, identifier)
             return Response(status=SUCCESS_CODE)
     # Failure
     return Response(status=FAILURE_CODE)
@@ -444,6 +476,12 @@ def edit_result():
 
     if request.method == 'PUT':
         json = request.json
+
+        access_token = json.get("accessToken")
+        # Check that this is an admin user.
+        if auth.is_admin(access_token) is False:
+            return Response(status=PERMISSION_DENIED)
+
         result = result_obj_from_json(json)
         # All fields of the result object should be filled.
         if not result:

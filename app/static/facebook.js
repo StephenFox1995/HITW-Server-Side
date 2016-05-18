@@ -7,10 +7,9 @@ function getFacebookLoginStatus(response) {
   window.fbAsyncInit = function() {
     FB.init({
       appId      : '1739585199624396',
-      cookie     : true,  // enable cookies to allow the server to access
-                        // the session
-      xfbml      : true,  // parse social plugins on this page
-      version    : 'v2.5' // use graph api version 2.5
+      cookie     : true,
+      xfbml      : true,
+      version    : 'v2.5'
     });
     FB.getLoginStatus(response);
   };
