@@ -60,7 +60,11 @@
       </table>
     </div>
 
-    <!-- Add Event Modal -->
+    <div id="loaderImage" style="width:100%; text-align:center;">
+      <img src="https://d13yacurqjgara.cloudfront.net/users/82092/screenshots/1073359/spinner.gif" width="130" height="100" style="float-right:50%">
+    </div>
+
+    <!-- Edit Event Modal -->
     <div class="modal fade" id="editMemberModal" role="dialog">
       <div class="modal-dialog modal-sm">
         <div class="modal-content">
@@ -125,6 +129,10 @@ $(document).ready(function() {
   });
 });
 
+function removeLoaderImage() {
+  $('#loaderImage').remove();
+}
+
 /**
   Loads members from the server to HTML.
   @param showAdminControls Flag on whether admin controls should be shown.
@@ -138,6 +146,7 @@ function loadMembersToHTMLWithAdminControls(showAdminControls) {
     function successful(data) {
       members = parse_member_from_json(data);
       members.forEach(function(member) {
+        removeLoaderImage();
         add_member_to_html(member, showAdminControls);
       });
     },

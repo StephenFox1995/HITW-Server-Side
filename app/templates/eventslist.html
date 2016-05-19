@@ -39,7 +39,11 @@
       </div>
     </div>
   </div>
+
+
+
   <body>
+
 
     <div class ="table-responsive">
       <table class="table table-hover" id="event_table">
@@ -54,6 +58,10 @@
         <tbody>
         </tbody>
       </table>
+    </div>
+
+    <div id="loaderImage" style="width:100%; text-align:center;">
+      <img src="https://d13yacurqjgara.cloudfront.net/users/82092/screenshots/1073359/spinner.gif" width="130" height="100" style="float-right:50%">
     </div>
 
     <!-- Add Event Modal -->
@@ -133,6 +141,7 @@ $(document).ready(function() {
 function loadEventsToHTMLWithAdminControls(showAdminControls) {
   ajaxGET_get_all_events(
     function successful(data) {
+      removeLoaderImage();
       events = parse_event_from_json(data);
       events.forEach(function(event){
         add_event_to_html(event, showAdminControls);
@@ -143,7 +152,9 @@ function loadEventsToHTMLWithAdminControls(showAdminControls) {
 }
 
 
-
+function removeLoaderImage() {
+  $('#loaderImage').remove();
+}
 function add_event_to_html(event, showAdminControls) {
   event_id =       event.get_event_id()
   event_title =    event.get_event_title()
