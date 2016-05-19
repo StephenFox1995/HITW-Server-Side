@@ -17,6 +17,7 @@
     <script type="text/javascript" src="{{ url_for('static', filename='member.js') }}"></script>
     <script type="text/javascript" src="{{ url_for('static', filename='facebook.js') }}"></script>
     <script type="text/javascript" src="{{ url_for('static', filename='datepicker/bootstrap-datepicker.js') }}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='util.js') }}"></script>
   </head>
 
   <div class="navbar navbar-default">
@@ -223,6 +224,11 @@ $("#add_event_button").click(function() {
   var event_location = $('#event_location').val();
   var event_date = $('#event_date').val();
   var event_time = $('#event_time').val();
+
+  if (!validateTimeFormat(event_time)) {
+    alert('Please enter time in the format HH:MM');
+    return;
+  }
 
   // Create new event, set the id to anything as it is not
   // used in /add_member/

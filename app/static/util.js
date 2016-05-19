@@ -61,8 +61,7 @@ function parse_result_from_json(data) {
   return results;
 }
 
-function getUrlVars()
-{
+function getUrlVars() {
     var vars = [], hash;
     var hashes = window.location.href.slice(window.location.href.indexOf('?') + 1).split('&');
     for(var i = 0; i < hashes.length; i++) {
@@ -84,4 +83,11 @@ function strip_meta_data_base64(base64string) {
 function get_object_for_button_index(button, array) {
   var index = $(button).closest('tr').index();
   return array[index];
+}
+
+
+function validateTimeFormat(timeString) {
+  // Regular expression to match required time format
+   var expression = /^\d{1,2}:\d{2}([ap]m)?$/;
+   return timeString.match(expression) 
 }
