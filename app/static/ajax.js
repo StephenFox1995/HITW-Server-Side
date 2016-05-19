@@ -99,11 +99,12 @@ Attempts to add a result to the database.
                   insertion into the database.
 @param failure A callback when an error occurs.
 */
-function ajaxPOST_add_result(event_id, member_id, score, successful, failed) {
+function ajaxPOST_add_result(accessToken, event_id, member_id, score, successful, failed) {
   var jsonData = {
-    "event_id": event_id,
-    "member_id": member_id,
-    "score": score
+    "accessToken" : accessToken,
+    "event_id"    : event_id,
+    "member_id"   : member_id,
+    "score"       : score
   }
   var data = JSON.stringify(jsonData);
 
