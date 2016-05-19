@@ -86,8 +86,8 @@ function get_object_for_button_index(button, array) {
 }
 
 
-function validateTimeFormat(timeString) {
+function validTimeFormat(timeString) {
   // Regular expression to match required time format
    var expression = /^\d{1,2}:\d{2}([ap]m)?$/;
-   return timeString.match(expression) 
+   return timeString.match(expression)
 }

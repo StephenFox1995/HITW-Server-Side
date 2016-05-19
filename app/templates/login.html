@@ -225,7 +225,7 @@ $("#add_event_button").click(function() {
   var event_date = $('#event_date').val();
   var event_time = $('#event_time').val();
 
-  if (!validateTimeFormat(event_time)) {
+  if (!validTimeFormat(event_time)) {
     alert('Please enter time in the format HH:MM');
     return;
   }

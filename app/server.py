@@ -51,12 +51,14 @@ def results_for_event(identifier):
     # Set this so the client can consume
     return redirect(url_for('results', id=identifier))
 
-
 @app.route('/results/<int:id>', methods=['GET'])
 def results(id):
     return render_template('results.html', event_id=id)
 
 
+#----------------------------------------------------------------
+# ADD MEMBER
+#----------------------------------------------------------------
 @app.route('/add_member/', methods=['POST'])
 def add_member():
     if request.json:
@@ -88,7 +90,9 @@ def add_member():
     return Response(status=FAILURE_CODE)
 
 
-
+#----------------------------------------------------------------
+# ADD EVENT
+#----------------------------------------------------------------
 @app.route('/add_event/', methods=['POST'])
 def add_event():
     if request.json:
@@ -125,7 +129,9 @@ def add_event():
     return Response(status=FAILURE_CODE)
 
 
-
+#----------------------------------------------------------------
+#  ADD RESULT
+#----------------------------------------------------------------
 @app.route('/add_result/', methods=['POST'])
 def add_result():
     if request.json:
@@ -158,7 +164,9 @@ def add_result():
     return Response(status=FAILURE_CODE)
 
 
-
+#----------------------------------------------------------------
+# ADD EVENT IMAGE
+#----------------------------------------------------------------
 @app.route('/add_event_image/', methods=['POST'])
 def add_event_image():
     if request.json:
@@ -182,8 +190,9 @@ def add_event_image():
             return Response(status=FAILURE_CODE)
 
 
-
-# TODO: Create function to create json from array of events.
+#----------------------------------------------------------------
+# GET UPCOMING EVENT
+#----------------------------------------------------------------
 @app.route('/get_upcoming_event/', methods=['GET'])
 def get_upcoming_event():
     connection = query_db.get_connection(current_db_location())
@@ -201,7 +210,9 @@ def get_upcoming_event():
     return Response(status=FAILURE_CODE)
 
 
-
+#----------------------------------------------------------------
+# GET ALL EVENTS
+#----------------------------------------------------------------
 @app.route('/get_all_events/', methods=['GET'])
 def get_all_events():
     connection = query_db.get_connection(current_db_location())
@@ -228,7 +239,9 @@ def get_all_events():
     return Response(status=FAILURE_CODE)
 
 
-
+#----------------------------------------------------------------
+# GET EVENT
+#----------------------------------------------------------------
 @app.route('/get_event/<identifier>', methods=['GET'])
 def get_event(identifier):
     if not identifier:
@@ -247,7 +260,9 @@ def get_event(identifier):
     return Response(status=FAILURE_CODE)
 
 
-
+#----------------------------------------------------------------
+# GET ALL EVENT IMAGES
+#----------------------------------------------------------------
 # TODO: Correct compression of images.
 @app.route('/get_all_event_images/<identifier>', methods=['GET'])
 def get_all_event_images(identifier):
@@ -272,7 +287,9 @@ def get_all_event_images(identifier):
 
 
 
-
+#----------------------------------------------------------------
+# GET ALL MEMBERS
+#----------------------------------------------------------------
 @app.route('/get_all_members/', methods=['GET'])
 def get_all_members():
     connection = query_db.get_connection(current_db_location())
@@ -299,6 +316,9 @@ def get_all_members():
     return Response(status=FAILURE_CODE)
 
 
+#----------------------------------------------------------------
+# GET MEMBER
+#----------------------------------------------------------------
 @app.route('/get_member/<identifier>', methods=['GET'])
 def get_member(identifier):
     if not identifier:
@@ -316,7 +336,9 @@ def get_member(identifier):
     # Failure
     return Response(status=FAILURE_CODE)
 
-
+#----------------------------------------------------------------
+# GET ALL RESULTS
+#----------------------------------------------------------------
 @app.route('/get_all_results/', methods=['GET'])
 def get_all_results():
     connection = query_db.get_connection(current_db_location())
@@ -342,7 +364,9 @@ def get_all_results():
     # Failure
     return Response(status=FAILURE_CODE)
 
-
+#----------------------------------------------------------------
+# GET ALL RESULTS FOR EVENT
+#----------------------------------------------------------------
 @app.route('/get_all_results_for_event/<identifier>', methods=['GET'])
 def get_all_results_for_event(identifier):
     if not identifier:
@@ -373,6 +397,9 @@ def get_all_results_for_event(identifier):
     return Response(status=FAILURE_CODE)
 
 
+#----------------------------------------------------------------
+# GET ALL RESULTS FOR MEMBER
+#----------------------------------------------------------------
 @app.route('/get_all_results_for_member/<identifier>', methods=['GET'])
 def get_all_results_for_member(identifier):
     if not identifier:
@@ -402,10 +429,11 @@ def get_all_results_for_member(identifier):
     # Failure
     return Response(status=FAILURE_CODE)
 
-
+#----------------------------------------------------------------
+# EDIT EVENT
+#----------------------------------------------------------------
 @app.route('/edit_event/<identifier>', methods=['PUT', 'DELETE'])
 def edit_event(identifier):
-    event = None
     if not identifier:
         return Response(status=MISSING_PARAM_CODE)
 
@@ -417,31 +445,33 @@ def edit_event(identifier):
         if auth.is_admin(access_token) is False:
             return Response(status=PERMISSION_DENIED)
 
-        event = event_obj_from_json(json, identifier)
-        if not event:
-            return Response(status=MISSING_PARAM_CODE)
-
     connection = query_db.get_connection(current_db_location())
     if connection is not None:
-        if request.method == 'PUT':
+        if request.method == 'PUT': # Edit existing event.
+            event = None
+            event = event_obj_from_json(json, identifier)
+            if not event:
+                return Response(status=MISSING_PARAM_CODE)
             query_db.update_event(connection, identifier, event)
             connection.close()
             return Response(status=SUCCESS_CODE)
+
         elif request.method == 'DELETE':
             query_db.delete_event(connection, identifier)
+            connection.close()
             return Response(status=SUCCESS_CODE)
     # Failure
     return Response(status=FAILURE_CODE)
 
 
+#----------------------------------------------------------------
+# EDIT MEMBER
+#----------------------------------------------------------------
 @app.route('/edit_member/<identifier>', methods=['PUT', 'DELETE'])
 def edit_member(identifier):
-    member = None
-
     if not identifier:
         return Response(status=MISSING_PARAM_CODE)
 
-    # JSON content for PUT method
     if request.json:
         json = request.json
 
@@ -450,25 +480,27 @@ def edit_member(identifier):
         if auth.is_admin(access_token) is False:
             return Response(status=PERMISSION_DENIED)
 
-        member = member_obj_from_json(json, identifier)
-        if not member:
-            return Response(status=MISSING_PARAM_CODE)
+        connection = query_db.get_connection(current_db_location())
+        if connection is not None:
+            if request.method == 'PUT': # Edit member
+                member = None
+                member = member_obj_from_json(json, identifier)
+                if not member:
+                    return Response(status=MISSING_PARAM_CODE)
+                query_db.update_member(connection, identifier, member)
+                connection.close()
+                return Response(status=SUCCESS_CODE)
 
-
-    connection = query_db.get_connection(current_db_location())
-    if connection is not None:
-        if request.method == 'PUT':
-            query_db.update_member(connection, identifier, member)
-            connection.close()
-            return Response(status=SUCCESS_CODE)
-        elif request.method == 'DELETE':
-            query_db.delete_member(connection, identifier)
-            return Response(status=SUCCESS_CODE)
+            elif request.method == 'DELETE': # Delete member
+                query_db.delete_member(connection, identifier)
+                return Response(status=SUCCESS_CODE)
     # Failure
     return Response(status=FAILURE_CODE)
 
 
-
+#----------------------------------------------------------------
+# EDIT RESULT
+#----------------------------------------------------------------
 # Update or delete a result from the database.
 @app.route('/edit_result/', methods=['PUT', 'DELETE'])
 def edit_result():
@@ -517,7 +549,9 @@ def edit_result():
         return Response(status=FAILURE_CODE)
 
 
-
+#----------------------------------------------------------------
+# IS ADMIN
+#----------------------------------------------------------------
 @app.route("/isAdmin/", methods=["POST"])
 def login():
 
