@@ -56,16 +56,8 @@
   </div>
 
   <body>
+    <div id="admincontrols"></div>
 
-    <button class="btn btn-default" data-toggle="modal" data-target="#addResultModal" onclick="before_result_modal()">Add Result</button>
-
-
-    <div class="fileinput fileinput-new" data-provides="fileinput">
-      <span class="btn btn-default btn-file">
-        <span>Choose file</span>
-        <input type="file" id="upload_image" />
-      </span>
-    </div>
 
     <div class ="table-responsive">
       <table class="table" id="result_table">
@@ -79,6 +71,10 @@
         <tbody>
         </tbody>
       </table>
+    </div>
+
+    <div id="loaderImage" style="width:100%; text-align:center;">
+      <img src="https://d13yacurqjgara.cloudfront.net/users/82092/screenshots/1073359/spinner.gif" width="130" height="100" style="float-right:50%">
     </div>
 
 
@@ -179,6 +175,16 @@ $(document).ready(function() {
 
 
 function loadResultsToHTMLWithAdminControls(showAdminControls) {
+  if (showAdminControls) {
+    $('#adminControls').append('<button class="btn btn-default"' + 'data-toggle="modal" data-target="#addResultModal"' +  'onclick="before_result_modal()">Add Result</button>' +
+
+    '<div class="fileinput fileinput-new" data-provides="fileinput">' +
+      '<span class="btn btn-default btn-file">' +
+        '<span>Choose file</span>' +
+        '<input type="file" id="upload_image" />' +
+      '</span>' +
+    '</div>');
+  }
   // Set the current event.
   ajaxGET_get_event(event_id,
     function successful(data) {
@@ -198,7 +204,8 @@ function loadResultsToHTMLWithAdminControls(showAdminControls) {
       results.forEach(function(result) {
         // Now get the member associated with that result.
       get_member_for_result(result,
-        function(member) {
+        function success(member) {
+          removeLoaderImage();
           members_results_map[member] = result;
           add_result_info_to_html(result, member, showAdminControls);
         });
@@ -213,6 +220,11 @@ function loadResultsToHTMLWithAdminControls(showAdminControls) {
       },
       function failure() {}
     );
+}
+
+
+function removeLoaderImage() {
+  $('#loaderImage').remove();
 }
 
 
