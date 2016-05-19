@@ -39,9 +39,13 @@ def see_members_page():
 
 @app.route('/admin/', methods=['GET'])
 def admin_page():
-# TODO: If a session exists return the login page.
-# Otherwise return the admin page
     return render_template('login.html')
+
+# Player of the year.
+@app.route('/poy/', methods=['GET'])
+def poy():
+    return render_template('poy.html')
+
 
 
 @app.route('/results_for_event/<identifier>', methods=['GET'])

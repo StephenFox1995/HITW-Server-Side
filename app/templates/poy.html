@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap-theme.min.css" integrity="sha384-fLW2N01lMqjakBkx3l/M9EahuwpSfeNvV63J5ezn3uZzapT0u7EYsXMjQV+0En5r" crossorigin="anonymous">
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"           integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
+
+    <script type="text/javascript" src="{{ url_for('static', filename='facebook.js') }}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='ajax.js') }}"></script>
+  </head>
+
+
+  <div class="navbar navbar-default">
+    <div class="container">
+      <div class="navbar-header">
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="/">McCaffrey's Hole In The Wall Golf Society</a>
+      </div>
+      <div class="collapse navbar-collapse">
+        <ul class="nav navbar-nav">
+          <li><a href="/">Home</a></li>
+          <li class="active">
+            <a href="/events_list" data-toggle="collapse" data-target=".navbar-collapse.in">Events</a>
+          </li>
+          <li>
+            <a href="/members_list" data-toggle="collapse" data-target=".navbar-collapse.in">Players</a>
+          </li>
+          <li>
+            <a href="/poy" data-toggle="collapse" data-target=".navbar-collapse.in">Player of the year</a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <body>
+
+  </body>
+
+  <script>
+  $(document).ready(function() {
+    getFacebookLoginStatus(function(response) {
+      if (response.status === 'connected') {
+        ajaxPOST_is_admin(response.authResponse.userID,
+          function success(data) {
+            if (data.isAdmin) {
+              addHTMLWithAdminControls(true);
+            }
+            else {
+              addHTMLWithAdminControls(false);
+            }
+          },
+          function failure() {
+            addHTMLWithAdminControls(false);
+          });
+      }
+      else {
+        addHTMLWithAdminControls(false);
+      }
+    });
+  });
+
+
+  function addHTMLWithAdminControls(adminControls) {
+
+  }
+
+
+
+
+  </script>
+</html>

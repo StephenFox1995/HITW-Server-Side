@@ -69,10 +69,11 @@ function ajaxPOST_add_event(accessToken, event, successful, failed) {
   });
 }
 
-function ajaxPOST_add_event_image(event_id, image_data, successful, failed) {
+function ajaxPOST_add_event_image(accessToken, event_id, image_data, successful, failed) {
   var jsonData = {
-    'event_id': event_id,
-    'image_data': image_data
+    'accessToken' : accessToken,
+    'event_id'    : event_id,
+    'image_data'  : image_data
   }
   var data = JSON.stringify(jsonData);
 

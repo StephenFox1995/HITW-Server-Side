@@ -15,7 +15,6 @@
     <!-- Latest compiled and minified JavaScript -->
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
 
-
     <script type="text/javascript" src="{{ url_for('static', filename='result.js') }}"></script>
     <script type="text/javascript" src="{{ url_for('static', filename='member.js') }}"></script>
     <script type="text/javascript" src="{{ url_for('static', filename='ajax.js') }}"></script>
@@ -30,9 +29,11 @@
     <link rel="stylesheet" href="../static/styles/results.css">
     <link rel="stylesheet" href="../static/styles/heading.css">
     <link rel="stylesheet" href="../static/styles/gallery.css">
+    <link rel="stylesheet" href="../static/styles/file.css">
 
     <title>Results</title>
   </head>
+
   <div class="navbar navbar-default">
     <div class="container">
       <div class="navbar-header">
@@ -140,16 +141,6 @@ var members_results_map = {};
 var fbResponse = null;
 
 $(document).ready(function() {
-  // Add listener for uploading files.
-  $('#upload_image').on('change', function() {
-    var file = this.files[0];
-    file.convertToBase64(function(image_base64_data) {
-      var strippedBase64 = strip_meta_data_base64(image_base64_data);
-      post_event_image_data(current_event.get_event_id(), strippedBase64);
-    });
-  });
-
-
   getFacebookLoginStatus(function(response) {
     fbResponse = response;
     if (response.status === 'connected') {
@@ -176,14 +167,38 @@ $(document).ready(function() {
 
 function loadResultsToHTMLWithAdminControls(showAdminControls) {
   if (showAdminControls) {
-    $('#adminControls').append('<button class="btn btn-default"' + 'data-toggle="modal" data-target="#addResultModal"' +  'onclick="before_result_modal()">Add Result</button>' +
+    $('#adminControls').append(
+      '<div class="btn_display" style="text-align:center">' +
+        '<button class="btn btn-default" data-toggle="modal" data-target="#addResultModal"' +
+        'onclick="before_result_modal()">Add Result</button>' +
 
-    '<div class="fileinput fileinput-new" data-provides="fileinput">' +
-      '<span class="btn btn-default btn-file">' +
-        '<span>Choose file</span>' +
-        '<input type="file" id="upload_image" />' +
-      '</span>' +
-    '</div>');
+        '<input type="file" id="upload_image" class="btn btn-default file">' +
+          '<span>Choose file</span>' +
+          '<button class="btn btn-default>Choose File</button>' +
+          '</span>' +
+        '</div>' +
+      '</div>');
+      // $('#adminControls').append(
+      //   '<div class="form-group">' +
+      //     '<input type="file" name="img[]" class="file">' +
+      //     '<div class="input-group col-xs-12">' +
+      //       '<span class="input-group-addon"><i class="glyphicon glyphicon-picture"></i></span>' +
+      //         '<input type="text" class="form-control input-lg" disabled placeholder="Upload Image">' +
+      //       '<span class="input-group-btn">' +
+      //         '<button class="browse btn btn-primary input-lg" type="button"><i class="glyphicon glyphicon-search"></i> Browse</button>' +
+      //       '</span>' +
+      //     '</div>' +
+      //   '</div>');
+
+    // Add listener for uploading files.
+    $('#upload_image').on('change', function() {
+      var file = this.files[0];
+      file.convertToBase64(function(image_base64_data) {
+        var userToken = getFacebookUserToken().userID;
+        var strippedBase64 = strip_meta_data_base64(image_base64_data);
+        post_event_image_data(userToken, current_event.get_event_id(), strippedBase64);
+      });
+    });
   }
   // Set the current event.
   ajaxGET_get_event(event_id,
@@ -251,8 +266,8 @@ function get_member_for_result(result, callback) {
     );
 }
 
-function post_event_image_data(event_id, image_data) {
-  ajaxPOST_add_event_image(event_id, image_data,
+function post_event_image_data(authToken, event_id, image_data) {
+  ajaxPOST_add_event_image(authToken, event_id, image_data,
     function successful() { location.reload(true); },
     function failure() { alert("Image upload failed."); });
 }
