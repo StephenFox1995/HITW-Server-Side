@@ -445,21 +445,21 @@ def edit_event(identifier):
         if auth.is_admin(access_token) is False:
             return Response(status=PERMISSION_DENIED)
 
-    connection = query_db.get_connection(current_db_location())
-    if connection is not None:
-        if request.method == 'PUT': # Edit existing event.
-            event = None
-            event = event_obj_from_json(json, identifier)
-            if not event:
-                return Response(status=MISSING_PARAM_CODE)
-            query_db.update_event(connection, identifier, event)
-            connection.close()
-            return Response(status=SUCCESS_CODE)
+        connection = query_db.get_connection(current_db_location())
+        if connection is not None:
+            if request.method == 'PUT': # Edit existing event.
+                event = None
+                event = event_obj_from_json(json, identifier)
+                if not event:
+                    return Response(status=MISSING_PARAM_CODE)
+                    query_db.update_event(connection, identifier, event)
+                    connection.close()
+                    return Response(status=SUCCESS_CODE)
 
-        elif request.method == 'DELETE':
-            query_db.delete_event(connection, identifier)
-            connection.close()
-            return Response(status=SUCCESS_CODE)
+            elif request.method == 'DELETE': # Delete existing event
+                query_db.delete_event(connection, identifier)
+                connection.close()
+                return Response(status=SUCCESS_CODE)
     # Failure
     return Response(status=FAILURE_CODE)
 
