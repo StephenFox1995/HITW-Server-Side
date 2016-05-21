@@ -34,6 +34,12 @@ CREATE_EVENT_IMAGE_TABLE_STMT = '''CREATE TABLE 'EventImage' (
 );'''
 
 
+CREATE_POY_TABLE_STMNT = '''CREATE TABLE 'PlayerOfTheYear' (
+	member_id INTEGER,
+	year STRING,
+	FOREIGN KEY(member_id) REFERENCES Member(member_id)
+);'''
+
 # TRIGGERS
 # --------------
 # Removes all results for a member if that member was deleted from the database
@@ -53,10 +59,8 @@ END'''
 
 
 
-
 def create_event_table(connection):
     try:
-        cursor = None
         cursor = connection.cursor()
         cursor.execute(CREATE_EVENT_TABLE_STMT)
     except sqlite3.Error, e:
@@ -67,36 +71,45 @@ def create_event_table(connection):
 
 def create_member_table(connection):
     try:
-        cursor = None
         cursor = connection.cursor()
         cursor.execute(CREATE_MEMBER_TABLE_STMT)
     except sqlite3.Error, e:
         print "ERORR: There was an error creating table 'Member'"
+
     else:
         print "TABLE: 'Member' created successfully"
 
 
 def create_result_table(connection):
     try:
-        cursor = None
         cursor = connection.cursor()
         cursor.execute(CREATE_RESULT_TABLE_STMT)
     except sqlite3.Error, e:
-        print "ERORR: There was an error creating table 'Result'"
+        print "ERORR: There was an error creating table 'Result' "
     else:
         print "TABLE: 'Result' created successfully"
 
+
 def create_event_image_table(connection):
 	try:
-		cursor = None
 		cursor = connection.cursor()
 		cursor.execute(CREATE_EVENT_IMAGE_TABLE_STMT)
+		cursor.close()
 	except sqlite3.Error, e:
-		print "ERROR: There was an error creating table 'EventImage'"
+		print "ERROR: There was an error creating table 'EventImage' "
 	else:
-		print "TABLE: 'EventImage' create successfully"
+		print "TABLE: 'EventImage' created successfully"
 
 
+def create_poy_table(connection):
+	try:
+		cursor = connection.cursor()
+		cursor.execute(CREATE_POY_TABLE_STMNT)
+		cursor.close()
+	except sqlite3.Error, e:
+		print e
+	else:
+		print "TABLE: 'PlayerOfTheYear' created successfully"
 
 
 def create_triggers(connection):
@@ -104,11 +117,11 @@ def create_triggers(connection):
 		cursor = connection.cursor()
 		cursor.execute(DELETE_MEMBER_FROM_RESULTS_TRIGGER)
 		cursor.execute(DELETE_RESULT_FOR_EVENT_TRIGGER)
+		cursor.close()
 	except sqlite3.Error, e:
 		print 'ERROR: There was a errror creating triggers.'
-		print "Reason: ", e
 	else:
-		print 'Trigges created successfully.'
+		print 'Triggers created successfully.'
 
 
 
@@ -118,7 +131,6 @@ def create_triggers(connection):
 
 # Creates the database and all the tables needed.
 def create_sqlite_db(filepath):
-	connection = None
 	connection = sqlite3.connect(filepath)
 
 	# Change so we can write to as
@@ -129,23 +141,21 @@ def create_sqlite_db(filepath):
 	create_member_table(connection)
 	create_result_table(connection)
 	create_event_image_table(connection)
+	create_poy_table(connection)
 	create_triggers(connection)
 	connection.close()
 
 
 def parse_args():
-	args = ()
 	db_filepath = sys.argv[1]
-	fbapp_key = sys.argv[2]
-	# return the filepath and facebook key from the arguments.
-	args = (db_filepath, fbapp_key)
-	return args
+	print db_filepath
+	return db_filepath
 
 # Parse the filepath so the db can be create there.
 args = parse_args()
 
-config.write_db_filepath(args[0])
-# config.write_fb_app_key(args[1])
+config.write_db_filepath(args)
+
 
 # Now create the sqlite db at that filepath.
-create_sqlite_db(args[0])
+create_sqlite_db(args)

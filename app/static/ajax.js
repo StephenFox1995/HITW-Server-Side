@@ -1,9 +1,10 @@
 /**
-Attempts to add a member to the database.
-@param member The member object to add.
-@param successful A callback upon a successful insertion
-               into the database.
-@param failure A callback when an error occurs.
+	Attempts to add a member to the database.
+	
+	@param accessToken 	The access token of the admin user that has correct permissions to do so.
+	@param member 		The member object to add.
+	@param successful	A callback when there has been successful connection with the server.
+	@param failed		A callback when connection to the server was failed.
 */
 function ajaxPOST_add_member(accessToken, member, successful, failed) {
   var member_f_name = member.get_member_f_name();
@@ -34,11 +35,12 @@ function ajaxPOST_add_member(accessToken, member, successful, failed) {
 
 
 /**
-Attempts to add a event to the database.
-@param event The event to add.
-@param successful A callback upon a successful
-                  insertion into the database.
-@param failure A callback when an error occurs.
+  	Attempts to add a event to the database.
+
+	@param accessToken 	The access token of the admin user that has correct permissions to do so.
+	@param event 		The event to add.
+	@param successful	A callback when there has been successful connection with the server.
+	@param failed		A callback when connection to the server was failed.
 */
 function ajaxPOST_add_event(accessToken, event, successful, failed) {
   var event_title = event.get_event_title();
@@ -69,6 +71,17 @@ function ajaxPOST_add_event(accessToken, event, successful, failed) {
   });
 }
 
+
+
+/**
+	Attempts to add an image to the server for an event.
+
+	@param accessToken 	The access token of the admin user that has correct permissions to do so.
+	@param event_id 	The id of the event to add the image for.
+	@param image_data 	The  image data.
+	@param successful	A callback when there has been successful connection with the server.
+	@param failed		A callback when connection to the server was failed.
+*/
 function ajaxPOST_add_event_image(accessToken, event_id, image_data, successful, failed) {
   var jsonData = {
     'accessToken' : accessToken,
@@ -92,13 +105,14 @@ function ajaxPOST_add_event_image(accessToken, event_id, image_data, successful,
 }
 
 /**
-Attempts to add a result to the database.
-@param event_id The id of the event to add the result.
-@param member_id The id of the member to add the result for.
-@param score The score associated with the result.
-@param successful A callback upon a successful
-                  insertion into the database.
-@param failure A callback when an error occurs.
+    Attempts to add a result to the database.
+
+	@param accessToken 	The access token of the admin user that has correct permissions to do so.
+	@param event_id 	The id of the event to add the result.
+	@param member_id 	The id of the member to add the result for.
+	@param score 		The score associated with the result.
+	@param successful	A callback when there has been successful connection with the server.
+	@param failed		A callback when connection to the server was failed.
 */
 function ajaxPOST_add_result(accessToken, event_id, member_id, score, successful, failed) {
   var jsonData = {
@@ -126,16 +140,11 @@ function ajaxPOST_add_result(accessToken, event_id, member_id, score, successful
 
 
 /**
-Attempts to retrieve all members from the database via
-AJAX call.
-@param successful: Callback when a successful GET request
-                   has returned json containing members.
-                   Please note that the json returned may
-                   contain 'null' as the value for members,
-                   if there are no members in the database.
-                   This callback passes one argument which
-                   is the data (json) returned from the server.
-@param failed: An error has occurred.*/
+	Attempts to retrieve all members from the database via AJAX call.
+
+	@param successful	A callback when there has been successful connection with the server.
+	@param failed		A callback when connection to the server was failed.
+*/
 function ajaxGET_get_all_members(successful, failed) {
   $.ajax({
     type: 'GET',
@@ -151,6 +160,14 @@ function ajaxGET_get_all_members(successful, failed) {
   });
 }
 
+
+/**
+	Makes a call to retrieve a member from the database via AJAX call.
+
+	@param member_id 	The id of the member.
+	@param successful	A callback when there has been successful connection with the server.
+	@param failed		A callback when connection to the server was failed.
+*/
 function ajaxGET_get_member(member_id, successful, failed) {
   $.ajax({
     type: 'GET',
@@ -166,18 +183,14 @@ function ajaxGET_get_member(member_id, successful, failed) {
   });
 }
 
+
+
 /**
-Attempts to retrieve all events from the database via
-AJAX call.
-@param
-@param successful: Callback when a successful GET request
-                   has returned json containing events.
-                   Please note that the json returned may
-                   contain 'null' as the value for members,
-                   if there are no events in the database.
-                   This callback passes one argument which
-                   is the data (json) returned from the server.
-@param failed: An error has occurred.*/
+	Makes a call to retrieve all events from the database via AJAX call.
+
+	@param successful	A callback when there has been successful connection with the server.
+	@param failed		A callback when connection to the server was failed.
+*/
 function ajaxGET_get_all_events(successful, failed) {
   $.ajax({
     type: 'GET',
@@ -193,6 +206,13 @@ function ajaxGET_get_all_events(successful, failed) {
   });
 }
 
+
+/**
+	Makes a call to the server via AJAX to get the next upcoming event.
+
+	@param successful	A callback when there has been successful connection with the server.
+	@param failed		A callback when connection to the server was failed.
+*/
 function ajaxGET_get_upcoming_event(successful, failed) {
   $.ajax({
     type: 'GET',
@@ -209,6 +229,13 @@ function ajaxGET_get_upcoming_event(successful, failed) {
 }
 
 
+/**
+	Makes a call to retrieve all images for a given event.
+	
+	@param event_id		The id of the event to retrieve the images for.
+	@param successful	A callback when there has been successful connection with the server.
+	@param failed		A callback when connection to the server was failed.
+*/
 function ajaxGET_get_all_event_images(event_id, successful, failed) {
   $.ajax({
     type: 'GET',
@@ -224,11 +251,11 @@ function ajaxGET_get_all_event_images(event_id, successful, failed) {
 }
 
 /**
-Attempts to retrieve an event from the database via
-AJAX call.
-@param event_id: The id of the event to GET.
-@param successful: Callback upon a successful GET request
-@param failed: An error has occurred.
+	Makes a call to retrieve an event from the database via AJAX call.
+	
+	@param event_id: 	The id of the event to GET.
+	@param successful	A callback when there has been successful connection with the server.
+	@param failed		A callback when connection to the server was failed.
 */
 function ajaxGET_get_event(event_id, successful, failed) {
   $.ajax({

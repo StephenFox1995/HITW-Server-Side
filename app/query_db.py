@@ -14,6 +14,8 @@ INSERT_INTO_MEMBER = '''INSERT INTO Member(member_id, member_f_name, member_l_na
 INSERT_INTO_RESULT = '''INSERT INTO Result(event_id, member_id, score) VALUES(?, ?, ?);'''
 
 INSERT_INTO_EVENT_IMAGE = '''INSERT INTO EVENTIMAGE(event_id, image_data) VALUES(?, ?);'''
+
+INSERT_INTO_POY = '''INSERT INTO PLAYEROFTHEYEAR(member_id, year) VALUES(?, ?);'''
 #-------------------
 
 
@@ -31,6 +33,7 @@ SELECT_ALL_MEMBERS = '''SELECT * FROM Member'''
 
 SELECT_MEMBER_X = '''SELECT * FROM MEMBER WHERE member_id = ?'''
 
+SELECT_PLAYER_OF_THE_YEAR = '''SELECT * FROM MEMBER WHERE member_poy_status = 1'''
 
 SELECT_ALL_RESULTS = '''SELECT * FROM Result'''
 
@@ -91,6 +94,14 @@ def insert_into_event_image(connection, event_id, image_data):
     cursor.execute(INSERT_INTO_EVENT_IMAGE, (event_id, image_data))
     connection.commit()
     cursor.close()
+
+
+def insert_into_poy(connection, member_id, year):
+    cursor = connection.cursor()
+    cursor.execute(INSERT_INTO_POY, (member_id, year))
+    connection.commit()
+    cursor.close()
+
 
 def get_all_events(connection):
     cursor = connection.cursor()
@@ -158,6 +169,7 @@ def get_all_members(connection):
             members.append(member)
     cursor.close()
     return members
+
 
 def get_member(connection, identifier):
     cursor = connection.cursor()
