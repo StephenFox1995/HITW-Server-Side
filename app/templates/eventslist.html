@@ -192,6 +192,11 @@ function add_event_to_html(event, showAdminControls) {
           '<button class="btn btn-default" onClick="delete_button_click(this)">Remove Event</button>' +
         '</td>' +
       '</tr>');
+
+    $('.nav').append(
+      '<li>' +
+        '<a href="/admin" data-toggle="collapse"' + 'data-target=".navbar-collapse.in">Administration</a>' +
+      '</li>');
   }
   else {
     $('#event_table > tbody').append(

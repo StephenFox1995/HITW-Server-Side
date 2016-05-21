@@ -181,6 +181,10 @@ function loadResultsToHTMLWithAdminControls(showAdminControls) {
           '</span>' +
         '</div>' +
       '</div>');
+    $('.nav').append(
+      '<li>' +
+        '<a href="/admin" data-toggle="collapse"' + 'data-target=".navbar-collapse.in">Administration</a>' +
+      '</li>');
       // $('#adminControls').append(
       //   '<div class="form-group">' +
       //     '<input type="file" name="img[]" class="file">' +
