@@ -12,6 +12,8 @@
     <script type="text/javascript" src="{{ url_for('static', filename='eventHITW.js') }}"></script>
     <script type="text/javascript" src="{{ url_for('static', filename='util.js') }}"></script>
     <script type="text/javascript" src="{{ url_for('static', filename='facebook.js') }}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='datepicker/bootstrap-datepicker.js') }}"></script>
+    <link rel="stylesheet" href="/static/styles/bootstrap-datepicker.css">
 
     <title>Events</title>
   </head>
@@ -119,6 +121,10 @@ var fbResponse = null;
 $(document).ready(function() {
   $("#event_table").on("click", "tbody tr td:not('.edit_td')", function() {
     handleRowClick($(this).index());
+  });
+
+  $('#event_date').datepicker({
+    format: "dd/mm/yyyy"
   });
 
   getFacebookLoginStatus(function(response) {

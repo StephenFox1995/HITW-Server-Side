@@ -146,6 +146,7 @@
 
 <script>
 $(document).on('ready', function() {
+  // See if the admin user is logged in.
   getFacebookLoginStatus(statusChangeCallback);
 
   $('#event_date').datepicker({
