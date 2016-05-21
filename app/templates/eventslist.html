@@ -117,7 +117,7 @@ var currently_editing_event = false;
 var events = [];
 var fbResponse = null;
 $(document).ready(function() {
-  $("#event_table").on("click", "tbody tr", function() {
+  $("#event_table").on("click", "tbody tr td:not('.edit_td')", function() {
     handleRowClick($(this).index());
   });
 
@@ -126,7 +126,7 @@ $(document).ready(function() {
       ajaxPOST_is_admin(response.authResponse.userID,
         function success(data) {
           if (data.isAdmin) {
-            // Add correct table heading
+            // Add correct html for admin user.
             loadEventsToHTMLWithAdminControls(true);
           } else {
             loadEventsToHTMLWithAdminControls(false);
@@ -171,10 +171,10 @@ function add_event_to_html(event, showAdminControls) {
         '<td>' + event_location + '</td>' +
         '<td>' + event_time + '</td>' +
         '<td>' + event_date + '</td>' +
-        '<td>' +
+        '<td class ="edit_td">' +
           '<button class="btn btn-default" data-toggle="modal"  data-target="#editEventModal" onClick="update_event_button_click(this);">Edit Event</button>' +
         '</td>' +
-        '<td>' +
+        '<td edit_td>' +
           '<button class="btn btn-default" onClick="delete_button_click(this)">Remove Event</button>' +
         '</td>' +
       '</tr>');

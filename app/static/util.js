@@ -2,7 +2,7 @@
 	Parses json representation of a member into a member object.
 
 	@param data 	The json data.
-	@return An array containing members parsed. 			
+	@return An array containing members parsed.
 */
 function parse_member_from_json(data) {
   var members = []
@@ -20,12 +20,11 @@ function parse_member_from_json(data) {
 };
 
 
-
 /**
 	Parses json representation of a event into a event object.
 
 	@param data 	The json data.
-	@return An array containing events parsed. 			
+	@return An array containing events parsed.
 */
 function parse_event_from_json(data) {
   var events = []
@@ -48,7 +47,7 @@ function parse_event_from_json(data) {
 	Parses json representation of a event images into an array of base64 strings.
 
 	@param data 	The json data.
-	@return An array containing base64 strings that were parsed. parsed. 			
+	@return An array containing base64 strings that were parsed. parsed.
 */
 function parse_event_images_from_json(data) {
   var event_images = []
@@ -66,7 +65,7 @@ function parse_event_images_from_json(data) {
 	Parses json representation of a result into a result object.
 
 	@param data 	The json data.
-	@return An array containing results parsed. 			
+	@return An array containing results parsed.
 */
 function parse_result_from_json(data) {
   var results = []
@@ -96,7 +95,7 @@ function getUrlVars() {
 
 /**
 	Strips the data:image/jpeg;base64 from the beginning of a base64 encoded string.
-	
+
 	@param base64string 	The base 64 encoded data.
 */
 function strip_meta_data_base64(base64string) {
