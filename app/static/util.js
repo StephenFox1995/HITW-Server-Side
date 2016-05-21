@@ -1,4 +1,9 @@
-// Parses json for members.
+/**
+	Parses json representation of a member into a member object.
+
+	@param data 	The json data.
+	@return An array containing members parsed. 			
+*/
 function parse_member_from_json(data) {
   var members = []
   $.each(data, function(index, element) {
@@ -16,7 +21,12 @@ function parse_member_from_json(data) {
 
 
 
-// Parses json for events.
+/**
+	Parses json representation of a event into a event object.
+
+	@param data 	The json data.
+	@return An array containing events parsed. 			
+*/
 function parse_event_from_json(data) {
   var events = []
   $.each(data, function(index, element) {
@@ -34,6 +44,12 @@ function parse_event_from_json(data) {
 }
 
 
+/**
+	Parses json representation of a event images into an array of base64 strings.
+
+	@param data 	The json data.
+	@return An array containing base64 strings that were parsed. parsed. 			
+*/
 function parse_event_images_from_json(data) {
   var event_images = []
   $.each(data, function(index, element) {
@@ -46,7 +62,12 @@ function parse_event_images_from_json(data) {
 }
 
 
-// Parses json for results.
+/**
+	Parses json representation of a result into a result object.
+
+	@param data 	The json data.
+	@return An array containing results parsed. 			
+*/
 function parse_result_from_json(data) {
   var results = []
   $.each(data, function(index, element) {
@@ -61,6 +82,7 @@ function parse_result_from_json(data) {
   return results;
 }
 
+
 function getUrlVars() {
     var vars = [], hash;
     var hashes = window.location.href.slice(window.location.href.indexOf('?') + 1).split('&');
@@ -73,12 +95,15 @@ function getUrlVars() {
 }
 
 /**
-Strips the data:image/jpeg;base64 from the beginning of a base64 encoded string.
-@param base64string The base 64 encoded data.
+	Strips the data:image/jpeg;base64 from the beginning of a base64 encoded string.
+	
+	@param base64string 	The base 64 encoded data.
 */
 function strip_meta_data_base64(base64string) {
   return base64string.replace(/^data:image\/(png|jpeg);base64,/, "");
 }
+
+
 
 function get_object_for_button_index(button, array) {
   var index = $(button).closest('tr').index();
