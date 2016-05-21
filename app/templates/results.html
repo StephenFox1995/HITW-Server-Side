@@ -3,18 +3,15 @@
   <head>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
-    <script src="../static/util.js"></script>
 
-
-    <!-- Latest compiled and minified CSS -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
 
-    <!-- Optional theme -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap-theme.min.css" integrity="sha384-fLW2N01lMqjakBkx3l/M9EahuwpSfeNvV63J5ezn3uZzapT0u7EYsXMjQV+0En5r" crossorigin="anonymous">
 
     <!-- Latest compiled and minified JavaScript -->
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
 
+    <script src="../static/util.js"></script>
     <script type="text/javascript" src="{{ url_for('static', filename='result.js') }}"></script>
     <script type="text/javascript" src="{{ url_for('static', filename='member.js') }}"></script>
     <script type="text/javascript" src="{{ url_for('static', filename='ajax.js') }}"></script>
@@ -26,12 +23,12 @@
     <script type="text/javascript" src="{{ url_for('static', filename='facebook.js') }}"></script>
     <script type="text/javascript" src="{{ url_for('static', filename='file-input.js') }}"></script>
     <script type="text/javascript" src="{{ url_for('static', filename='gallery/bootstrap-gallery.js') }}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='gallery/jquery.justifyGallery.min.js') }}"></script>
     <link rel="stylesheet" href="../static/styles/bootstrapWebkitCompat.css">
     <link rel="stylesheet" href="../static/styles/results.css">
     <link rel="stylesheet" href="../static/styles/heading.css">
 
     <link rel="stylesheet" href="../static/styles/gallery/bootstrap-gallery.css">
-
 
     <title>Results</title>
   </head>
@@ -134,16 +131,10 @@
     </div>
 
 
-    <div id="galleryContainer">
-      <div class="gallery row">
-        <a class="col-xs-6 col-sm-4" href="http://www.velior.ru/wp-content/uploads/2009/05/Test-Computer-Key-by-Stuart-Miles.jpg">
-          <img src="http://www.velior.ru/wp-content/uploads/2009/05/Test-Computer-Key-by-Stuart-Miles.jpg" alt="thumb1">
-        </a>
-        <a class="col-xs-6 col-sm-4" href="http://www.velior.ru/wp-content/uploads/2009/05/Test-Computer-Key-by-Stuart-Miles.jpg">
-          <img src="http://www.velior.ru/wp-content/uploads/2009/05/Test-Computer-Key-by-Stuart-Miles.jpg" alt="thumb1">
-        </a>
+
+      <div class="gallery row justifyGallery">
       </div>
-    </div>
+
 
 
   </body>
@@ -177,13 +168,6 @@ $(document).on("ready", function() {
     else { loadResultsToHTMLWithAdminControls(false); }
   });
 
-});
-
-$(document).on("ready", function() {
-  $('.gallery').bootstrapGallery();
-  $('.gallery-overview').bootstrapGallery({
-    iconset: "fontawesome"
-  });
 });
 
 
@@ -262,7 +246,7 @@ function display_images(images) {
   images.forEach(function(image) {
     correct_format_image.push(image_prefix + image);
   });
-  //addGallery('.galleryContainer', correct_format_image);
+  addGallery('.gallery', correct_format_image);
 }
 
 

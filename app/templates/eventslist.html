@@ -126,7 +126,11 @@ var events = [];
 var fbResponse = null;
 $(document).ready(function() {
   $("#event_table").on("click", "tbody tr td:not('.edit_td')", function() {
-    handleRowClick($(this).index());
+    // We don't want to handle the row click if the click was on a button within that row
+    if ($(this).index() <= 3) {
+      var parentIndex = $(this).closest('tr').index(); // closest tr.
+      handleRowClick(parentIndex);
+    }
   });
 
   $('#event_date').datepicker({
