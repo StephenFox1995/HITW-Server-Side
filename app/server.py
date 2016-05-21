@@ -452,13 +452,12 @@ def edit_event(identifier):
         connection = query_db.get_connection(current_db_location())
         if connection is not None:
             if request.method == 'PUT': # Edit existing event.
-                event = None
                 event = event_obj_from_json(json, identifier)
                 if not event:
                     return Response(status=MISSING_PARAM_CODE)
-                    query_db.update_event(connection, identifier, event)
-                    connection.close()
-                    return Response(status=SUCCESS_CODE)
+                query_db.update_event(connection, identifier, event)
+                connection.close()
+                return Response(status=SUCCESS_CODE)
 
             elif request.method == 'DELETE': # Delete existing event
                 query_db.delete_event(connection, identifier)
@@ -583,13 +582,12 @@ def login():
 # needed to initialise the json are missing
 # None will be returned.
 def event_obj_from_json(json, identifier):
-    title = json.get("title")
-    location = json.get("location")
-    time = json.get("time")
-    date = json.get("date")
+    title =     json.get("title")
+    location =  json.get("location")
+    time =      json.get("time")
+    date =      json.get("date")
     if not title or not location or not time or not date:
         return None
-
     return Event(identifier, title, location, time, date)
 
 # Attempts to create new Member object

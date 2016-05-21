@@ -1,6 +1,6 @@
 /**
 	Attempts to add a member to the database.
-	
+
 	@param accessToken 	The access token of the admin user that has correct permissions to do so.
 	@param member 		The member object to add.
 	@param successful	A callback when there has been successful connection with the server.
@@ -231,7 +231,7 @@ function ajaxGET_get_upcoming_event(successful, failed) {
 
 /**
 	Makes a call to retrieve all images for a given event.
-	
+
 	@param event_id		The id of the event to retrieve the images for.
 	@param successful	A callback when there has been successful connection with the server.
 	@param failed		A callback when connection to the server was failed.
@@ -252,7 +252,7 @@ function ajaxGET_get_all_event_images(event_id, successful, failed) {
 
 /**
 	Makes a call to retrieve an event from the database via AJAX call.
-	
+
 	@param event_id: 	The id of the event to GET.
 	@param successful	A callback when there has been successful connection with the server.
 	@param failed		A callback when connection to the server was failed.
@@ -344,12 +344,8 @@ function ajaxPUT_update_event(accessToken, event, successful, failed) {
     url: '/edit_event/' + event.get_event_id(),
     contentType: "application/json",
     data: data,
-    success: function(data) {
-      successful(data);
-    },
-    failure: function() {
-      failed();
-    }
+    success: function(data) { successful(data); },
+    failure: function() { failed(); }
   });
 }
 
