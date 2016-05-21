@@ -57,7 +57,7 @@ def results_for_event(identifier):
 
 @app.route('/results/<int:id>', methods=['GET'])
 def results(id):
-    return render_template('resultstemp.html', event_id=id)
+    return render_template('results.html', event_id=id)
 
 
 #----------------------------------------------------------------
