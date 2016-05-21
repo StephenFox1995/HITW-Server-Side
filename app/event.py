@@ -4,23 +4,27 @@ class Event():
 
     _title = ""
     _location = ""
-    _time = ""
     _date = ""
     _identifier = None
+    _start_tee_time = ""
+    _end_tee_time = ""
 
-    def __init__(self, identifier, title, location, time, date):
+    def __init__(self, identifier, title, location, start_tee_time, end_tee_time, date):
         self._identifier = identifier
         self._location = location
-        self._time = time
+        self._start_tee_time = start_tee_time
+        self._end_tee_time = end_tee_time
         self._date = date
         self._title = title
+
 
 
     def jsonify(self):
         data = {'identifier': self._identifier,
         'title':self._title,
         'location' : self._location,
-        'time': self._time,
+        'startTeeTime': self.start_tee_time,
+        'endTeeTime' : self.end_tee_time,
         'date': self._date }
         return json.dumps(data)
 
@@ -29,17 +33,17 @@ class Event():
     def title(self):
         return self._title
 
-
-
     @property
     def location(self):
         return self._location
 
+    @property
+    def start_tee_time(self):
+        return self._start_tee_time
 
     @property
-    def time(self):
-        return self._time
-
+    def end_tee_time(self):
+        return self._end_tee_time
 
     @property
     def date(self):

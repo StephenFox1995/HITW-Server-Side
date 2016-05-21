@@ -110,21 +110,22 @@ def add_event():
 
         title = json.get("title")
         location = json.get("location")
-        time = json.get("time")
+        start_tee = json.get("startTeeTime")
+        end_tee = json.get("endTeeTime")
         date = json.get("date")
 
         if not title:
             return Response(status=MISSING_PARAM_CODE)
         if not location:
             return Response(status=MISSING_PARAM_CODE)
-        if not time:
+        if not start_tee:
             return Response(status=MISSING_PARAM_CODE)
         if not date:
             return Response(status=MISSING_PARAM_CODE)
         else:
             connection = query_db.get_connection(current_db_location())
             if connection is not None:
-                query_db.insert_into_event(connection, title, location, date, time)
+                query_db.insert_into_event(connection, title, location, date, start_tee, end_tee)
                 connection.close()
                 return Response(status=SUCCESS_CODE)
             else: # Connection to database failed
@@ -582,13 +583,15 @@ def login():
 # needed to initialise the json are missing
 # None will be returned.
 def event_obj_from_json(json, identifier):
-    title =     json.get("title")
-    location =  json.get("location")
-    time =      json.get("time")
-    date =      json.get("date")
-    if not title or not location or not time or not date:
+    title =             json.get("title")
+    location =          json.get("location")
+    start_tee_time =    json.get("startTeeTime")
+    end_tee_time =      json.get('endTeeTime')
+    date =              json.get("date")
+    if not title or not location or not start_tee_time or not date:
         return None
-    return Event(identifier, title, location, time, date)
+    return Event(identifier, title, location, start_tee_time, end_tee_time, date)
+
 
 # Attempts to create new Member object
 # from json, if any of the fields

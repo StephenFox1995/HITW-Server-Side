@@ -7,7 +7,7 @@ from result import Result
 
 # INSERTS
 #-------------------
-INSER_INTO_EVENT = '''INSERT INTO Event(event_id, event_title, event_location, event_date, event_time) VALUES(NULL, ?, ?, ?, ?)'''
+INSER_INTO_EVENT = '''INSERT INTO Event(event_id, event_title, event_location, event_date, event_start_tee_time, event_end_tee_time) VALUES(NULL, ?, ?, ?, ?, ?)'''
 
 INSERT_INTO_MEMBER = '''INSERT INTO Member(member_id, member_f_name, member_l_name, member_handicap) VALUES(NULL, ?, ?, ?);'''
 
@@ -45,7 +45,7 @@ SELECT_RESULT_X_FOR_EVENT = '''SELECT * FROM Result WHERE event_id = ?'''
 
 # UPDATES
 # ------------------
-UPDATE_EVENT_BY_EVENT_ID= 'UPDATE Event SET event_title=?, event_location=?, event_date=?, event_time=? WHERE event_id=?;'
+UPDATE_EVENT_BY_EVENT_ID= 'UPDATE Event SET event_title=?, event_location=?, event_date=?, event_start_tee_time=?, event_end_tee_time=? WHERE event_id=?;'
 
 UPDATE_MEMBER_BY_MEM_ID = 'UPDATE Member SET member_f_name=?, member_l_name=?, member_handicap=? WHERE member_id=?';
 
@@ -70,9 +70,9 @@ def get_connection(filepath):
     connection = sqlite3.connect(filepath)
     return connection
 
-def insert_into_event(connection, title, location, date, time):
+def insert_into_event(connection, title, location, date, start_tee, end_tee):
     cursor = connection.cursor()
-    cursor.execute(INSER_INTO_EVENT, (title, location, date, time))
+    cursor.execute(INSER_INTO_EVENT, (title, location, date, start_tee, end_tee))
     connection.commit()
     cursor.close()
 
@@ -231,10 +231,11 @@ def update_event(connection, identifier, event):
     new_event_title = event.title
     new_event_location = event.location
     new_event_date = event.date
-    new_event_time = event.time
+    new_event_start_tee = event.start_tee_time
+    new_event_end_tee = event.end_tee_time
 
     cursor = connection.cursor()
-    cursor.execute(update_query, (new_event_title, new_event_location, new_event_date, new_event_time, identifier))
+    cursor.execute(update_query, (new_event_title, new_event_location, new_event_date, new_event_start_tee, new_event_end_tee, identifier))
     connection.commit()
     cursor.close()
 
@@ -289,12 +290,13 @@ def delete_event(connection, event_id):
 
 def create_event_from_sql_result(result):
     if result:
-        event_id =       result[0]
-        event_title =    result[1]
-        event_location = result[2]
-        event_date =     result[3]
-        event_time =     result[4]
-        event = Event(event_id, event_title, event_location, event_time, event_date)
+        event_id =          result[0]
+        event_title =       result[1]
+        event_location =    result[2]
+        event_date =        result[3]
+        event_start_tee =   result[4]
+        event_end_tee =     result[5]
+        event = Event(event_id, event_title, event_location, event_start_tee, event_end_tee, event_date)
         return event
 
 

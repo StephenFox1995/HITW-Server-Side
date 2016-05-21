@@ -9,7 +9,8 @@ CREATE_EVENT_TABLE_STMT = '''CREATE TABLE 'Event' (
 	event_title VARCHAR,
 	event_location VARCHAR NOT NULL,
 	event_date DATE NOT NULL,
-	event_time TIME NOT NULL
+	event_start_tee_time TIME NOT NULL,
+	event_end_tee_time TIME
 );'''
 
 CREATE_MEMBER_TABLE_STMT = '''CREATE TABLE 'Member' (

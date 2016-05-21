@@ -45,15 +45,17 @@ function ajaxPOST_add_member(accessToken, member, successful, failed) {
 function ajaxPOST_add_event(accessToken, event, successful, failed) {
   var event_title = event.get_event_title();
   var event_location = event.get_event_location();
-  var event_time = event.get_event_time();
+  var event_start_tee_time = event.get_event_start_tee_time();
+  var event_end_tee_time = event.get_event_end_tee_time();
   var event_date = event.get_event_date();
 
   var jsonData = {
-    'accessToken': accessToken,
-    'title'     :event_title,
-    'location'  :event_location,
-    'time'      :event_time,
-    'date'      :event_date
+    'accessToken'  : accessToken,
+    'title'        :event_title,
+    'location'     :event_location,
+    'date'         :event_date,
+    'startTeeTime' :event_start_tee_time,
+    'endTeeTime'   :event_end_tee_time
   };
   var data = JSON.stringify(jsonData);
 
@@ -330,12 +332,13 @@ via an AJAX cal.
 function ajaxPUT_update_event(accessToken, event, successful, failed) {
   // Send edited event info to server.
   var jsonData = {
-    "accessToken" : accessToken,
-    "title"       : event.get_event_title(),
-    "location"    : event.get_event_location(),
-    "time"        : event.get_event_time(),
-    "date"        : event.get_event_date(),
-    "identifier"  : event.get_event_id() // Use the id of the old event as ids cannot be edited.
+    "accessToken"   : accessToken,
+    "title"         : event.get_event_title(),
+    "location"      : event.get_event_location(),
+    "date"          : event.get_event_date(),
+    "startTeeTime"  : event.get_event_start_tee_time(),
+    "endTeeTime"    : event.get_event_end_tee_time(),
+    "identifier"    : event.get_event_id() // Use the id of the old event as ids cannot be edited.
   }
   var data = JSON.stringify(jsonData);
 

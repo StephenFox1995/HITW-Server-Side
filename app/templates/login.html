@@ -27,7 +27,6 @@
           <span class="icon-bar"></span>
           <span class="icon-bar"></span>
           <span class="icon-bar"></span>
-          <span class="icon-bar"></span>
         </button>
         <a class="navbar-brand" href="/">McCaffrey's Hole In The Wall Golf Society</a>
       </div>
@@ -118,8 +117,14 @@
               </tr>
               <tr>
                 <td>
-                  Time
-                  <input type="text" class="form-control" id="event_time" value="mm:hh">
+                  Event Start Tee
+                  <input type="text" class="form-control" id="event_start_tee">
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  Event End Tee
+                  <input type="text" class="form-control" id="event_end_tee">
                 </td>
               </tr>
               <tr>
@@ -230,26 +235,26 @@ $("#add_event_button").click(function() {
   var event_title = $('#event_title').val();
   var event_location = $('#event_location').val();
   var event_date = $('#event_date').val();
-  var event_time = $('#event_time').val();
+  var event_start_tee = $('#event_start_tee').val();
+  var event_end_tee = $('#event_end_tee').val();
 
-  if (!validTimeFormat(event_time)) {
+  if (!validTimeFormat(event_start_tee)) {
+    alert('Please enter time in the format HH:MM');
+    return;
+  }
+  if ((event_end_tee != null) && !(validTimeFormat(event_end_tee))) {
     alert('Please enter time in the format HH:MM');
     return;
   }
 
-  // Create new event, set the id to anything as it is not
-  // used in /add_member/
-  var event_to_add = new EventHITW(0, event_title, event_location, event_time, event_date);
+  var event_to_add = new EventHITW(0, event_title, event_location, event_end_tee,
+    event_start_tee, event_date);
 
   var userToken = getFacebookUserToken().userID;
 
   ajaxPOST_add_event(userToken, event_to_add,
-    function successful() {
-      success(event_title + " has been added");
-    },
-    function failure() {
-      alert("Something went wrong.")
-    });
+    function successful() { success(event_title + " has been added"); },
+    function failure() { alert("Something went wrong.") });
   });
 
 

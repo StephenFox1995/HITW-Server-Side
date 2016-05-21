@@ -30,12 +30,13 @@ function parse_event_from_json(data) {
   var events = []
   $.each(data, function(index, element) {
     $.each(element, function(i, json) {
-      event_id =       json['identifier']
-      event_title =    json['title']
-      event_location = json['location']
-      event_time =    json['time']
-      event_date =     json['date']
-      var eventHITW = new EventHITW(event_id, event_title, event_location, event_time, event_date)
+      event_id =        json['identifier']
+      event_title =     json['title']
+      event_location =  json['location']
+      event_start_tee = json['startTeeTime']
+      event_end_tee =   json['endTeeTime']
+      event_date =      json['date']
+      var eventHITW = new EventHITW(event_id, event_title, event_location, event_start_tee, event_end_tee, event_date)
       events.push(eventHITW)
     })
   });

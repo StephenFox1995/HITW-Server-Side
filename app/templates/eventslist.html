@@ -52,10 +52,10 @@
       <table class="table table-hover" id="event_table">
         <thead>
           <tr>
-            <th>Event Title</th>
-            <th>Event Location</th>
-            <th>Event Time</th>
-            <th>Event Date</th>
+            <th>Title</th>
+            <th>Location</th>
+            <th>Start Tee </th>
+            <th>End Tee</th>
           </tr>
         </thead>
         <tbody>
@@ -91,8 +91,14 @@
               </tr>
               <tr>
                 <td>
-                  Event Time
-                  <input type="text" class="form-control" id="event_time">
+                  Event Start Tee
+                  <input type="text" class="form-control" id="event_start_tee">
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  Event End Tee
+                  <input type="text" class="form-control" id="event_end_tee">
                 </td>
               </tr>
               <tr>
@@ -165,17 +171,19 @@ function removeLoaderImage() {
 
 
 function add_event_to_html(event, showAdminControls) {
-  event_id =       event.get_event_id()
-  event_title =    event.get_event_title()
-  event_location = event.get_event_location()
-  event_time =     event.get_event_time()
-  event_date =     event.get_event_date()
+  event_id =        event.get_event_id()
+  event_title =     event.get_event_title()
+  event_location =  event.get_event_location()
+  event_start_tee = event.get_event_start_tee_time()
+  event_end_tee =   event.get_event_end_tee_time()
+  event_date =      event.get_event_date()
   if (showAdminControls) {
     $('#event_table > tbody').append(
       '<tr>'+
         '<td>' + event_title + '</td>' +
         '<td>' + event_location + '</td>' +
-        '<td>' + event_time + '</td>' +
+        '<td>' + event_start_tee + '</td>' +
+        '<td>' + event_end_tee + '</td>' +
         '<td>' + event_date + '</td>' +
         '<td class ="edit_td">' +
           '<button class="btn btn-default" data-toggle="modal"  data-target="#editEventModal" onClick="update_event_button_click(this);">Edit Event</button>' +
@@ -190,7 +198,8 @@ function add_event_to_html(event, showAdminControls) {
       '<tr>'+
         '<td>' + event_title + '</td>' +
         '<td>' + event_location + '</td>' +
-        '<td>' + event_time + '</td>' +
+        '<td>' + event_start_tee + '</td>' +
+        '<td>' + event_end_tee + '</td>' +
         '<td>' + event_date + '</td>' +
       '</tr>');
   }
@@ -226,7 +235,8 @@ function fill_edit_modal(event) {
   $('#update_event_button').data('data-event', event);
   $('#event_title').val(event.get_event_title());
   $('#event_location').val(event.get_event_location());
-  $('#event_time').val(event.get_event_time());
+  $('#event_start_tee').val(event.get_event_start_tee_time());
+  $('#event_end_tee').val(event.get_event_end_tee_time());
   $('#event_date').val(event.get_event_date());
 }
 
@@ -236,12 +246,15 @@ function send_update_to_server(button) {
   // Get the newly entered values.
   var updated_event_title = $('#event_title').val();
   var updated_event_location = $('#event_location').val();
-  var updated_event_time = $('#event_time').val();
+  var updated_event_start_tee = $('#event_start_tee').val();
+  var updated_event_end_tee = $('#event_end_tee').val();
   var updated_event_date = $('#event_date').val();
+
   // Set the events attributes to the new attributes.
   event.set_event_title(updated_event_title);
   event.set_event_location(updated_event_location);
-  event.set_event_time(updated_event_time);
+  event.set_event_start_tee_time(updated_event_start_tee);
+  event.set_event_end_tee_time(updated_event_end_tee);
   event.set_event_date(updated_event_date);
 
   var userToken = getFacebookUserToken().userID;
