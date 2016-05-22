@@ -128,7 +128,7 @@ $(document).ready(function() {
   $("#event_table").on("click", "tbody tr td:not('.edit_td')", function() {
     // We don't want to handle the row click if the click was on a button within that row
     if ($(this).index() <= 3) {
-      var parentIndex = $(this).closest('tr').index(); // closest tr.
+      var parentIndex = $(this).closest('tr').index();
       handleRowClick(parentIndex);
     }
   });
@@ -281,10 +281,7 @@ function delete_button_click(button) {
 
 
 function remove_event(event) {
-  if (confirm("Are you sure you want to delete " +
-  event.get_event_location() + " on " +
-  event.get_event_date() + " at " +
-  event.get_event_time() + "?")) {
+  if (confirm("Are you sure you want to delete this event?")) {
     var userToken = getFacebookUserToken().userID;
 
     ajaxDELETE_delete_event(userToken, event.get_event_id(),

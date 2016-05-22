@@ -3,22 +3,23 @@ function addGallery(element, images) {
     $(element).append(galleryBody());
 
     images.forEach(function(image) {
-      $('.gallery').append('row', galleryItem(image));
+      $('.gallery').append(galleryItem(image));
     });
   }
 
+  $('.gallery').justifyGallery();
   $('.gallery').bootstrapGallery();
   $('.gallery-overview').bootstrapGallery({
     iconset: "fontawesome"
   });
-  $('.gallery').justifyGallery();
+
 }
 
 // Returns the ccs for a gallery item.
 function galleryItem(src) {
-  return '<a class="col-xs-6 col-sm-4" href="' + src + '">' +
+  return '<a href="' + src + '">' +
               '<img src= "' + src + '">' +
-          '</a>';
+         '</a>';
 }
 
 // Reuturns the css for a gallery item.

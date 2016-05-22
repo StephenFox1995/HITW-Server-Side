@@ -259,7 +259,10 @@ $("#add_event_button").click(function() {
   var userToken = getFacebookUserToken().userID;
 
   ajaxPOST_add_event(userToken, event_to_add,
-    function successful() { success(event_title + " has been added"); },
+    function successful() {
+      success(event_title + " has been added");
+      clear_event_inputs();
+     },
     function failure() { alert("Something went wrong.") });
   });
 
@@ -270,7 +273,17 @@ function clear_member_inputs() {
   $('#member_handicap').val("")
 }
 
+function clear_event_inputs() {
+  $('#event_title').val("")
+  $('#event_location').val("")
+  $('#event_date').val("")
+  $('#event_start_tee').val("")
+  $('#event_end_tee').val("")
+}
+
 function success(message) {
-  $("#alert_placeholder").append('<div class="alert alert-success"><a class="close" data-dismiss="alert">x</a><span>' + message + '</span></div>');
+  $('#addEventModal .modal-dialog .modal-footer').append(
+    '<div class="alert alert-success"><a class="close" data-dismiss="alert">x</a><span>' + message + '</span></div>')
+  // $("#alert_placeholder").append('<div class="alert alert-success"><a class="close" data-dismiss="alert">x</a><span>' + message + '</span></div>');
 }
 </script>

@@ -23,7 +23,7 @@
     <script type="text/javascript" src="{{ url_for('static', filename='facebook.js') }}"></script>
     <script type="text/javascript" src="{{ url_for('static', filename='file-input.js') }}"></script>
     <script type="text/javascript" src="{{ url_for('static', filename='gallery/bootstrap-gallery.js') }}"></script>
-    <script type="text/javascript" src="{{ url_for('static', filename='gallery/jquery.justifyGallery.min.js') }}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='gallery/jquery.justifyGallery.js') }}"></script>
     <link rel="stylesheet" href="../static/styles/bootstrapWebkitCompat.css">
     <link rel="stylesheet" href="../static/styles/results.css">
     <link rel="stylesheet" href="../static/styles/heading.css">
@@ -132,7 +132,7 @@
 
 
 
-      <div class="gallery row justifyGallery">
+      <div class="gallery">
       </div>
 
 
@@ -289,7 +289,6 @@ function add_result_info_to_html(result, member, showAdminControls) {
         '<td>' + result.get_result_score() + '</td>' +
       '</tr>')
   }
-
 }
 
 

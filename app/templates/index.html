@@ -75,7 +75,7 @@ $(document).ready(function() {
     function successful(data) {
       $("#upcoming_event_title").append('<b>' + data['title'] + '</b>');
       $("#upcoming_event_location").append('<b>Location:</b> ' + data['location']);
-      $("#upcoming_event_time").append('<b>Time:</b> ' + data['time']);
+      $("#upcoming_event_time").append('<b>Time:</b> ' + data['startTeeTime'] + '-' + data['endTeeTime']);
       $("#upcoming_event_date").append('<b>Date:</b> ' + data['date']);
     },
     function failure() {});
