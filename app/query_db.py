@@ -27,18 +27,19 @@ SELECT_EVENT_X = '''SELECT * FROM EVENT WHERE event_id = ?'''
 
 SELECT_ALL_EVENT_IMAGES_FOR_EVENT = '''SELECT * FROM EVENTIMAGE WHERE event_id = ?'''
 
-SELECT_UPCOMING_EVENT = '''SELECT * FROM EVENT WHERE event_date <= date('now') ORDER BY event_date DESC;'''
+SELECT_UPCOMING_EVENT = '''SELECT * FROM EVENT WHERE event_date >= date('now') ORDER BY event_date ASC;'''
 
 SELECT_ALL_MEMBERS = '''SELECT * FROM Member'''
 
 SELECT_MEMBER_X = '''SELECT * FROM MEMBER WHERE member_id = ?'''
 
-SELECT_PLAYER_OF_THE_YEAR = '''SELECT * FROM MEMBER WHERE member_poy_status = 1'''
 
 SELECT_ALL_RESULTS = '''SELECT * FROM Result'''
 
 SELECT_RESULT_X_FROM_MEMBER_ID = '''SELECT * FROM Result WHERE member_id = ?'''
 SELECT_RESULT_X_FOR_EVENT = '''SELECT * FROM Result WHERE event_id = ?'''
+
+SEELCT_ALL_POY = '''SELECT * FROM PlayerOfTheYear'''
 
 #-------------------
 
@@ -221,6 +222,28 @@ def get_all_results_for_member(connection, identifier):
     cursor.close()
     return results
 
+# Returns every player of the year.
+def get_all_poy(connection):
+    cursor = connection.cursor()
+    cursor.execute(SELECT_ALL_POY)
+    rows = cursor.fetchall()
+
+    results = {}
+    if rows:
+        for row in rows:
+            year = row[1] # extract the year.
+            member_id = row[0] # member_id is stored at first index in result.
+            # now go get that member from the database.
+            result = get_member(member_id)
+            member = create_member_from_result(result)
+
+            # Add year as key and member as value for returning result set.
+            results.update({year: member})
+    cursor.close()
+    return results
+
+
+
 
 
 
@@ -308,6 +331,7 @@ def create_member_from_result(result):
         member_handicap = result[3]
         member = Member(member_id, member_f_name, member_l_name, member_handicap)
         return member
+
 
 def create_resultObject_from_result(result):
     if result:

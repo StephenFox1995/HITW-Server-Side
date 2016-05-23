@@ -169,6 +169,39 @@ def add_result():
     return Response(status=FAILURE_CODE)
 
 
+
+
+#----------------------------------------------------------------
+# ADD PLAYER OF THE YEAR
+#----------------------------------------------------------------
+@app.route('/add_poy/', methods=['POST'])
+def add_poy():
+    if request.json:
+        json = request.json
+
+        access_token = json.get('accessToken')
+        
+        # Check that this user is admin.
+        if auth.is_admin(access_token) is False:
+            return Response(status=PERMISSION_DENIED)
+
+        member_id = json.get('member_id')
+        year = json.get('year')
+
+        if not member_id:
+            return Response(status=MISSING_PARAM_CODE)
+        else:
+            connection = query_db.get_connection(current_db_location())
+            if connection is not None:
+                query_db.insert_into_poy(connection, member_id, year)
+                connection.close()
+                return Response(status=SUCCESS_CODE)
+            else:
+                return Response(status=FAILURE_CODE)
+    else:
+        return Response(status=FAILURE_CODE)
+
+
 #----------------------------------------------------------------
 # ADD EVENT IMAGE
 #----------------------------------------------------------------
@@ -433,6 +466,29 @@ def get_all_results_for_member(identifier):
 
     # Failure
     return Response(status=FAILURE_CODE)
+
+
+#----------------------------------------------------------------
+# GET ALL PLAYERS OF THE YEAR
+#----------------------------------------------------------------
+@app.route('/get_all_poy/', methods=['GET'])
+def get_all_poy():
+    connection = query_db.get_connection(current_db_location())
+
+    json = '{ "poys": ['
+    if connection is not None:
+        results = query_db.get_all_poy(connection)
+        connection.close()
+
+        if len(results) > 0:
+            for count, result in enumerate(results, start=1):
+                if result:
+                    pass
+        #### TDODO
+        else:
+            json = empty_json_for_array("poy")
+        return Response(status=SUCCESS_CODE, response=json, mimetype='application/json');
+
 
 #----------------------------------------------------------------
 # EDIT EVENT

@@ -27,7 +27,6 @@
     <link rel="stylesheet" href="../static/styles/bootstrapWebkitCompat.css">
     <link rel="stylesheet" href="../static/styles/results.css">
     <link rel="stylesheet" href="../static/styles/heading.css">
-
     <link rel="stylesheet" href="../static/styles/gallery/bootstrap-gallery.css">
 
     <title>Results</title>
@@ -176,7 +175,7 @@ function loadResultsToHTMLWithAdminControls(showAdminControls) {
   if (showAdminControls) {
 
     $('#adminControls').append('<div class="btn_display" style="text-align:center">' +
-      '<button class="btn btn-default" data-toggle="modal" data-target="#addResultModal"' + ' onclick="before_result_modal()">Add Result</button>' +
+      '<button class="btn btn-default" data-toggle="modal" data-target="#addResultModal"' + ' onclick="on_submit_result()">Add Result</button>' +
       '<input type="file" id="upload_image" title="Upload image">' +
     '</div>');
 
@@ -241,8 +240,8 @@ function removeLoaderImage() {
 
 
 function display_images(images) {
-  var image_prefix = 'data:image/png;base64, '
-  var correct_format_image = []
+  var image_prefix = 'data:image/png;base64, ';
+  var correct_format_image = [];
   images.forEach(function(image) {
     correct_format_image.push(image_prefix + image);
   });
@@ -292,8 +291,7 @@ function add_result_info_to_html(result, member, showAdminControls) {
 }
 
 
-function before_result_modal() {
-  var members_names_for_typeahead = []
+function on_submit_result() {
   // Set the event text field.
   $("#result_event_id").val(current_event.get_event_location());
 
@@ -308,7 +306,6 @@ function before_result_modal() {
         member_fullname == null ||
         score == "" ||
         score == null) {
-      // Just return (silly user)
       return;
     } else {
       var member = members_to_fullname_map[member_fullname];
@@ -335,8 +332,7 @@ function before_result_modal() {
       });
       set_typeahead_data_source(members_names_for_typeahead);
     },
-    function failure() { }
-  );
+    function failure() { });
 }
 
 function add_result(authToken, event_id, member_id, score, successful, failed) {

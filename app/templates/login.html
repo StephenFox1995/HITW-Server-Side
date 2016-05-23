@@ -18,6 +18,7 @@
     <script type="text/javascript" src="{{ url_for('static', filename='facebook.js') }}"></script>
     <script type="text/javascript" src="{{ url_for('static', filename='datepicker/bootstrap-datepicker.js') }}"></script>
     <script type="text/javascript" src="{{ url_for('static', filename='util.js') }}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='typeahead.js') }}"></script>
   </head>
 
   <div class="navbar navbar-default">
@@ -146,12 +147,55 @@
       </div>
     </div>
 
+
+    <!-- Add Poy Modal -->
+    <div class="modal fade" id="addPoyModal" role="dialog">
+      <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal">&times;</button>
+            <h4 class="modal-title">Add Player of the year</h4>
+          </div>
+          <div class="modal-body">
+            <table>
+              <tr>
+                <td>
+                  Member
+                  <input type="text" class="form-control" id="poy_member_id">
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  Year
+                  <input type="text" class="form-control" id="poy_year" >
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  Score
+                  <input type="text" class="form-control" id="poy_score">
+                </td>
+              </tr>
+
+            </table>
+          </div>
+          <div class="modal-footer">
+            <input type="button" class="btn btn-default" id="add_poy_button" value="Add Record">
+            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
     <div id="adminControls"></div>
     <div id = "alert_placeholder"></div>
   </body>
 </html>
 
 <script>
+var members_to_fullname_map = {};
+
 $(document).on('ready', function() {
   // See if the admin user is logged in.
   getFacebookLoginStatus(statusChangeCallback);
@@ -159,7 +203,29 @@ $(document).on('ready', function() {
   $('#event_date').datepicker({
     format: "dd/mm/yyyy"
   });
+
+  ajaxGET_get_all_members(
+
+    function(data) {
+      members = parse_member_from_json(data);
+      var fullnames = members.map(function(member) {
+        var fullname = member.get_member_fullname()
+
+        members_to_fullname_map[fullname] = member;
+        return fullname;
+      });
+      set_typeahead_data_source(fullnames);
+    },
+    function() {});
 });
+
+
+function set_typeahead_data_source(data_source) {
+  $("#poy_member_id").typeahead({
+    source: data_source,
+    minLength: 1
+  });
+}
 
 
 //This is called with the results from from FB.getLoginStatus().
@@ -204,7 +270,9 @@ function showAdminControls() {
     '<div class="btn_display" style="text-align:center">' +
       '<button class="btn btn-default" data-toggle="modal"' + 'data-target="#addMemberModal">Add Member</button>' +
       '<button class="btn btn-default" data-toggle="modal"' +  'data-target="#addEventModal">Add Event</button>' +
+      '<button class="btn btn-default" data-toggle="modal"' +  'data-target="#addPoyModal" onclick="on_submit_poy()">Add Player of the Year</button>' +
     '</div>');
+
   $('.nav').append(
     '<li class="active">' +
       '<a href="/admin" data-toggle="collapse"' + 'data-target=".navbar-collapse.in">Administration</a>' +
@@ -285,5 +353,27 @@ function success(message) {
   $('#addEventModal .modal-dialog .modal-footer').append(
     '<div class="alert alert-success"><a class="close" data-dismiss="alert">x</a><span>' + message + '</span></div>')
   // $("#alert_placeholder").append('<div class="alert alert-success"><a class="close" data-dismiss="alert">x</a><span>' + message + '</span></div>');
+}
+
+function on_submit_poy() {
+  $('#add_poy_button').on("click", function() {
+    var member_fullname = $('#poy_member_id').val();
+    var score = $("#poy_score").val()
+    var year = $("#poy_year").val()
+
+    if (!member_fullname) {
+      return;
+    }
+    else {
+        var member = members_to_fullname_map[member_fullname];
+        var member_id = member.get_member_id();
+
+        var userToken = getFacebookUserToken().userID;
+
+        ajaxPOST_add_poy(userToken, member_id, year,
+          function successful() { alert("Player of the year added!"); },
+          function failed() { });
+    }
+  })
 }
 </script>

@@ -97,12 +97,36 @@ function ajaxPOST_add_event_image(accessToken, event_id, image_data, successful,
     url: '/add_event_image/',
     contentType: 'application/json',
     data: data,
-    success: function(data) {
-      successful();
-    },
-    failure: function() {
-      failed();
-    }
+    success: function(data) { successful(); },
+    failure: function() { failed(); }
+  });
+}
+
+
+/**
+	Attempts to add a player of the year to the server.
+
+	@param accessToken 	The access token of the admin user that has correct permissions to do so.
+	@param member_id    The id of the member to add.
+	@param year         The year.
+	@param successful	A callback when there has been successful connection with the server.
+	@param failed		A callback when connection to the server was failed.
+*/
+function ajaxPOST_add_poy(access_token, member_id, year, successful, failed) {
+  var jsonData = {
+    'accessToken' : access_token,
+    'member_id'   : member_id,
+    'year'        : year
+  }
+  var data = JSON.stringify(jsonData);
+
+  $.ajax({
+    type: 'POST',
+    url: '/add_poy/',
+    contentType: 'application/json',
+    data: data,
+    success: function(data) { successful(); },
+    failure: function() { failed(); }
   });
 }
 
