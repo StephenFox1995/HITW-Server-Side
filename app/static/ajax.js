@@ -321,10 +321,10 @@ from the database via and AJAX call.
 @param successful A callback upon successful update.
 @param failed A callback when an error has occurred.
 */
-function ajaxGET_all_poys(successful, failed) {
+function ajaxGET_get_all_poys(successful, failed) {
   $.ajax({
     type: 'GET',
-    url: '/get_all_poys/' + event_id,
+    url: '/get_all_poys/',
     dataType: 'json',
     success: function(data) { successful(data); },
     failure: function() { failed(); }

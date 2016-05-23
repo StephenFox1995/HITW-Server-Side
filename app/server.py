@@ -479,14 +479,18 @@ def get_all_poy():
     if connection is not None:
         results = query_db.get_all_poy(connection)
         connection.close()
-        print results
+        
         index = 0;
         if len(results) > 0:
             for key, value in results.iteritems():
                 year = key
                 member = value
 
-                json += '{ "year": '  + str(year)           + ', '  + '"indentifier" : ' + str(member.identifier)  + ', '  + '"firstname" : "' + member.firstname        + '", ' + '"lastname"  : "' + member.lastname         + '", ' + '"handicap"  : '  + str(member.handicap)    + '}'
+                json += '{ "year": '  + str(year)           + ', '  + \
+                '"identifier" : ' + str(member.identifier)  + ', '  + \
+                '"firstname" : "' + member.firstname        + '", ' + \
+                '"lastname"  : "' + member.lastname         + '", ' + \
+                '"handicap"  : '  + str(member.handicap)    + '}'
 
                 # Check if were at the last index
                 # so we can close of the json array and poy object.
@@ -495,7 +499,6 @@ def get_all_poy():
                 else:
                     json += ','
                 index = index + 1;
-                print json
         else:
             json = empty_json_for_array("poy")
         return Response(status=SUCCESS_CODE, response=json, mimetype='application/json');

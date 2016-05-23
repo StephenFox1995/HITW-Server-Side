@@ -39,8 +39,7 @@
   </div>
 
   <body>
-    <h3>Player of the year: <b>Stephen Fox</b><h3>
-    <h4>Recent Events </h4>
+    <div id = "poys_container"></div>
 
   </div>
   </body>
@@ -61,10 +60,46 @@
       }
       else { addHTMLWithAdminControls(false); }
     });
+
+    ajaxGET_get_all_poys(
+      function(data) {
+        var poys = data['poys']
+        addPOYstoHTML(poys);
+      },
+      function() {});
   });
 
+  function addPOYstoHTML(poys) {
+    poys.forEach(function(poy) {
+      $('#poys_container').append('<div id="poy_record"></div>');
 
+      $('#poy_record').append(
+        '<h3> Player of the year ' + poy.year + '</h3>');
 
+      var fullname = poy.firstname + ' ' + poy.lastname;
+      var handicap = poy.handicap;
+      $('#poy_record').append(tablebody(fullname, handicap));
+    });
+
+    function tablebody(fullname, handicap) {
+      return '<div class ="table-responsive">' +
+        '<table class="table" id="result_table">' +
+          '<thead>' +
+            '<tr>' +
+              '<th>Player</th>' +
+              '<th>Handicap</th>' +
+            '</tr>' +
+          '</thead>' +
+          '<tbody>' +
+            '<tr>'+
+              '<td>' + fullname + '</td>' +
+              '<td>' + handicap + '</td>' +
+            '</tr>' +
+          '</tbody>' +
+        '</table>' +
+      '</div>';
+    }
+  }
 
   function addHTMLWithAdminControls(adminControls) {
     if(adminControls) {
@@ -73,6 +108,7 @@
           '<a href="/admin" data-toggle="collapse"' + 'data-target=".navbar-collapse.in">Administration</a>' +
         '</li>');
     }
+
   }
   </script>
 </html>
