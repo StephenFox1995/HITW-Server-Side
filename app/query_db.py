@@ -39,7 +39,7 @@ SELECT_ALL_RESULTS = '''SELECT * FROM Result'''
 SELECT_RESULT_X_FROM_MEMBER_ID = '''SELECT * FROM Result WHERE member_id = ?'''
 SELECT_RESULT_X_FOR_EVENT = '''SELECT * FROM Result WHERE event_id = ?'''
 
-SEELCT_ALL_POY = '''SELECT * FROM PlayerOfTheYear'''
+SELECT_ALL_POYS = '''SELECT * FROM PlayerOfTheYear'''
 
 #-------------------
 
@@ -225,7 +225,7 @@ def get_all_results_for_member(connection, identifier):
 # Returns every player of the year.
 def get_all_poy(connection):
     cursor = connection.cursor()
-    cursor.execute(SELECT_ALL_POY)
+    cursor.execute(SELECT_ALL_POYS)
     rows = cursor.fetchall()
 
     results = {}
@@ -234,11 +234,10 @@ def get_all_poy(connection):
             year = row[1] # extract the year.
             member_id = row[0] # member_id is stored at first index in result.
             # now go get that member from the database.
-            result = get_member(member_id)
-            member = create_member_from_result(result)
+            member = get_member(connection, member_id)
 
             # Add year as key and member as value for returning result set.
-            results.update({year: member})
+            results.update( {year: member} )
     cursor.close()
     return results
 

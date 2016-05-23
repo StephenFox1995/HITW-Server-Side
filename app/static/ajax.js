@@ -313,6 +313,23 @@ function ajaxGET_results_for_event(event_id, successful, failed) {
     });
 }
 
+
+/**
+Attempts to retrieve all player of the year records
+from the database via and AJAX call.
+
+@param successful A callback upon successful update.
+@param failed A callback when an error has occurred.
+*/
+function ajaxGET_all_poys(successful, failed) {
+  $.ajax({
+    type: 'GET',
+    url: '/get_all_poys/' + event_id,
+    dataType: 'json',
+    success: function(data) { successful(data); },
+    failure: function() { failed(); }
+  });
+}
 function ajaxGET_get_result_for_member(member_id) { }
 
 /**
@@ -348,7 +365,7 @@ function ajaxPUT_update_member(authToken, member, successful, failed) {
 
 /**
 Attempts to update information about an event within the database
-via an AJAX cal.
+via an AJAX call.
 @param event The event to update.
 @param successful A callback upon a successful update.
 @param failed A callback when an error has occurred.

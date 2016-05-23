@@ -35,9 +35,5 @@ class Member():
         return self._lastname
 
     @property
-    def score(self):
-        return self._score
-
-    @property
     def handicap(self):
         return self._handicap

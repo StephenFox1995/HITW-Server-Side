@@ -180,7 +180,7 @@ def add_poy():
         json = request.json
 
         access_token = json.get('accessToken')
-        
+
         # Check that this user is admin.
         if auth.is_admin(access_token) is False:
             return Response(status=PERMISSION_DENIED)
@@ -471,7 +471,7 @@ def get_all_results_for_member(identifier):
 #----------------------------------------------------------------
 # GET ALL PLAYERS OF THE YEAR
 #----------------------------------------------------------------
-@app.route('/get_all_poy/', methods=['GET'])
+@app.route('/get_all_poys/', methods=['GET'])
 def get_all_poy():
     connection = query_db.get_connection(current_db_location())
 
@@ -479,12 +479,23 @@ def get_all_poy():
     if connection is not None:
         results = query_db.get_all_poy(connection)
         connection.close()
-
+        print results
+        index = 0;
         if len(results) > 0:
-            for count, result in enumerate(results, start=1):
-                if result:
-                    pass
-        #### TDODO
+            for key, value in results.iteritems():
+                year = key
+                member = value
+
+                json += '{ "year": '  + str(year)           + ', '  + '"indentifier" : ' + str(member.identifier)  + ', '  + '"firstname" : "' + member.firstname        + '", ' + '"lastname"  : "' + member.lastname         + '", ' + '"handicap"  : '  + str(member.handicap)    + '}'
+
+                # Check if were at the last index
+                # so we can close of the json array and poy object.
+                if (index == (len(results) - 1)):
+                    json += '] }'
+                else:
+                    json += ','
+                index = index + 1;
+                print json
         else:
             json = empty_json_for_array("poy")
         return Response(status=SUCCESS_CODE, response=json, mimetype='application/json');
