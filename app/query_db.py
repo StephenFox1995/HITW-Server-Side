@@ -52,7 +52,7 @@ UPDATE_MEMBER_BY_MEM_ID = 'UPDATE Member SET member_f_name=?, member_l_name=?, m
 
 UPDATE_RESULT_BY_EVENT_ID_AND_MEM_ID = 'UPDATE Result SET member_id=?, event_id=?, score=? WHERE member_id=? AND event_id=?';
 
-UPDATE_POY = 'UPDATE PlayerOfTheYear SET member_id=?, year=?, score=? WHERE member_id=?'
+UPDATE_POY = 'UPDATE PlayerOfTheYear SET member_id=?, year=?, score=? WHERE member_id=? AND year=?'
 # -------------------
 
 # DELETES
@@ -63,7 +63,7 @@ DELETE_MEMBER = 'DELETE FROM Member WHERE member_id = ?';
 
 DELETE_EVENT = 'DELETE FROM Event WHERE event_id = ?'
 
-DELETE_POY = 'DELETE FROM PlayerOfTheYear WHERE member_id = ?;'
+DELETE_POY = 'DELETE FROM PlayerOfTheYear WHERE member_id = ? AND year = ?;'
 
 #----------------
 
@@ -235,13 +235,14 @@ def get_all_poy(connection):
     results = {}
     if rows:
         for row in rows:
+            score = row[2]
             year = row[1] # extract the year.
             member_id = row[0] # member_id is stored at first index in result.
             # now go get that member from the database.
             member = get_member(connection, member_id)
 
             # Add year as key and member as value for returning result set.
-            results.update( {year: member} )
+            results.update( {year: (member, score)} )
     cursor.close()
     return results
 
@@ -295,7 +296,7 @@ def update_result(connection, result, member_id_key, event_id_key):
 def update_poy(connection, old_member_id, new_member_id, year, score):
     update_query = UPDATE_POY
     cursor = connection.cursor()
-    cursor.execute(update_query, (new_member_id, year, score, old_member_id))
+    cursor.execute(update_query, (new_member_id, year, score, old_member_id, year))
     connection.commit()
     cursor.close()
 

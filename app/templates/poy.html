@@ -8,6 +8,9 @@
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"           integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
     <script type="text/javascript" src="{{ url_for('static', filename='facebook.js') }}"></script>
     <script type="text/javascript" src="{{ url_for('static', filename='ajax.js') }}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='typeahead.js') }}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='util.js') }}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='member.js') }}"></script>
   </head>
 
 
@@ -42,12 +45,59 @@
     <div id="loaderImage" style="width:100%; text-align:center;">
       <img src="https://d13yacurqjgara.cloudfront.net/users/82092/screenshots/1073359/spinner.gif" width="130" height="100" style="float-right:50%">
     </div>
+
     <div id = "poys_container"></div>
+
+
+
+        <!-- Edit Player of the Year Modal -->
+        <div class="modal fade" id="editPOYModal" role="dialog">
+          <div class="modal-dialog modal-sm">
+            <div class="modal-content">
+              <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">Edit player of the year</h4>
+              </div>
+              <div class="modal-body">
+                <table>
+                  <tr>
+                    <td>
+                      Name
+                      <input type="text" class="form-control" id="poy_member_name">
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>
+                      Year
+                      <input type="text" class="form-control" id="poy_year" readonly>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>
+                      Handicap
+                      <input type="text" class="form-control" id="poy_handicap">
+                    </td>
+                  </tr>
+                </table>
+              </div>
+              <div class="modal-footer">
+                <input type="button"class="btn btn-default" value="Update"
+                 id="update_poy_button">
+
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+              </div>
+            </div>
+          </div>
 
   </div>
   </body>
 
+
   <script>
+
+  var membersToFullnameMap = {};
+  var currentEditingMember = "";
+
   $(document).ready(function() {
     // Get the login status from facebook.
     getFacebookLoginStatus(function(response) {
@@ -56,7 +106,8 @@
           function success(data) {
             if (data.isAdmin) {
               getAllPOYsAndAddToHTML(true);
-              addAdminOnNavBAr();
+              addAdminOnNavBar();
+              prepareTypeAhead();
             }
             else { getAllPOYsAndAddToHTML(false); }
           },
@@ -65,9 +116,32 @@
       else { getAllPOYsAndAddToHTML(false); }
     });
 
+    $('#update_poy_button').on('click', function() {
+      var fullname = $('#poy_member_name').val()
+      var handicap = $('#poy_handicap').val()
+      var year = $('#poy_year').val()
 
+      var memberID = membersToFullnameMap[fullname].get_member_id();
+      var userToken = getFacebookUserToken().userID;
+
+      // Get the id of the member that used to be player of the year.
+      var oldMemberID = getCurrentEditingMember().get_member_id();
+      ajaxPUT_update_poy(userToken, oldMemberID, memberID, year, handicap,
+        function success(){ clearPOYInputs(); },
+        function failed() { alert('Could not update player of the year.') });
+    });
   });
 
+  function clearPOYInputs() {
+    $('#poy_member_name').val("")
+    $('#poy_handicap').val("")
+    $('#poy_year').val("")
+  }
+
+
+  function getCurrentEditingMember() {
+    return membersToFullnameMap[currentEditingMember];
+  }
 
   function getAllPOYsAndAddToHTML(showAdminControls) {
     ajaxGET_get_all_poys(
@@ -92,7 +166,7 @@
       $('#poys_container').append('<div id="poy_record"></div>');
 
       $('#poy_record').append(
-        '<h3> Player of the year ' + poy.year + '</h3>');
+        '<h3 id="poy_year_text"> Player of the year ' + poy.year + '</h3>');
 
       var fullname = poy.firstname + ' ' + poy.lastname;
       var handicap = poy.handicap;
@@ -112,9 +186,9 @@
             '</thead>' +
             '<tbody>' +
               '<tr>'+
-                '<td>' + fullname + '</td>' +
-                '<td>' + handicap + '</td>' +
-                '<td><button class="btn btn-default" data-toggle="modal" data-target="#editPOYModal" onClick="edit_poy(this);">Edit</button></td>' +
+                '<td id="fullname">' + fullname + '</td>' +
+                '<td id="handicap">' + handicap + '</td>' +
+                '<td><button class="btn btn-default" data-toggle="modal" data-target="#editPOYModal" onClick="onEditModal(this);">Edit</button></td>' +
                 '<td><button class="btn btn-default" onClick="delete_poy(this);">Delete</button></td>' +
               '</tr>' +
             '</tbody>' +
@@ -142,17 +216,55 @@
     }
   }
 
-  function addAdminOnNavBAr() {
+  function addAdminOnNavBar() {
     $('.nav').append(
         '<li>' +
           '<a href="/admin" data-toggle="collapse"' + 'data-target=".navbar-collapse.in">Administration</a>' +
         '</li>');
-
   }
 
 
   function removeLoaderImage() {
     $('#loaderImage').remove();
   }
+
+
+  function onEditModal(button) {
+    (function (button) {
+      var fullname = $(button).closest('tr').find('#fullname').html();
+      var handicap = $(button).closest('tr').find('#handicap').html();
+      var yearText = $(button).closest('#poy_record').find('#poy_year_text').html();
+
+      var year = yearText.match(/\d+/g);
+      $('#poy_year').val(year);
+      $('#poy_member_name').val(fullname);
+      $('#poy_handicap').val(handicap);
+      currentEditingMember = fullname;
+    }(button));
+  }
+
+  function prepareTypeAhead() {
+    ajaxGET_get_all_members(
+      function(data) {
+        var members = parse_member_from_json(data);
+        var fullnames = members.map(function(member) {
+          var fullname = member.get_member_fullname();
+          membersToFullnameMap[fullname] = member;
+          return fullname;
+        });
+        setTypeAheadDataSource(fullnames);
+      }
+    )
+  }
+
+  function setTypeAheadDataSource(fullnames) {
+    $("#poy_member_name").typeahead({
+      source: fullnames,
+      minLength: 1
+    });
+  }
+
+
+
   </script>
 </html>

@@ -398,9 +398,9 @@ function ajaxPUT_update_event(accessToken, event, successful, failed) {
 }
 
 
-function ajaxUPDATE_update_poy(accessToken, old_member_id, new_member_id, year, score, successful, failed) {
+function ajaxPUT_update_poy(accessToken, old_member_id, new_member_id, year, score, successful, failed) {
   var jsonData = {
-    "accessToken" : old_member_id,
+    "accessToken" : accessToken,
     "member_id"   : new_member_id,
     "year"        : year,
     "score"       : score
@@ -409,7 +409,7 @@ function ajaxUPDATE_update_poy(accessToken, old_member_id, new_member_id, year, 
 
   $.ajax({
     type: "PUT",
-    url: '/edit_result/',
+    url: '/edit_poy/' + old_member_id,
     contentType: "application/json",
     data: data,
     success: function(data) { successful(data); },

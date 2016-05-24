@@ -485,13 +485,16 @@ def get_all_poy():
         if len(results) > 0:
             for key, value in results.iteritems():
                 year = key
-                member = value
+                member = value[0]
+                score = value[1]
 
                 json += '{ "year": '  + str(year)           + ', '  + \
                 '"identifier" : ' + str(member.identifier)  + ', '  + \
                 '"firstname" : "' + member.firstname        + '", ' + \
                 '"lastname"  : "' + member.lastname         + '", ' + \
-                '"handicap"  : '  + str(member.handicap)    + '}'
+                '"handicap"  : '  + str(score)    + '}'
+
+                print json
 
                 # Check if were at the last index
                 # so we can close of the json array and poy object.

@@ -209,7 +209,7 @@ $(document).on('ready', function() {
     function(data) {
       members = parse_member_from_json(data);
       var fullnames = members.map(function(member) {
-        var fullname = member.get_member_fullname()
+        var fullname = member.get_member_fullname();
 
         members_to_fullname_map[fullname] = member;
         return fullname;
@@ -370,7 +370,7 @@ function on_submit_poy() {
 
         var userToken = getFacebookUserToken().userID;
 
-        ajaxPOST_add_poy(userToken, member_id, year,
+        ajaxPOST_add_poy(userToken, member_id, year, score,
           function successful() { alert("Player of the year added!"); },
           function failed() { });
     }
