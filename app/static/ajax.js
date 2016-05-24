@@ -112,11 +112,12 @@ function ajaxPOST_add_event_image(accessToken, event_id, image_data, successful,
 	@param successful	A callback when there has been successful connection with the server.
 	@param failed		A callback when connection to the server was failed.
 */
-function ajaxPOST_add_poy(access_token, member_id, year, successful, failed) {
+function ajaxPOST_add_poy(access_token, member_id, year, score, successful, failed) {
   var jsonData = {
     'accessToken' : access_token,
     'member_id'   : member_id,
-    'year'        : year
+    'year'        : year,
+    'score'       : score
   }
   var data = JSON.stringify(jsonData);
 
@@ -330,6 +331,9 @@ function ajaxGET_get_all_poys(successful, failed) {
     failure: function() { failed(); }
   });
 }
+
+
+
 function ajaxGET_get_result_for_member(member_id) { }
 
 /**

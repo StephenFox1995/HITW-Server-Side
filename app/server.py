@@ -187,13 +187,14 @@ def add_poy():
 
         member_id = json.get('member_id')
         year = json.get('year')
+        score = json.get('score')
 
         if not member_id:
             return Response(status=MISSING_PARAM_CODE)
         else:
             connection = query_db.get_connection(current_db_location())
             if connection is not None:
-                query_db.insert_into_poy(connection, member_id, year)
+                query_db.insert_into_poy(connection, member_id, year, score)
                 connection.close()
                 return Response(status=SUCCESS_CODE)
             else:
@@ -479,7 +480,7 @@ def get_all_poy():
     if connection is not None:
         results = query_db.get_all_poy(connection)
         connection.close()
-        
+
         index = 0;
         if len(results) > 0:
             for key, value in results.iteritems():
@@ -613,7 +614,6 @@ def edit_result():
         if connection is None:
             return Response(status=FAILURE_CODE)
 
-        connection = query_db.get_connection(current_db_location())
         query_db.delete_result(connection, member_id, event_id)
         connection.close()
         return Response(status=SUCCESS_CODE)
@@ -622,6 +622,25 @@ def edit_result():
         # Failure
         return Response(status=FAILURE_CODE)
 
+
+@app.route("/edit_poy/", methods=['PUT', 'DELETE'])
+def edit_poy():
+    if request.method == 'PUT':
+        json = request.json
+        access_token = json.get('accessToken')
+
+        # Check that this is an admin user.
+        if auth.is_admin(access_token) is False:
+            return Response(status=PERMISSION_DENIED)
+
+        connection = query_db.get_connection(current_db_location())
+        if connection is None:
+            return Response(status=FAILURE_CODE)
+
+
+
+    elif request.method == 'DELETE':
+        pass
 
 #----------------------------------------------------------------
 # IS ADMIN

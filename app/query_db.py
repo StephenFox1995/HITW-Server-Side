@@ -15,7 +15,7 @@ INSERT_INTO_RESULT = '''INSERT INTO Result(event_id, member_id, score) VALUES(?,
 
 INSERT_INTO_EVENT_IMAGE = '''INSERT INTO EVENTIMAGE(event_id, image_data) VALUES(?, ?);'''
 
-INSERT_INTO_POY = '''INSERT INTO PLAYEROFTHEYEAR(member_id, year) VALUES(?, ?);'''
+INSERT_INTO_POY = '''INSERT INTO PLAYEROFTHEYEAR(member_id, year, score) VALUES(?, ?, ?);'''
 #-------------------
 
 
@@ -51,6 +51,7 @@ UPDATE_EVENT_BY_EVENT_ID= 'UPDATE Event SET event_title=?, event_location=?, eve
 UPDATE_MEMBER_BY_MEM_ID = 'UPDATE Member SET member_f_name=?, member_l_name=?, member_handicap=? WHERE member_id=?';
 
 UPDATE_RESULT_BY_EVENT_ID_AND_MEM_ID = 'UPDATE Result SET member_id=?, event_id=?, score=? WHERE member_id=? AND event_id=?';
+
 # -------------------
 
 # DELETES
@@ -97,9 +98,9 @@ def insert_into_event_image(connection, event_id, image_data):
     cursor.close()
 
 
-def insert_into_poy(connection, member_id, year):
+def insert_into_poy(connection, member_id, year, score):
     cursor = connection.cursor()
-    cursor.execute(INSERT_INTO_POY, (member_id, year))
+    cursor.execute(INSERT_INTO_POY, (member_id, year, score))
     connection.commit()
     cursor.close()
 

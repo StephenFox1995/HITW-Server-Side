@@ -38,6 +38,7 @@ CREATE_EVENT_IMAGE_TABLE_STMT = '''CREATE TABLE 'EventImage' (
 CREATE_POY_TABLE_STMNT = '''CREATE TABLE 'PlayerOfTheYear' (
 	member_id INTEGER,
 	year STRING,
+	score,
 	FOREIGN KEY(member_id) REFERENCES Member(member_id)
 );'''
 
