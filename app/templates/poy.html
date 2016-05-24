@@ -55,36 +55,39 @@
         ajaxPOST_is_admin(response.authResponse.userID,
           function success(data) {
             if (data.isAdmin) {
-              addHTMLWithAdminControls(true);
+              getAllPOYsAndAddToHTML(true);
+              addAdminOnNavBAr();
             }
-            else { addHTMLWithAdminControls(false); }
+            else { getAllPOYsAndAddToHTML(false); }
           },
-          function failure() { addHTMLWithAdminControls(false); });
+          function failure() { getAllPOYsAndAddToHTML(false); });
       }
-      else { addHTMLWithAdminControls(false); }
+      else { getAllPOYsAndAddToHTML(false); }
     });
 
+
+  });
+
+
+  function getAllPOYsAndAddToHTML(showAdminControls) {
     ajaxGET_get_all_poys(
       function(data) {
         var poys = data['poys'];
         sortPOYsDescendingOrder(poys);
-        addPOYstoHTML(poys);
+        addPOYstoHTML(poys, showAdminControls);
         removeLoaderImage();
       },
       function() { alert('Could not load Player of the year!'); });
-  });
 
-
-
-  function sortPOYsDescendingOrder(poys) {
-    var min = 0;
-    poys.sort(function(a, b) {
-      return b.year - a.year;
-    });
+      function sortPOYsDescendingOrder(poys) {
+        poys.sort(function(a, b) {
+          return b.year - a.year;
+        });
+      }
   }
 
 
-  function addPOYstoHTML(poys) {
+  function addPOYstoHTML(poys, adminControls) {
     poys.forEach(function(poy) {
       $('#poys_container').append('<div id="poy_record"></div>');
 
@@ -96,33 +99,55 @@
       $('#poy_record').append(tablebody(fullname, handicap));
     });
 
+
     function tablebody(fullname, handicap) {
-      return '<div class ="table-responsive">' +
-        '<table class="table" id="poy_table">' +
-          '<thead>' +
-            '<tr>' +
-              '<th>Player</th>' +
-              '<th>Handicap</th>' +
-            '</tr>' +
-          '</thead>' +
-          '<tbody>' +
-            '<tr>'+
-              '<td>' + fullname + '</td>' +
-              '<td>' + handicap + '</td>' +
-            '</tr>' +
-          '</tbody>' +
-        '</table>' +
-      '</div>';
+      if (adminControls) { // Show edit buttons.
+        return '<div class ="table-responsive">' +
+          '<table class="table" id="poy_table">' +
+            '<thead>' +
+              '<tr>' +
+                '<th>Player</th>' +
+                '<th>Handicap</th>' +
+              '</tr>' +
+            '</thead>' +
+            '<tbody>' +
+              '<tr>'+
+                '<td>' + fullname + '</td>' +
+                '<td>' + handicap + '</td>' +
+                '<td><button class="btn btn-default" data-toggle="modal" data-target="#editPOYModal" onClick="edit_poy(this);">Edit</button></td>' +
+                '<td><button class="btn btn-default" onClick="delete_poy(this);">Delete</button></td>' +
+              '</tr>' +
+            '</tbody>' +
+          '</table>' +
+        '</div>';
+      }
+      else {
+        return '<div class ="table-responsive">' +
+          '<table class="table" id="poy_table">' +
+            '<thead>' +
+              '<tr>' +
+                '<th>Player</th>' +
+                '<th>Handicap</th>' +
+              '</tr>' +
+            '</thead>' +
+            '<tbody>' +
+              '<tr>'+
+                '<td>' + fullname + '</td>' +
+                '<td>' + handicap + '</td>' +
+              '</tr>' +
+            '</tbody>' +
+          '</table>' +
+        '</div>';
+      }
     }
   }
 
-  function addHTMLWithAdminControls(adminControls) {
-    if(adminControls) {
-      $('.nav').append(
+  function addAdminOnNavBAr() {
+    $('.nav').append(
         '<li>' +
           '<a href="/admin" data-toggle="collapse"' + 'data-target=".navbar-collapse.in">Administration</a>' +
         '</li>');
-    }
+
   }
 
 

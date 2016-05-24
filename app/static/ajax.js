@@ -397,6 +397,26 @@ function ajaxPUT_update_event(accessToken, event, successful, failed) {
   });
 }
 
+
+function ajaxUPDATE_update_poy(accessToken, old_member_id, new_member_id, year, score, successful, failed) {
+  var jsonData = {
+    "accessToken" : old_member_id,
+    "member_id"   : new_member_id,
+    "year"        : year,
+    "score"       : score
+  }
+  var data = JSON.stringify(jsonData);
+
+  $.ajax({
+    type: "PUT",
+    url: '/edit_result/',
+    contentType: "application/json",
+    data: data,
+    success: function(data) { successful(data); },
+    failure: function() { failed(); }
+  });
+}
+
 /**
 Attempts to delete a member from the database via an AJAX call.
 @param member_id The member_id of the member to delete.
@@ -463,6 +483,21 @@ function ajaxDELETE_delete_result(event_id, member_id, successful, failed) {
 }
 
 
+function ajaxDELETE_delete_poy(accessToken, member_id, successful, failed) {
+  var jsonString = {
+    "accessToken": accessToken
+  }
+  var jsonData = jsonData.stringify(jsonString)
+
+  $.ajax({
+    type: 'DELETE',
+    url: '/edit_poy/' + member_id,
+    contentType: 'application/json',
+    data: jsonData,
+    success: function(data) { successful(); },
+    failure: function() { failed(); }
+  });
+}
 
 /** Sends a POST request to the server requesting a decision
     on whether the given facebook_id is the admin.

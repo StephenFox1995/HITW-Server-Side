@@ -52,6 +52,7 @@ UPDATE_MEMBER_BY_MEM_ID = 'UPDATE Member SET member_f_name=?, member_l_name=?, m
 
 UPDATE_RESULT_BY_EVENT_ID_AND_MEM_ID = 'UPDATE Result SET member_id=?, event_id=?, score=? WHERE member_id=? AND event_id=?';
 
+UPDATE_POY = 'UPDATE PlayerOfTheYear SET member_id=?, year=?, score=? WHERE member_id=?'
 # -------------------
 
 # DELETES
@@ -61,6 +62,8 @@ DELETE_RESULT_BY_EVENT_ID_AND_MEM_ID = 'DELETE FROM Result WHERE member_id =? AN
 DELETE_MEMBER = 'DELETE FROM Member WHERE member_id = ?';
 
 DELETE_EVENT = 'DELETE FROM Event WHERE event_id = ?'
+
+DELETE_POY = 'DELETE FROM PlayerOfTheYear WHERE member_id = ?;'
 
 #----------------
 
@@ -288,6 +291,23 @@ def update_result(connection, result, member_id_key, event_id_key):
     cursor.execute(update_query, (member_id, event_id, score, member_id_key, event_id_key))
     connection.commit()
     cursor.close()
+
+def update_poy(connection, old_member_id, new_member_id, year, score):
+    update_query = UPDATE_POY
+    cursor = connection.cursor()
+    cursor.execute(update_query, (new_member_id, year, score, old_member_id))
+    connection.commit()
+    cursor.close()
+
+
+def delete_poy():
+    delete_query = DELETE_POY
+    cursor = connection.cursor()
+    cursor.execute(delete_query, (member_id,))
+    connection.commit()
+    cursor.close()
+
+
 
 def delete_result(connection, member_id, event_id):
     delete_query = DELETE_RESULT_BY_EVENT_ID_AND_MEM_ID

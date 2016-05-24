@@ -623,10 +623,34 @@ def edit_result():
         return Response(status=FAILURE_CODE)
 
 
-@app.route("/edit_poy/", methods=['PUT', 'DELETE'])
-def edit_poy():
+# Updates or deletes a player of the year record bases on the http method.
+# @param identifier The identifier of the record to change.
+#        Please note if the record has a new identifier that this
+#        should be sent with the json part of the request.
+@app.route("/edit_poy/<identifier>", methods=['PUT', 'DELETE'])
+def edit_poy(identifier):
     if request.method == 'PUT':
         json = request.json
+        access_token = json.get('accessToken')
+
+        member_id = json.get('member_id')
+        year =      json.get('year')
+        score =     json.get('score')
+
+        # Check that this is an admin user.
+        if auth.is_admin(access_token) is False:
+            return Response(status=PERMISSION_DENIED)
+
+        connection = query_db.get_connection(current_db_location())
+        if connection is None:
+            return Response(status=FAILURE_CODE)
+
+        query_db.update_poy(connection, identifier, member_id, year, score)
+        connection.close()
+        return Response(status=SUCCESS_CODE)
+
+    elif request.method == 'DELETE':
+
         access_token = json.get('accessToken')
 
         # Check that this is an admin user.
@@ -637,10 +661,12 @@ def edit_poy():
         if connection is None:
             return Response(status=FAILURE_CODE)
 
+        query_db.delete_poy(connection, identifier)
+        connection.close()
+        return Response(status=SUCCESS_CODE)
 
-
-    elif request.method == 'DELETE':
-        pass
+    else: # Failure
+        return Response(status=FAILURE_CODE)
 
 #----------------------------------------------------------------
 # IS ADMIN
