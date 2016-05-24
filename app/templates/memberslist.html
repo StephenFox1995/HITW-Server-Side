@@ -122,6 +122,7 @@ $(document).ready(function() {
       ajaxPOST_is_admin(response.authResponse.userID,
         function success(data) {
           if (data.isAdmin) {
+            showAdminOnNavBar();
             loadMembersToHTMLWithAdminControls(true); // Loads HTML with admin controls
           }
           else { loadMembersToHTMLWithAdminControls(false); }
@@ -169,10 +170,6 @@ function add_member_to_html(member, present_admin_tools) {
         '<td><button class="btn btn-default" data-toggle="modal" data-target="#editMemberModal" onClick="update_button_click(this);">Edit Member</button></td>' +
         '<td><button class="btn btn-default" onClick="delete_button_click(this)">Remove Member</button></td>' +
       '</tr>');
-    $('.nav').append(
-      '<li>' +
-        '<a href="/admin" data-toggle="collapse"' + 'data-target=".navbar-collapse.in">Administration</a>' +
-      '</li>');
   }
   else {
     $('#member_table > tbody').append(
@@ -188,6 +185,13 @@ function addAdminHeaderToMemberTable() {
   $('#member_table > thead > tr').append(
     '<th>Update Member</th>' +
     '<th>Remove Member</th>');
+}
+
+function showAdminOnNavBar() {
+  $('.nav').append(
+    '<li>' +
+      '<a href="/admin" data-toggle="collapse"' + 'data-target=".navbar-collapse.in">Administration</a>' +
+    '</li>');
 }
 
 // Handler for a click on update button

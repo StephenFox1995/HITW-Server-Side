@@ -39,6 +39,9 @@
   </div>
 
   <body>
+    <div id="loaderImage" style="width:100%; text-align:center;">
+      <img src="https://d13yacurqjgara.cloudfront.net/users/82092/screenshots/1073359/spinner.gif" width="130" height="100" style="float-right:50%">
+    </div>
     <div id = "poys_container"></div>
 
   </div>
@@ -63,11 +66,23 @@
 
     ajaxGET_get_all_poys(
       function(data) {
-        var poys = data['poys']
+        var poys = data['poys'];
+        sortPOYsDescendingOrder(poys);
         addPOYstoHTML(poys);
+        removeLoaderImage();
       },
-      function() {});
+      function() { alert('Could not load Player of the year!'); });
   });
+
+
+
+  function sortPOYsDescendingOrder(poys) {
+    var min = 0;
+    poys.sort(function(a, b) {
+      return b.year - a.year;
+    });
+  }
+
 
   function addPOYstoHTML(poys) {
     poys.forEach(function(poy) {
@@ -83,7 +98,7 @@
 
     function tablebody(fullname, handicap) {
       return '<div class ="table-responsive">' +
-        '<table class="table" id="result_table">' +
+        '<table class="table" id="poy_table">' +
           '<thead>' +
             '<tr>' +
               '<th>Player</th>' +
@@ -108,7 +123,11 @@
           '<a href="/admin" data-toggle="collapse"' + 'data-target=".navbar-collapse.in">Administration</a>' +
         '</li>');
     }
+  }
 
+
+  function removeLoaderImage() {
+    $('#loaderImage').remove();
   }
   </script>
 </html>

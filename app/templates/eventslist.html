@@ -142,6 +142,7 @@ $(document).ready(function() {
       ajaxPOST_is_admin(response.authResponse.userID,
         function success(data) {
           if (data.isAdmin) {
+            showAdminOnNavBar();
             // Add correct html for admin user.
             loadEventsToHTMLWithAdminControls(true);
           } else {
@@ -195,11 +196,6 @@ function add_event_to_html(event, showAdminControls) {
           '<button class="btn btn-default" onClick="delete_button_click(this)">Remove Event</button>' +
         '</td>' +
       '</tr>');
-
-    $('.nav').append(
-      '<li>' +
-        '<a href="/admin" data-toggle="collapse"' + 'data-target=".navbar-collapse.in">Administration</a>' +
-      '</li>');
   }
   else {
     $('#event_table > tbody').append(
@@ -210,6 +206,14 @@ function add_event_to_html(event, showAdminControls) {
         '<td>' + event_date + '</td>' +
       '</tr>');
   }
+}
+
+
+function showAdminOnNavBar() {
+  $('.nav').append(
+    '<li>' +
+      '<a href="/admin" data-toggle="collapse"' + 'data-target=".navbar-collapse.in">Administration</a>' +
+    '</li>');
 }
 
 function handleRowClick(index) {
