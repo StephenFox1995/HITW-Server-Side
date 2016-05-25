@@ -296,7 +296,8 @@ $("#add_member_button").click(function() {
     function successful(data) {
       // Set textfields to empty.
       clear_member_inputs();
-      success(member_f_name + " " + member_l_name + " has been added.");
+      var element = '#addMemberModal .modal-dialog .modal-footer';
+      success(element, member_f_name + " " + member_l_name + " has been added.");
     },
     function failure() {
       alert("Something went wrong.")
@@ -328,7 +329,8 @@ $("#add_event_button").click(function() {
 
   ajaxPOST_add_event(userToken, event_to_add,
     function successful() {
-      success(event_title + " has been added");
+      var element = '#addEventModal .modal-dialog .modal-footer';
+      success(element, event_title + " has been added");
       clear_event_inputs();
      },
     function failure() { alert("Something went wrong.") });
@@ -349,10 +351,11 @@ function clear_event_inputs() {
   $('#event_end_tee').val("")
 }
 
-function success(message) {
-  $('#addEventModal .modal-dialog .modal-footer').append(
-    '<div class="alert alert-success"><a class="close" data-dismiss="alert">x</a><span>' + message + '</span></div>')
-  // $("#alert_placeholder").append('<div class="alert alert-success"><a class="close" data-dismiss="alert">x</a><span>' + message + '</span></div>');
+function success(element, message) {
+  var popup = $('<div class="alert alert-success"><a class="close" data-dismiss="alert">x</a><span>' + message + '</span></div>');
+  $(element).append(popup);
+
+  popup.fadeOut(3000);
 }
 
 function on_submit_poy() {
