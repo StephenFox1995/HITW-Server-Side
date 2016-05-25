@@ -126,7 +126,7 @@
 
       // Get the id of the member that used to be player of the year.
       var oldMemberID = getCurrentEditingMember().get_member_id();
-      ajaxPUT_update_poy(userToken, oldMemberID, memberID, year, handicap,
+      ajaxPUT_update_poy(userToken, oldMemberID, memberID, parseInt(year), handicap,
         function success(){ location.reload(true); },
         function failed() { alert('Could not update player of the year.') });
     });
@@ -234,8 +234,8 @@
       var fullname = $(button).closest('tr').find('#fullname').html();
       var handicap = $(button).closest('tr').find('#handicap').html();
       var yearText = $(button).closest('#poy_record').find('#poy_year_text').html();
-
       var year = yearText.match(/\d+/g);
+
       $('#poy_year').val(year);
       $('#poy_member_name').val(fullname);
       $('#poy_handicap').val(handicap);
@@ -284,7 +284,6 @@
         location.reload(true);
       });
   }
-
 
 
   </script>

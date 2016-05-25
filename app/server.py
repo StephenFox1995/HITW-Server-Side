@@ -636,7 +636,7 @@ def edit_poy(member_id):
         json = request.json
         access_token = json.get('accessToken')
 
-        member_id = json.get('member_id')
+        new_member_id = json.get('member_id')
         year =      json.get('year')
         score =     json.get('score')
 
@@ -648,7 +648,7 @@ def edit_poy(member_id):
         if connection is None:
             return Response(status=FAILURE_CODE)
 
-        query_db.update_poy(connection, member_id, member_id, year, score)
+        query_db.update_poy(connection, member_id, new_member_id, year, score)
         connection.close()
         return Response(status=SUCCESS_CODE)
 
