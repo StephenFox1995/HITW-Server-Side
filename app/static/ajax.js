@@ -483,11 +483,12 @@ function ajaxDELETE_delete_result(event_id, member_id, successful, failed) {
 }
 
 
-function ajaxDELETE_delete_poy(accessToken, member_id, successful, failed) {
+function ajaxDELETE_delete_poy(accessToken, member_id, year, successful, failed) {
   var jsonString = {
-    "accessToken": accessToken
+    "accessToken": accessToken,
+    "year": year
   }
-  var jsonData = jsonData.stringify(jsonString)
+  var jsonData = JSON.stringify(jsonString)
 
   $.ajax({
     type: 'DELETE',

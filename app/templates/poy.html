@@ -127,7 +127,7 @@
       // Get the id of the member that used to be player of the year.
       var oldMemberID = getCurrentEditingMember().get_member_id();
       ajaxPUT_update_poy(userToken, oldMemberID, memberID, year, handicap,
-        function success(){ clearPOYInputs(); },
+        function success(){ location.reload(true); },
         function failed() { alert('Could not update player of the year.') });
     });
   });
@@ -262,6 +262,27 @@
       source: fullnames,
       minLength: 1
     });
+  }
+
+  function delete_poy(button) {
+    var fullname = $(button).closest('tr').find('#fullname').html();
+    var handicap = $(button).closest('tr').find('#handicap').html();
+
+    // Get the members name.
+    var memberName = $(button).closest('#poy_record').find('#poy_table > tbody > tr > #fullname').html();
+
+    var yearText = $(button).closest('#poy_record').find('#poy_year_text').html();
+    var year = yearText.match(/\d+/g);
+
+    // Get the member object from the hashmap.
+    var member = membersToFullnameMap[memberName];
+
+    var userToken = getFacebookUserToken().userID;
+
+    ajaxDELETE_delete_poy(userToken, member.get_member_id(), parseInt(year),
+      function success(){
+        location.reload(true);
+      });
   }
 
 

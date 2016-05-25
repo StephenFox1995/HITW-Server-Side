@@ -301,10 +301,10 @@ def update_poy(connection, old_member_id, new_member_id, year, score):
     cursor.close()
 
 
-def delete_poy():
+def delete_poy(connection, member_id, year):
     delete_query = DELETE_POY
     cursor = connection.cursor()
-    cursor.execute(delete_query, (member_id,))
+    cursor.execute(delete_query, (member_id, year))
     connection.commit()
     cursor.close()
 

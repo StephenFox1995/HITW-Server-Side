@@ -630,8 +630,8 @@ def edit_result():
 # @param identifier The identifier of the record to change.
 #        Please note if the record has a new identifier that this
 #        should be sent with the json part of the request.
-@app.route("/edit_poy/<identifier>", methods=['PUT', 'DELETE'])
-def edit_poy(identifier):
+@app.route("/edit_poy/<member_id>", methods=['PUT', 'DELETE'])
+def edit_poy(member_id):
     if request.method == 'PUT':
         json = request.json
         access_token = json.get('accessToken')
@@ -648,13 +648,14 @@ def edit_poy(identifier):
         if connection is None:
             return Response(status=FAILURE_CODE)
 
-        query_db.update_poy(connection, identifier, member_id, year, score)
+        query_db.update_poy(connection, member_id, member_id, year, score)
         connection.close()
         return Response(status=SUCCESS_CODE)
 
     elif request.method == 'DELETE':
-
+        json = request.json
         access_token = json.get('accessToken')
+        year =         json.get('year')
 
         # Check that this is an admin user.
         if auth.is_admin(access_token) is False:
@@ -664,7 +665,7 @@ def edit_poy(identifier):
         if connection is None:
             return Response(status=FAILURE_CODE)
 
-        query_db.delete_poy(connection, identifier)
+        query_db.delete_poy(connection, member_id, year)
         connection.close()
         return Response(status=SUCCESS_CODE)
 
