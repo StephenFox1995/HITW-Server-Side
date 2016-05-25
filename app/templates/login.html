@@ -374,7 +374,10 @@ function on_submit_poy() {
         var userToken = getFacebookUserToken().userID;
 
         ajaxPOST_add_poy(userToken, member_id, year, score,
-          function successful() { alert("Player of the year added!"); },
+          function successful() {
+            var element = '#addPOYModal .modal-dialog .modal-footer';
+            success(element,"Player has been added.");
+          },
           function failed() { });
     }
   })

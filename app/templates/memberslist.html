@@ -149,6 +149,9 @@ function loadMembersToHTMLWithAdminControls(showAdminControls) {
   ajaxGET_get_all_members(
     function successful(data) {
       members = parse_member_from_json(data);
+      members.sort(function(memberA, memberB) {
+        return memberA.get_member_handicap() - memberB.get_member_handicap();
+      })
       members.forEach(function(member) {
         removeLoaderImage();
         add_member_to_html(member, showAdminControls);
