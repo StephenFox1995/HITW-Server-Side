@@ -59,6 +59,13 @@ BEGIN
     DELETE FROM Result WHERE event_id = OLD.event_id;
 END'''
 
+DELETE_POY_TRIGGER = ''' CREATE TRIGGER delete_poy
+BEFORE DELETE ON Member
+FOR EACH ROW
+BEGIN
+	DELETE FROM PlayerOfTheYear WHERE member_id = OLD.member_id;
+END'''
+
 
 
 def create_event_table(connection):
@@ -119,6 +126,7 @@ def create_triggers(connection):
 		cursor = connection.cursor()
 		cursor.execute(DELETE_MEMBER_FROM_RESULTS_TRIGGER)
 		cursor.execute(DELETE_RESULT_FOR_EVENT_TRIGGER)
+		cursor.execute(DELETE_POY_TRIGGER)
 		cursor.close()
 	except sqlite3.Error, e:
 		print 'ERROR: There was a errror creating triggers.'
