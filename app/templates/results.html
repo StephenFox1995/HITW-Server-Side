@@ -25,7 +25,6 @@
     <script type="text/javascript" src="{{ url_for('static', filename='gallery/bootstrap-gallery.js') }}"></script>
     <script type="text/javascript" src="{{ url_for('static', filename='gallery/jquery.justifyGallery.js') }}"></script>
     <link rel="stylesheet" href="../static/styles/bootstrapWebkitCompat.css">
-    <link rel="stylesheet" href="../static/styles/results.css">
     <link rel="stylesheet" href="../static/styles/heading.css">
     <link rel="stylesheet" href="../static/styles/gallery/bootstrap-gallery.css">
 
@@ -210,6 +209,11 @@ function loadResultsToHTMLWithAdminControls(showAdminControls) {
   // Get all the results for the event.
   ajaxGET_results_for_event(event_id,
     function success(data) {
+      // Check and see if there are any results for this event.
+      if (data.results === null) {
+        removeLoaderImage();
+        return;
+      }
       // Get all the results.
       results = parse_result_from_json(data);
       results.forEach(function(result) {
@@ -323,14 +327,13 @@ function on_submit_result() {
   // Get all members from the database so we can use them for typeahead functionality.
   ajaxGET_get_all_members(
     function success(data) {
-      members = parse_member_from_json(data);
-      members.forEach(function(member) {
+      var members = parse_member_from_json(data);
+      var fullnames = members.map(function(member) {
         var fullname = member.get_member_fullname();
-        // Map the fullname to the actual member object.
         members_to_fullname_map[fullname] = member;
-        members_names_for_typeahead.push(fullname);
+        return fullname;
       });
-      set_typeahead_data_source(members_names_for_typeahead);
+      set_typeahead_data_source(fullnames);
     },
     function failure() { });
 }
