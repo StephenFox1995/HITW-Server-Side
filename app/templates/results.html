@@ -58,8 +58,8 @@
 
   <body>
 
-    <div id="adminControls"></div>
-
+    <div id="adminControls" class="well"></div>
+    <div id="eventname"></div>
     <div class ="table-responsive">
       <table class="table" id="result_table">
         <thead>
@@ -128,10 +128,8 @@
       </div>
     </div>
 
-
-
-      <div class="gallery">
-      </div>
+    <h3 style="text-align:center">Gallery<h3>
+    <div class="gallery row"></div>
 
 
 
@@ -165,6 +163,14 @@ $(document).on("ready", function() {
     }
     else { loadResultsToHTMLWithAdminControls(false); }
   });
+
+  ajaxGET_get_all_event_images(event_id,
+    function successful(data) {
+      var event_images = parse_event_images_from_json(data);
+      display_images(event_images);
+    },
+    function failure() {}
+  );
 
 });
 
@@ -200,7 +206,7 @@ function loadResultsToHTMLWithAdminControls(showAdminControls) {
     function successful(data) {
       current_event = new EventHITW(data.identifier, data.title, data.location, data.time, data.date);
       if (current_event.get_event_title() != undefined) {
-        $("#header").append('<h1>' + current_event.get_event_title() + '</h1>');
+        $("#eventname").append('<h1>' + current_event.get_event_title() + '</h1>');
       }
     },
     function failed() { }
@@ -227,14 +233,6 @@ function loadResultsToHTMLWithAdminControls(showAdminControls) {
       });
     },
     function failure() { });
-
-    ajaxGET_get_all_event_images(event_id,
-      function successful(data) {
-        var event_images = parse_event_images_from_json(data);
-        display_images(event_images);
-      },
-      function failure() {}
-    );
 }
 
 
