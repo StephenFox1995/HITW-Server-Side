@@ -4,6 +4,7 @@ from flask import request
 from event import Event
 from member import Member
 from result import Result
+from datetime import datetime
 import image_util
 import query_db
 import config
@@ -96,6 +97,13 @@ def add_member():
 
 #----------------------------------------------------------------
 # ADD EVENT
+# Events are added with the following parameters:
+#   title -         The title of the event.
+#   location -      Location of the event.
+#   startTeeTime -  The starting tee time.
+#   endTeeTime -    The ending tee time.
+#   date -          The date of the event, the format of the date
+#                   must be dd-mm-yyyy.
 #----------------------------------------------------------------
 @app.route('/add_event/', methods=['POST'])
 def add_event():
@@ -114,6 +122,14 @@ def add_event():
         end_tee = json.get("endTeeTime")
         date = json.get("date")
 
+        formatted_date = None
+        # Check date format.
+        if datetime.strptime(date, '%d-%m-%Y'):
+            formatted_date = Event.date_format_yyyymmdd(date)
+        else:
+            return Response(FAILURE_CODE)
+
+
         if not title:
             return Response(status=MISSING_PARAM_CODE)
         if not location:
@@ -125,7 +141,7 @@ def add_event():
         else:
             connection = query_db.get_connection(current_db_location())
             if connection is not None:
-                query_db.insert_into_event(connection, title, location, date, start_tee, end_tee)
+                query_db.insert_into_event(connection, title, location, formatted_date, start_tee, end_tee)
                 connection.close()
                 return Response(status=SUCCESS_CODE)
             else: # Connection to database failed
@@ -241,6 +257,10 @@ def get_upcoming_event():
         connection.close()
 
         if event:
+            # Get the event date and change the date format back to dd-mm-yyyy.
+            unformatted_date = event.date
+            formatted_date = Event.date_format_ddmmyyyy(unformatted_date)
+            event.date = formatted_date
             json = event.jsonify()
         else:
             json = empty_json_for_object("event")
@@ -264,7 +284,12 @@ def get_all_events():
         if len(events) > 0:
             for count, event in enumerate(events, start=1):
                 if event:
+                    # Get the event date and change the date format back to dd-mm-yyyy.
+                    unformatted_date = event.date
+                    formatted_date = Event.date_format_ddmmyyyy(unformatted_date)
+                    event.date = formatted_date
                     json += event.jsonify()
+
                     # Add comma after json object created
                     # up until the last one, then add }
                     if count is not len(events):
@@ -291,6 +316,10 @@ def get_event(identifier):
         event = query_db.get_event(connection, identifier)
         connection.close()
         if event:
+            # Get the event date and change the date format back to dd-mm-yyyy.
+            unformatted_date = event.date()
+            formatted_date = Event.date_format_ddmmyyyy(unformatted_date)
+            event.date(formatted_date)
             json = event.jsonify()
         else:
             json = empty_json_for_object("event")

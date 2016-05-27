@@ -133,7 +133,7 @@
               <tr>
                 <td>
                   Date
-                  <input type="text" class="form-control" data-provide="datepicker" id="event_date" value="dd/mm/yy">
+                  <input type="text" class="form-control" data-provide="datepicker" id="event_date" value="dd-mm-yy">
                 </td>
               </tr>
             </table>
@@ -200,7 +200,7 @@ $(document).on('ready', function() {
   getFacebookLoginStatus(statusChangeCallback);
 
   $('#event_date').datepicker({
-    format: "dd/mm/yyyy"
+    format: "dd-mm-yyyy"
   });
 
   ajaxGET_get_all_members(

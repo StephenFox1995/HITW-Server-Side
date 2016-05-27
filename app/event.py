@@ -1,13 +1,8 @@
 import json
+from datetime import datetime
 
-class Event():
+class Event(object):
 
-    _title = ""
-    _location = ""
-    _date = ""
-    _identifier = None
-    _start_tee_time = ""
-    _end_tee_time = ""
 
     def __init__(self, identifier, title, location, start_tee_time, end_tee_time, date):
         self._identifier = identifier
@@ -21,11 +16,11 @@ class Event():
 
     def jsonify(self):
         data = {'identifier': self._identifier,
-        'title':self._title,
-        'location' : self._location,
-        'startTeeTime': self.start_tee_time,
-        'endTeeTime' : self.end_tee_time,
-        'date': self._date }
+                'title':self._title,
+                'location' : self._location,
+                'startTeeTime': self._start_tee_time,
+                'endTeeTime' : self._end_tee_time,
+                'date': self._date }
         return json.dumps(data)
 
 
@@ -49,5 +44,20 @@ class Event():
     def date(self):
         return self._date
 
+    @date.setter
+    def date(self, date):
+        self._date = date
+
     def identifier(self):
         return self._identifier
+
+
+    # Returns date format as dd-mm-yyyy
+    @staticmethod
+    def date_format_ddmmyyyy(date):
+        return datetime.strptime(date, '%Y-%m-%d').strftime('%d-%m-%Y')
+
+    # Returns date format as yyyy-mm-dd
+    @staticmethod
+    def date_format_yyyymmdd(date):
+        return datetime.strptime(date, '%d-%m-%Y').strftime('%Y-%m-%d')
