@@ -317,9 +317,9 @@ def get_event(identifier):
         connection.close()
         if event:
             # Get the event date and change the date format back to dd-mm-yyyy.
-            unformatted_date = event.date()
+            unformatted_date = event.date
             formatted_date = Event.date_format_ddmmyyyy(unformatted_date)
-            event.date(formatted_date)
+            event.date = formatted_date
             json = event.jsonify()
         else:
             json = empty_json_for_object("event")
@@ -710,6 +710,7 @@ def login():
     if request.json:
         json = request.json
         fb_id = json.get('fb_id')
+        print fb_id
 
         # Check to see if that fb id is the
         # id of the admin stored on disk.
@@ -784,7 +785,3 @@ def empty_json_for_object(object):
 
 def current_db_location():
     return config.get_db_filepath()
-
-
-if __name__ == "__main__":
-    app.run(host='0.0.0.0', port=6565, debug=True)
