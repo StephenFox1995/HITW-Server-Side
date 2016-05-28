@@ -523,7 +523,6 @@ def get_all_poy():
                 '"lastname"  : "' + member.lastname         + '", ' + \
                 '"handicap"  : '  + str(score)    + '}'
 
-                print json
 
                 # Check if were at the last index
                 # so we can close of the json array and poy object.
@@ -710,7 +709,6 @@ def login():
     if request.json:
         json = request.json
         fb_id = json.get('fb_id')
-        print fb_id
 
         # Check to see if that fb id is the
         # id of the admin stored on disk.
