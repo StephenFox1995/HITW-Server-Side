@@ -558,6 +558,15 @@ def edit_event(identifier):
                 event = event_obj_from_json(json, identifier)
                 if not event:
                     return Response(status=MISSING_PARAM_CODE)
+
+
+                # Check date format.
+                if datetime.strptime(date, '%d-%m-%Y'):
+                    formatted_date = Event.date_format_yyyymmdd(date)
+                    event.date = formatted_date
+                else:
+                    return Response(FAILURE_CODE)
+
                 query_db.update_event(connection, identifier, event)
                 connection.close()
                 return Response(status=SUCCESS_CODE)
