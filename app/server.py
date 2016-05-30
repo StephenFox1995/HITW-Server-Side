@@ -561,7 +561,7 @@ def edit_event(identifier):
 
 
                 # Check date format.
-                if datetime.strptime(date, '%d-%m-%Y'):
+                if datetime.strptime(event.date, '%d-%m-%Y'):
                     formatted_date = Event.date_format_yyyymmdd(event.date)
                     event.date = formatted_date
                 else:

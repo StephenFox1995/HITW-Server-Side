@@ -321,8 +321,8 @@ $("#add_event_button").click(function() {
     return;
   }
 
-  var event_to_add = new EventHITW(0, event_title, event_location, event_end_tee,
-    event_start_tee, event_date);
+  var event_to_add = new EventHITW(0, event_title, event_location, event_start_tee,
+    event_end_tee, event_date);
 
   var userToken = getFacebookUserToken().userID;
 
