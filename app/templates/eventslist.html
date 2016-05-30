@@ -261,6 +261,12 @@ function send_update_to_server(button) {
   var updated_event_end_tee = $('#event_end_tee').val();
   var updated_event_date = $('#event_date').val();
 
+  if (!validTimeFormat(updated_event_start_tee) ||
+      !validTimeFormat(updated_event_end_tee)) {
+        alert('Please enter time in the format HH:MM');
+        return;
+      }
+
   // Set the events attributes to the new attributes.
   event.set_event_title(updated_event_title);
   event.set_event_location(updated_event_location);
