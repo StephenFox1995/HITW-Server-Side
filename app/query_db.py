@@ -95,7 +95,6 @@ def insert_into_result(connection, event_id, player_id, score):
 
 def insert_into_event_image(connection, event_id, image_data):
     cursor = connection.cursor()
-    # Add the image data as a compressed blob; (zlib puts it in the correct format for blobs).
     cursor.execute(INSERT_INTO_EVENT_IMAGE, (event_id, image_data))
     connection.commit()
     cursor.close()

@@ -5,40 +5,40 @@ import os
 # Creates all the tabe within the database.
 
 CREATE_EVENT_TABLE_STMT = '''CREATE TABLE 'Event' (
-	event_id INTEGER PRIMARY KEY NOT NULL,
-	event_title VARCHAR,
-	event_location VARCHAR NOT NULL,
-	event_date DATE NOT NULL,
-	event_start_tee_time TIME NOT NULL,
-	event_end_tee_time TIME
+	event_id 				INTEGER PRIMARY KEY NOT NULL,
+	event_title 			VARCHAR,
+	event_location 			VARCHAR NOT NULL,
+	event_date 				DATE NOT NULL,
+	event_start_tee_time 	TIME NOT NULL,
+	event_end_tee_time 		TIME
 );'''
 
 CREATE_MEMBER_TABLE_STMT = '''CREATE TABLE 'Member' (
-	member_id INTEGER PRIMARY KEY  NOT NULL,
-	member_f_name VARCHAR NOT NULL,
-	member_l_name VARCHAR NOT NULL,
+	member_id 		INTEGER PRIMARY KEY  NOT NULL,
+	member_f_name 	VARCHAR NOT NULL,
+	member_l_name 	VARCHAR NOT NULL,
 	member_handicap VARCHAR NOT NULL
 );'''
 
 CREATE_RESULT_TABLE_STMT = '''CREATE TABLE 'Result' (
-	event_id INTEGER,
-	member_id INTEGER,
-    score INTEGER,
+	event_id 		INTEGER,
+	member_id 		INTEGER,
+    score 			INTEGER,
 	FOREIGN KEY(event_id) REFERENCES EVENT(event_id),
 	FOREIGN KEY(member_id) REFERENCES Member(member_id)
 );'''
 
 CREATE_EVENT_IMAGE_TABLE_STMT = '''CREATE TABLE 'EventImage' (
-	event_id INTEGER,
-	image_data STRING,
+	event_id 	INTEGER,
+	image_data 	STRING,
 	FOREIGN KEY(event_id) REFERENCES EVENT(event_id)
 );'''
 
 
 CREATE_POY_TABLE_STMNT = '''CREATE TABLE 'PlayerOfTheYear' (
-	member_id INTEGER,
-	year STRING,
-	score,
+	member_id 	INTEGER,
+	year 		STRING,
+	score		INTEGER,
 	FOREIGN KEY(member_id) REFERENCES Member(member_id)
 );'''
 
@@ -147,7 +147,7 @@ def create_triggers(connection):
 
 
 # TODO: if a table already exists in the etc/hitw/config
-# 		remeber to delete that entry so there's no duplicates.
+# 		remember to delete that entry so there's no duplicates.
 
 # Creates the database and all the tables needed.
 def create_sqlite_db(filepath):

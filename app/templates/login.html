@@ -353,7 +353,6 @@ function clear_event_inputs() {
 function success(element, message) {
   var popup = $('<div class="alert alert-success"><a class="close" data-dismiss="alert">x</a><span>' + message + '</span></div>');
   $(element).append(popup);
-
   popup.fadeOut(3000);
 }
 
@@ -376,9 +375,16 @@ function on_submit_poy() {
           function successful() {
             var element = '#addPoyModal .modal-dialog .modal-footer';
             success(element,"Player has been added.");
+            clear_poy_inputs();
           },
           function failed() { });
     }
   })
+}
+
+function clear_poy_inputs() {
+  $('#poy_score').val();
+  $('#poy_year').val();
+  $('#poy_member_id').val();
 }
 </script>
