@@ -3,6 +3,7 @@ import zlib
 from event import Event
 from member import Member
 from result import Result
+from poy import PlayerOfTheYear
 
 
 # INSERTS
@@ -225,7 +226,7 @@ def get_all_results_for_member(connection, identifier):
     cursor.close()
     return results
 
-# Returns every player of the year.
+# Returns all player of the years.
 def get_all_poy(connection):
     cursor = connection.cursor()
     cursor.execute(SELECT_ALL_POYS)
@@ -234,16 +235,23 @@ def get_all_poy(connection):
     results = {}
     if rows:
         for row in rows:
+            member_id = row[0] # member_id is stored at first index in result.
+            member = get_member(connection, member_id) # now go get that member from the database.
             score = row[2]
             year = row[1] # extract the year.
-            member_id = row[0] # member_id is stored at first index in result.
-            # now go get that member from the database.
-            member = get_member(connection, member_id)
+            poy = PlayerOfTheYear(member, year, score)
 
-            # Add year as key and member as value for returning result set.
-            results.update( {year: (member, score)} )
-    cursor.close()
-    return results
+            # check to see if a key already exists
+            # for a specific year in
+            if year in results:
+                # Get the array of players for that year.
+                results[year].append(poy)
+            else: # If no key exists for that year add it.
+                poys = [poy]
+                results[year] = poys # Add an array object
+        cursor.close()
+
+        return results
 
 
 

@@ -508,31 +508,38 @@ def get_all_poy():
     json = '{ "poys": ['
     if connection is not None:
         results = query_db.get_all_poy(connection)
-        connection.close()
-
-        index = 0;
-        if len(results) > 0:
-            for key, value in results.iteritems():
-                year = key
-                member = value[0]
-                score = value[1]
-
-                json += '{ "year": '  + str(year)           + ', '  + \
-                '"identifier" : ' + str(member.identifier)  + ', '  + \
-                '"firstname" : "' + member.firstname        + '", ' + \
-                '"lastname"  : "' + member.lastname         + '", ' + \
-                '"handicap"  : '  + str(score)    + '}'
-
-
-                # Check if were at the last index
-                # so we can close of the json array and poy object.
-                if (index == (len(results) - 1)):
-                    json += '] }'
-                else:
-                    json += ','
-                index = index + 1;
-        else:
-            json = empty_json_for_array("poy")
+        # connection.close()
+        #
+        # index = 0;
+        # 
+        # if len(poys) > 0:
+        #     for count, poy in enumerate(poys, start=1):
+        #         if poy:
+        #
+        #
+        #
+        # if len(results) > 0:
+        #     for key, value in results.iteritems():
+        #         year = key
+        #         member = value[0]
+        #         score = value[1]
+        #
+        #         json += '{ "year": '  + str(year)           + ', '  + \
+        #         '"identifier" : ' + str(member.identifier)  + ', '  + \
+        #         '"firstname" : "' + member.firstname        + '", ' + \
+        #         '"lastname"  : "' + member.lastname         + '", ' + \
+        #         '"handicap"  : '  + str(score)    + '}'
+        #
+        #
+        #         # Check if were at the last index
+        #         # so we can close of the json array and poy object.
+        #         if (index == (len(results) - 1)):
+        #             json += '] }'
+        #         else:
+        #             json += ','
+        #         index = index + 1;
+        # else:
+        #     json = empty_json_for_array("poy")
         return Response(status=SUCCESS_CODE, response=json, mimetype='application/json');
 
 
