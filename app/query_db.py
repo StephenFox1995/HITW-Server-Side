@@ -255,7 +255,33 @@ def get_all_poy(connection):
 
 
 
-
+# json = '{ "poys": [{'
+# if connection is not None:
+#     results = query_db.get_all_poy(connection)
+#     connection.close()
+#     if len(results) > 0:
+#         for index, (key, value) in enumerate(results.items()):
+#             year = key
+#             poys = value
+#
+#             json += '"' + str(year) + '":[{'
+#
+#             for count, poy in enumerate(poys, start=1):
+#                 json += '"poy":' + '{ "member":'
+#                 if count < len(poys):
+#                     json += poy.member.jsonify() + ','
+#                     json += '"score":' + str(poy.score) + '},'
+#                 else:
+#                     json += poy.member.jsonify() + ','
+#                     json += '"score":' + str(poy.score) + '}}]' # End the array for this year
+#
+#             if index == len(results) - 1:
+#                 json += '}]' # End the array object for all years
+#             else:
+#                 json += '}, {'
+#     json += '}' # End poys:
+#
+#     return Response(status=SUCCESS_CODE, response=json, mimetype='application/json');
 
 
 def update_event(connection, identifier, event):

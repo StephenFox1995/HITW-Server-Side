@@ -525,16 +525,18 @@ def get_all_poy():
                 year = key
                 poys = value
 
-                json += '"' + str(year) + '":[{'
+                json += '"' + str(year) + '":['
 
                 for count, poy in enumerate(poys, start=1):
-                    json += '"poy":' + '{ "member":'
+                    json += '{"poy": { "member":'
+
                     if count < len(poys):
                         json += poy.member.jsonify() + ','
-                        json += '"score":' + str(poy.score) + '},'
+                        json += '"score":' + str(poy.score) + '}},'
                     else:
                         json += poy.member.jsonify() + ','
-                        json += '"score":' + str(poy.score) + '}}]' # End the array for this year
+                        json += '"score":' + str(poy.score) + '}}]' # End array for this year.
+
 
                 if index == len(results) - 1:
                     json += '}]' # End the array object for all years
@@ -543,38 +545,6 @@ def get_all_poy():
         json += '}' # End poys:
 
         print json
-
-        #
-        # index = 0;
-        #
-        # if len(poys) > 0:
-        #     for count, poy in enumerate(poys, start=1):
-        #         if poy:
-        #
-        #
-        #
-        # if len(results) > 0:
-        #     for key, value in results.iteritems():
-        #         year = key
-        #         member = value[0]
-        #         score = value[1]
-        #
-        #         json += '{ "year": '  + str(year)           + ', '  + \
-        #         '"identifier" : ' + str(member.identifier)  + ', '  + \
-        #         '"firstname" : "' + member.firstname        + '", ' + \
-        #         '"lastname"  : "' + member.lastname         + '", ' + \
-        #         '"handicap"  : '  + str(score)    + '}'
-        #
-        #
-        #         # Check if were at the last index
-        #         # so we can close of the json array and poy object.
-        #         if (index == (len(results) - 1)):
-        #             json += '] }'
-        #         else:
-        #             json += ','
-        #         index = index + 1;
-        # else:
-        #     json = empty_json_for_array("poy")
         return Response(status=SUCCESS_CODE, response=json, mimetype='application/json');
 
 
