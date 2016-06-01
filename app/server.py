@@ -504,14 +504,49 @@ def get_all_results_for_member(identifier):
 @app.route('/get_all_poys/', methods=['GET'])
 def get_all_poy():
     connection = query_db.get_connection(current_db_location())
+# "2016": [{
+# 			"poy": {
+# 				"member": {
+# 					"handicap": "3",
+# 					"lastname": "Fox",
+# 					"identifier": 1,
+# 					"firstname": "Freed"
+# 				},
+# 				"score": 20
+# 			}
+# 		},
 
-    json = '{ "poys": ['
+    json = '{ "poys": [{'
     if connection is not None:
         results = query_db.get_all_poy(connection)
-        # connection.close()
+        connection.close()
+        if len(results) > 0:
+            for index, (key, value) in enumerate(results.items()):
+                year = key
+                poys = value
+
+                json += '"' + str(year) + '":[{'
+
+                for count, poy in enumerate(poys, start=1):
+                    json += '"poy":' + '{ "member":'
+                    if count < len(poys):
+                        json += poy.member.jsonify() + ','
+                        json += '"score":' + str(poy.score) + '},'
+                    else:
+                        json += poy.member.jsonify() + ','
+                        json += '"score":' + str(poy.score) + '}}]' # End the array for this year
+
+                if index == len(results) - 1:
+                    json += '}]' # End the array object for all years
+                else:
+                    json += '}, {'
+        json += '}' # End poys:
+
+        print json
+
         #
         # index = 0;
-        # 
+        #
         # if len(poys) > 0:
         #     for count, poy in enumerate(poys, start=1):
         #         if poy:
