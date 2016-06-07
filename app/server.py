@@ -504,23 +504,25 @@ def get_all_results_for_member(identifier):
 @app.route('/get_all_poys/', methods=['GET'])
 def get_all_poy():
     connection = query_db.get_connection(current_db_location())
-# "2016": [{
-# 			"poy": {
-# 				"member": {
-# 					"handicap": "3",
-# 					"lastname": "Fox",
-# 					"identifier": 1,
-# 					"firstname": "Freed"
-# 				},
-# 				"score": 20
-# 			}
-# 		},
 
-    json = '{ "poys": [{'
+
+
+
+
     if connection is not None:
         results = query_db.get_all_poy(connection)
         connection.close()
         if len(results) > 0:
+            # Firstly add all the years the json will contain.
+            json = '{ "years": ['
+            for index, (key, value) in enumerate(results.items()):
+                if index == len(results) - 1:
+                    json += ('"' + str(key) + '"')
+                else:
+                    json += ('"' + str(key) + '",')
+
+            # Now add all the values for the years listed in the json above
+            json += '], "poys": [{'
             for index, (key, value) in enumerate(results.items()):
                 year = key
                 poys = value
@@ -536,7 +538,6 @@ def get_all_poy():
                     else:
                         json += poy.member.jsonify() + ','
                         json += '"score":' + str(poy.score) + '}}]' # End array for this year.
-
 
                 if index == len(results) - 1:
                     json += '}]' # End the array object for all years

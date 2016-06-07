@@ -63,6 +63,22 @@ function parse_event_images_from_json(data) {
 
 
 /**
+  Parses
+*/
+function parse_poys(data) {
+  var poys = {}
+  $.each(data, function (index, element) {
+    $.each(element, function (index, year) {
+      $.each(element, function(index, poy) { // Get each poy for the current year.
+        poys.poy = poy
+      });
+    })
+  });
+}
+
+
+
+/**
 	Parses json representation of a result into a result object.
 
 	@param data 	The json data.

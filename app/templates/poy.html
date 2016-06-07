@@ -47,13 +47,10 @@
     </div>
 
     <div id = "poys_container"></div>
-
-
-
-        <!-- Edit Player of the Year Modal -->
-        <div class="modal fade" id="editPOYModal" role="dialog">
-          <div class="modal-dialog modal-sm">
-            <div class="modal-content">
+    <!-- Edit Player of the Year Modal -->
+    <div class="modal fade" id="editPOYModal" role="dialog">
+      <div class="modal-dialog modal-sm">
+      <div class="modal-content">
               <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal">&times;</button>
                 <h4 class="modal-title">Edit player of the year</h4>
@@ -88,8 +85,7 @@
               </div>
             </div>
           </div>
-
-  </div>
+        </div>
   </body>
 
 
@@ -147,8 +143,9 @@
     ajaxGET_get_all_poys(
       function(data) {
         var poys = data['poys'];
-        sortPOYsDescendingOrder(poys);
-        addPOYstoHTML(poys, showAdminControls);
+        var s = parse_poys(data);
+        //sortPOYsDescendingOrder(poys);
+        //addPOYstoHTML(poys, showAdminControls);
         removeLoaderImage();
       },
       function() { alert('Could not load Player of the year!'); });
