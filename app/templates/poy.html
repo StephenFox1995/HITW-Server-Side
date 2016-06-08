@@ -46,8 +46,10 @@
       <img src="https://d13yacurqjgara.cloudfront.net/users/82092/screenshots/1073359/spinner.gif" width="130" height="100" style="float-right:50%">
     </div>
 
-    <div id = "poys_container"></div>
-    <!-- Edit Player of the Year Modal -->
+    <div id = "poys_container">
+      <div id="poy_record"></div>
+    </div>
+
     <div class="modal fade" id="editPOYModal" role="dialog">
       <div class="modal-dialog modal-sm">
       <div class="modal-content">
@@ -79,7 +81,7 @@
               </div>
               <div class="modal-footer">
                 <input type="button"class="btn btn-default" value="Update"
-                 id="up/_poy_button">
+                 id="update_poy_button">
 
                 <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
               </div>
@@ -166,18 +168,15 @@
 
       if(!(currentDisplayedYears.includes(poy.year))) {
         currentDisplayedYears.push(poy.year);
-        $('#poys_container').append('<div id="poy_record"></div>');
         $('#poy_record').append(
           '<h3 id="poy_year_text"> Player of the year ' + poy.year + '</h3>');
         currentTableID = 'poy_table' + poy.year
-        $('#poys_container').append('<div id="poy_record"></div>');
-        $('#poy_record').append(tablebody(currentTableID);
+        $('#poy_record').append(tablebody(currentTableID));
       }
 
       var fullname = poy.member.firstname + ' ' + poy.member.lastname;
       var score = poy.score;
       tableRow('#' + currentTableID, fullname, score);
-
     });
 
 
@@ -240,8 +239,9 @@
   function onEditModal(button) {
     (function (button) {
       var fullname = $(button).closest('tr').find('#fullname').html();
-      var handicap = $(button).closest('tr').find('#handicap').html();
-      var yearText = $(button).closest('#poy_record').find('#poy_year_text').html();
+      var handicap = $(button).closest('tr').find('#score').html();
+      //var yearText = $(button).closest('#poy_record').find('#poy_year_text').html();
+      var yearText = $(button).closest('table').attr('id')
       var year = yearText.match(/\d+/g);
 
       $('#poy_year').val(year);
