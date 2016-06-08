@@ -129,7 +129,11 @@
     </div>
 
     <h3 style="text-align:center">Gallery<h3>
-    <div class="gallery row"></div>
+    <div id="galleryLoaderImage" style="width:100%; text-align:center;">
+    <img src="https://d13yacurqjgara.cloudfront.net/users/82092/screenshots/1073359/spinner.gif" width="130" height="100" style="float-right:50%">
+      </div>
+    <div class="gallery row">
+    </div>
 
 
 
@@ -167,6 +171,7 @@ $(document).on("ready", function() {
   ajaxGET_get_all_event_images(event_id,
     function successful(data) {
       var event_images = parse_event_images_from_json(data);
+      removeGalleryLoaderImage();
       display_images(event_images);
     },
     function failure() {}
@@ -238,6 +243,10 @@ function loadResultsToHTMLWithAdminControls(showAdminControls) {
 
 function removeLoaderImage() {
   $('#loaderImage').remove();
+}
+
+function removeGalleryLoaderImage() {
+  $('#galleryLoaderImage').remove();
 }
 
 

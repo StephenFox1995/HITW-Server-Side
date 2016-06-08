@@ -31,7 +31,7 @@
     // ================================
 
     JustifyGallery.defaults = {
-        'maxRowHeight': '300px',
+        'maxRowHeight': '600px',
         'spacing': 2,
         'refreshInterval': 500,
         'maxRefreshCount': 10,
