@@ -204,7 +204,6 @@ $(document).on('ready', function() {
   });
 
   ajaxGET_get_all_members(
-
     function(data) {
       members = parse_member_from_json(data);
       var fullnames = members.map(function(member) {
@@ -285,6 +284,13 @@ $("#add_member_button").click(function() {
   var member_l_name = $('#member_l_name').val();
   var member_handicap = $('#member_handicap').val();
 
+  if(!(validateInput(member_f_name)) ||
+     !(validateInput(member_l_name)) ||
+     !(validateInput(member_handicap))) {
+    alert("Please fill in all fields.");
+    return;
+  }
+
   // Create a new member, set the id to whatever,
   // as this does not matter when adding the member to
   // the system as the id will be generated.
@@ -311,6 +317,15 @@ $("#add_event_button").click(function() {
   var event_date = $('#event_date').val();
   var event_start_tee = $('#event_start_tee').val();
   var event_end_tee = $('#event_end_tee').val();
+
+  if(!(validateInput(event_title))     ||
+     !(validateInput(event_location))  ||
+     !(validateInput(event_date))      ||
+     !(validateInput(event_start_tee)) ||
+     !(validateInput(event_end_tee))) {
+       alert("Please fill in all fields.");
+       return;
+  }
 
   if (!validTimeFormat(event_start_tee)) {
     alert('Please enter time in the format HH:MM');
@@ -361,6 +376,13 @@ function on_submit_poy() {
     var member_fullname = $('#poy_member_id').val();
     var score = $("#poy_score").val()
     var year = $("#poy_year").val()
+
+    if (!(validateInput(member_fullname)) ||
+        !(validateInput(score) ||
+        !(validateInput(year)))) {
+          alert("Please fill in all fields!");
+          return;
+        }
 
     if (!member_fullname) {
       return;

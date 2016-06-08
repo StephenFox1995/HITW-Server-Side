@@ -147,3 +147,15 @@ function validTimeFormat(timeString) {
    var expression = /^\d{1,2}:\d{2}([ap]m)?$/;
    return timeString.match(expression)
 }
+
+
+function validateInput(input) {
+  if ((input === undefined ||
+      input === null ||
+      input === '' ||
+      input === 'dd/mm/yy' ||
+      input === 'dd-mm-yy')) {
+    return false;
+  }
+  return true;
+}
