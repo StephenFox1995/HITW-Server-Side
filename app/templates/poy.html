@@ -142,10 +142,9 @@
   function getAllPOYsAndAddToHTML(showAdminControls) {
     ajaxGET_get_all_poys(
       function(data) {
-        var poys = data['poys'];
-        var s = parse_poys(data);
-        //sortPOYsDescendingOrder(poys);
-        //addPOYstoHTML(poys, showAdminControls);
+        var poys = parse_poys(data);
+        sortPOYsDescendingOrder(poys);
+        addPOYstoHTML(poys, showAdminControls);
         removeLoaderImage();
       },
       function() { alert('Could not load Player of the year!'); });
@@ -159,42 +158,45 @@
 
 
   function addPOYstoHTML(poys, adminControls) {
+    var currentDisplayedYears = []
+    var currentTableID;
     poys.forEach(function(poy) {
-      $('#poys_container').append('<div id="poy_record"></div>');
+      // Check to see if we added a poy for a given year.
 
-      $('#poy_record').append(
-        '<h3 id="poy_year_text"> Player of the year ' + poy.year + '</h3>');
 
-      var fullname = poy.firstname + ' ' + poy.lastname;
-      var handicap = poy.handicap;
-      $('#poy_record').append(tablebody(fullname, handicap));
+      if(!(currentDisplayedYears.includes(poy.year))) {
+        currentDisplayedYears.push(poy.year);
+        $('#poys_container').append('<div id="poy_record"></div>');
+        $('#poy_record').append(
+          '<h3 id="poy_year_text"> Player of the year ' + poy.year + '</h3>');
+        currentTableID = 'poy_table' + poy.year
+        $('#poys_container').append('<div id="poy_record"></div>');
+        $('#poy_record').append(tablebody(currentTableID);
+      }
+
+      var fullname = poy.member.firstname + ' ' + poy.member.lastname;
+      var score = poy.score;
+      tableRow('#' + currentTableID, fullname, score);
+
     });
 
 
-    function tablebody(fullname, handicap) {
+    function tablebody(tableID) {
       if (adminControls) { // Show edit buttons.
         return '<div class ="table-responsive">' +
-          '<table class="table" id="poy_table">' +
+          '<table class="table" id="' + tableID + '">' +
             '<thead>' +
               '<tr>' +
                 '<th>Player</th>' +
                 '<th>Score</th>' +
               '</tr>' +
             '</thead>' +
-            '<tbody>' +
-              '<tr>'+
-                '<td id="fullname">' + fullname + '</td>' +
-                '<td id="handicap">' + handicap + '</td>' +
-                '<td><button class="btn btn-default" data-toggle="modal" data-target="#editPOYModal" onClick="onEditModal(this);">Edit</button></td>' +
-                '<td><button class="btn btn-default" onClick="delete_poy(this);">Delete</button></td>' +
-              '</tr>' +
-            '</tbody>' +
           '</table>' +
         '</div>';
       }
       else {
         return '<div class ="table-responsive">' +
-          '<table class="table" id="poy_table">' +
+          '<table class="table" id="' + tableID + '">' +
             '<thead>' +
               '<tr>' +
                 '<th>Player</th>' +
@@ -211,6 +213,15 @@
         '</div>';
       }
     }
+  }
+
+  function tableRow(table, fullname, score) {
+    $(table).append('<tr>'+
+      '<td id="fullname">' + fullname + '</td>' +
+      '<td id="score">' + score + '</td>' +
+      '<td><button class="btn btn-default" data-toggle="modal" data-target="#editPOYModal" onClick="onEditModal(this);">Edit</button></td>' +
+      '<td><button class="btn btn-default" onClick="delete_poy(this);">Delete</button></td>' +
+    '</tr>');
   }
 
   function addAdminOnNavBar() {

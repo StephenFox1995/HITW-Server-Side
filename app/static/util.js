@@ -66,14 +66,29 @@ function parse_event_images_from_json(data) {
   Parses
 */
 function parse_poys(data) {
-  var poys = {}
-  $.each(data, function (index, element) {
-    $.each(element, function (index, year) {
-      $.each(element, function(index, poy) { // Get each poy for the current year.
-        poys.poy = poy
+  var poysArray = [];
+  var years = parsePoysYearsArray(data);
+  var currentYear;
+
+  var poys = data.poys;
+
+  $.each(poys, function(index, year) {
+    // Get the current year.
+    currentYear = years[index]
+
+    $.each(year, function(index, poys) {
+      $.each(poys, function(index, poy) {
+        poy.year = currentYear;
+        poysArray.push(poy)
       });
-    })
+    });
   });
+  return poysArray
+}
+
+
+function parsePoysYearsArray(data) {
+  return data.years
 }
 
 

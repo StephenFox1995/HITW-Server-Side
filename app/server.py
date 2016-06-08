@@ -505,10 +505,6 @@ def get_all_results_for_member(identifier):
 def get_all_poy():
     connection = query_db.get_connection(current_db_location())
 
-
-
-
-
     if connection is not None:
         results = query_db.get_all_poy(connection)
         connection.close()
@@ -530,14 +526,14 @@ def get_all_poy():
                 json += '"' + str(year) + '":['
 
                 for count, poy in enumerate(poys, start=1):
-                    json += '{"poy": { "member":'
+                    json += '{ "member":'
 
                     if count < len(poys):
                         json += poy.member.jsonify() + ','
-                        json += '"score":' + str(poy.score) + '}},'
+                        json += '"score":' + str(poy.score) + '},'
                     else:
                         json += poy.member.jsonify() + ','
-                        json += '"score":' + str(poy.score) + '}}]' # End array for this year.
+                        json += '"score":' + str(poy.score) + '}]' # End array for this year.
 
                 if index == len(results) - 1:
                     json += '}]' # End the array object for all years
