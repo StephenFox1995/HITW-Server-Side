@@ -541,7 +541,6 @@ def get_all_poy():
                     json += '}, {'
         json += '}' # End poys:
 
-        print json
         return Response(status=SUCCESS_CODE, response=json, mimetype='application/json');
 
 

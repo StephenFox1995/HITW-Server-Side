@@ -59,7 +59,7 @@
   <body>
 
     <div id="adminControls" class="well"></div>
-    <div id="eventname"></div>
+    <div id="eventname" style="text-align:center;"></div>
     <div class ="table-responsive">
       <table class="table" id="result_table">
         <thead>
@@ -128,11 +128,14 @@
       </div>
     </div>
 
-    <h3 style="text-align:center">Gallery<h3>
+    <h3 style="text-align:center">Gallery</h3>
     <div id="galleryLoaderImage" style="width:100%; text-align:center;">
     <img src="https://d13yacurqjgara.cloudfront.net/users/82092/screenshots/1073359/spinner.gif" width="130" height="100" style="float-right:50%">
+    </div>
+
+    <div class="container padding-50-0">
+      <div class="gallery row">
       </div>
-    <div class="gallery row">
     </div>
 
 
@@ -212,6 +215,7 @@ function loadResultsToHTMLWithAdminControls(showAdminControls) {
       current_event = new EventHITW(data.identifier, data.title, data.location, data.time, data.date);
       if (current_event.get_event_title() != undefined) {
         $("#eventname").append('<h1>' + current_event.get_event_title() + '</h1>');
+        $("#eventname").append('<h4>' + current_event.get_event_location() + '</h5>');
       }
     },
     function failed() { }
