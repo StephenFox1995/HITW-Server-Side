@@ -176,25 +176,16 @@
 
       var fullname = poy.member.firstname + ' ' + poy.member.lastname;
       var score = poy.score;
-      tableRow('#' + currentTableID, fullname, score);
+      if (adminControls) {
+        tableRowForAdmin('#' + currentTableID, fullname, score);
+      } else {
+        tableRow('#' + currentTableID, fullname, score);
+      }
     });
 
 
     function tablebody(tableID) {
-      if (adminControls) { // Show edit buttons.
-        return '<div class ="table-responsive">' +
-          '<table class="table" id="' + tableID + '">' +
-            '<thead>' +
-              '<tr>' +
-                '<th>Player</th>' +
-                '<th>Score</th>' +
-              '</tr>' +
-            '</thead>' +
-          '</table>' +
-        '</div>';
-      }
-      else {
-        return '<div class ="table-responsive">' +
+      return '<div class ="table-responsive">' +
           '<table class="table" id="' + tableID + '">' +
             '<thead>' +
               '<tr>' +
@@ -202,24 +193,24 @@
                 '<th>Handicap</th>' +
               '</tr>' +
             '</thead>' +
-            '<tbody>' +
-              '<tr>'+
-                '<td>' + fullname + '</td>' +
-                '<td>' + handicap + '</td>' +
-              '</tr>' +
-            '</tbody>' +
           '</table>' +
         '</div>';
-      }
     }
+  }
+
+  function tableRowForAdmin(table, fullname, score) {
+    $(table).append('<tr>'+
+      '<td id="fullname">' + fullname + '</td>' +
+      '<td id="score">' + score + '</td>' +
+      '<td><button class="btn btn-default" data-toggle="modal" data-target="#editPOYModal" onClick="onEditModal(this);">Edit</button></td>' +
+      '<td><button class="btn btn-default" onClick="delete_poy(this);">Delete</button></td>' +
+    '</tr>');
   }
 
   function tableRow(table, fullname, score) {
     $(table).append('<tr>'+
       '<td id="fullname">' + fullname + '</td>' +
       '<td id="score">' + score + '</td>' +
-      '<td><button class="btn btn-default" data-toggle="modal" data-target="#editPOYModal" onClick="onEditModal(this);">Edit</button></td>' +
-      '<td><button class="btn btn-default" onClick="delete_poy(this);">Delete</button></td>' +
     '</tr>');
   }
 
