@@ -168,18 +168,29 @@ $(document).on("ready", function() {
     else { loadResultsToHTMLWithAdminControls(false); }
   });
 
-  ajaxGET_get_all_event_images(event_id,
-    function successful(data) {
-      var event_images = parse_event_images_from_json(data);
-      removeGalleryLoaderImage();
-      display_images(event_images);
-    },
-    function failure() {}
-  );
 
+  ajax_GET_get_event_image_ids(event_id,
+    function successful(data) {
+      image_ids = data.image_ids;
+      loadEventImages(image_ids)
+    },
+    function failure() {})
 });
 
-
+function loadEventImages(image_ids) {
+  // Loop through all the image ids
+  // and make separate requests for each image.
+  image_ids.forEach(function(image_id) {
+    ajaxGET_get_event_image(image_id,
+      function successful(data) {
+        image_data = data.image_data
+        removeGalleryLoaderImage();
+        display_image(image_data);
+      },
+      function failed() {}
+    )
+  });
+}
 
 function loadResultsToHTMLWithAdminControls(showAdminControls) {
   if (showAdminControls) {
@@ -262,6 +273,12 @@ function display_images(images) {
   });
   addGallery('.gallery', correct_format_image);
 }
+
+function display_image(image) {
+  var image_prefix = 'data:image/png;base64, ';
+  addGallery('.gallery', image_prefix + image)
+}
+
 
 
 function get_member_for_result(result, callback) {

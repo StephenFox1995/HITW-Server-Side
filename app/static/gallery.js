@@ -1,10 +1,12 @@
-function addGallery(element, images) {
-  if (images instanceof Array) {
+function addGallery(element, data) {
+  if (data instanceof Array) {
     $(element).append(galleryBody());
 
-    images.forEach(function(image) {
+    data.forEach(function(image) {
       $('.gallery').append(galleryItem(image));
     });
+  } else {
+    $('.gallery').append(galleryItem(data))
   }
 
   $('.gallery').justifyGallery();

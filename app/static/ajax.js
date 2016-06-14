@@ -256,24 +256,26 @@ function ajaxGET_get_upcoming_event(successful, failed) {
 }
 
 
-/**
-	Makes a call to retrieve all images for a given event.
 
-	@param event_id		The id of the event to retrieve the images for.
-	@param successful	A callback when there has been successful connection with the server.
-	@param failed		A callback when connection to the server was failed.
-*/
-function ajaxGET_get_all_event_images(event_id, successful, failed) {
+
+function ajax_GET_get_event_image_ids(event_id, successful, failed) {
   $.ajax({
     type: 'GET',
-    url: '/get_all_event_images/' + event_id,
+    url: '/get_image_ids_for_event/' + event_id,
     dataType: 'json',
-    success: function(data) {
-      successful(data);
-    },
-    failure: function() {
-      failed();
-    }
+    success: function(data) { successful(data); },
+    failure: function() { failed(); },
+  });
+}
+
+function ajaxGET_get_event_image(image_id, successful, failed) {
+  $.ajax({
+    type: 'GET',
+    url: '/get_event_image/' + image_id,
+    contentType: 'application/json',
+    dataType: 'json',
+    success: function(data) { successful(data); },
+    failure: function() { failed(); },
   });
 }
 

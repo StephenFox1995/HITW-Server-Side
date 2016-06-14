@@ -361,32 +361,8 @@ def get_event(identifier):
 
 
 #----------------------------------------------------------------
-# GET ALL EVENT IMAGES
+# GET EVENT IMAGE
 #----------------------------------------------------------------
-# TODO: Correct compression of images.
-@app.route('/get_event_images/<identifier>', methods=['GET'])
-def get_all_event_images(identifier):
-    if not identifier:
-        return Response(status=MISSING_PARAM_CODE)
-
-    json = '{ "event_images": ['
-    connection = query_db.get_connection(current_db_location())
-    if connection is not None:
-        event_images_data = query_db.get_all_event_images(connection, identifier)
-
-        for count, image_data in enumerate(event_images_data, start=1):
-            json += jsonify_event_image_data(image_data)
-
-            if count is not len(event_images_data):
-                json += ',' + '\r\n'
-            else:
-                json += '] }'
-        return Response(status=SUCCESS_CODE, response=json, mimetype='application/json')
-    else:
-        return Response(status=FAILURE_CODE)
-
-
-
 @app.route('/get_event_image/<image_id>', methods=['GET'])
 def get_event_image(image_id):
     if not image_id:
@@ -406,18 +382,19 @@ def get_event_image(image_id):
         image_base64_encoding = image_util.get_image_base64(image_file, image_encoding)
 
         if image_base64_encoding:
-            json = '{"image_data":{"' + image_base64_encoding + '"}}'
+            json = '{"image_data":"' + image_base64_encoding + '"}'
             return Response(status=SUCCESS_CODE, response=json, mimetype='application/json')
         else:
-            return Response(status=SUCCESS_CODE)
-    return Response(status=SUCCESS_CODE)
+            return Response(status=FAILURE_CODE)
+    else:
+        return Response(status=SUCCESS_CODE)
 
 
 #----------------------------------------------------------------
 # GET ALL EVENT IMAGES IDS
 #----------------------------------------------------------------
-@app.route('/get_images_ids_for_event/<int:event_id>', methods=['GET'])
-def get_images_ids_for_event(event_id):
+@app.route('/get_image_ids_for_event/<int:event_id>', methods=['GET'])
+def get_image_ids_for_event(event_id):
     if not event_id:
         return Response(status=MISSING_PARAM_CODE)
 
