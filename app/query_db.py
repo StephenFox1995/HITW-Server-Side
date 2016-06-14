@@ -14,7 +14,8 @@ INSERT_INTO_MEMBER = '''INSERT INTO Member(member_id, member_f_name, member_l_na
 
 INSERT_INTO_RESULT = '''INSERT INTO Result(event_id, member_id, score) VALUES(?, ?, ?);'''
 
-INSERT_INTO_EVENT_IMAGE = '''INSERT INTO EVENTIMAGE(event_id, image_data) VALUES(?, ?);'''
+INSERT_INTO_EVENT_IMAGE = '''INSERT INTO EVENTIMAGE(event_id, image_location) VALUES(?, ?);'''
+
 
 INSERT_INTO_POY = '''INSERT INTO PLAYEROFTHEYEAR(member_id, year, score) VALUES(?, ?, ?);'''
 #-------------------
@@ -26,14 +27,15 @@ SELECT_ALL_EVENTS = '''SELECT * FROM Event'''
 
 SELECT_EVENT_X = '''SELECT * FROM EVENT WHERE event_id = ?'''
 
-SELECT_ALL_EVENT_IMAGES_FOR_EVENT = '''SELECT * FROM EVENTIMAGE WHERE event_id = ?'''
+SELECT_EVENT_IMAGE_LOCATION = '''SELECT * FROM EVENTIMAGE WHERE image_id = ?'''
+
+SELECT_EVENT_IMAGE_IDS_FOR_EVENT  = '''SELECT * FROM EVENTIMAGE WHERE event_id = ?'''
 
 SELECT_UPCOMING_EVENT = '''SELECT * FROM EVENT WHERE event_date >= date('now') ORDER BY event_date ASC;'''
 
 SELECT_ALL_MEMBERS = '''SELECT * FROM Member'''
 
 SELECT_MEMBER_X = '''SELECT * FROM MEMBER WHERE member_id = ?'''
-
 
 SELECT_ALL_RESULTS = '''SELECT * FROM Result'''
 
@@ -94,11 +96,14 @@ def insert_into_result(connection, event_id, player_id, score):
     connection.commit()
     cursor.close()
 
-def insert_into_event_image(connection, event_id, image_data):
+
+def insert_into_event_image(connection, event_id, image_location):
     cursor = connection.cursor()
-    cursor.execute(INSERT_INTO_EVENT_IMAGE, (event_id, image_data))
+    cursor.execute(INSERT_INTO_EVENT_IMAGE, (event_id, image_location))
     connection.commit()
+    image_id = cursor.lastrowid
     cursor.close()
+    return image_id
 
 
 def insert_into_poy(connection, member_id, year, score):
@@ -147,18 +152,33 @@ def get_upcoming_event(connection):
     return event
 
 
-def get_all_event_images(connection, identifier):
+
+# Selects an event images file location on
+# disk as stored in the database.
+def get_event_image_location(connection, image_id):
     cursor = connection.cursor()
-    cursor.execute(SELECT_ALL_EVENT_IMAGES_FOR_EVENT, (identifier));
+    cursor.execute(SELECT_EVENT_IMAGE_LOCATION, (image_id))
+    row = cursor.fetchone()
+
+    location = ''
+    if row:
+        location = row[0]
+    cursor.close()
+    return location
+
+
+# Gets all the image ids for a given event.
+def get_event_image_ids(connection, event_id):
+    cursor = connection.cursor()
+    cursor.execute(SELECT_EVENT_IMAGE_IDS_FOR_EVENT, (event_id,))
     rows = cursor.fetchall()
 
-    decompressed_blobs = []
-    image = ''
-    for image_data in rows:
-        image = image_data[1]
-        decompressed_blobs.append(image);
+    identifiers = []
+    for rows in rows:
+        identifiers.append(rows[0])
     cursor.close()
-    return decompressed_blobs
+    return identifiers
+
 
 
 

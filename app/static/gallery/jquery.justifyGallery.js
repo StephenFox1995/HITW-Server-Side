@@ -31,7 +31,7 @@
     // ================================
 
     JustifyGallery.defaults = {
-        'maxRowHeight': '600px',
+        'maxRowHeight': '400px',
         'spacing': 2,
         'refreshInterval': 500,
         'maxRefreshCount': 10,
@@ -39,8 +39,8 @@
                       'min-height': '0',
                       'height': 'auto',
                       'width': 'auto',
-                      'max-width': 'none',
-                      'max-height': 'none'}
+                      'max-width': '200px',
+                      'max-height': '200px'}
     };
 
     // JUSTIFYGALLERY METHODS

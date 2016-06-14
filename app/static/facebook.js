@@ -6,7 +6,7 @@ Asks the Facebook SDK for the current login status of the user.
 function getFacebookLoginStatus(response) {
   window.fbAsyncInit = function() {
     FB.init({
-      appId      : '1739585199624396',
+      appId      : '1750775448505371',
       cookie     : true,
       xfbml      : true,
       version    : 'v2.5'

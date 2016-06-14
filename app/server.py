@@ -222,8 +222,18 @@ def add_poy():
 #----------------------------------------------------------------
 # ADD EVENT IMAGE
 #----------------------------------------------------------------
+# {"event_image":
+#   {
+#       "image_type": "png",
+#       "event_id": 2,
+#       "image_data": "23i92i330ejqd"
+#
+# }}
+#
 @app.route('/add_event_image/', methods=['POST'])
 def add_event_image():
+    IMAGE_BASE_DIRECTORY = '/Users/stephenfox/Desktop/hitw_images/'
+
     if request.json:
         json = request.json
 
@@ -233,16 +243,32 @@ def add_event_image():
         if auth.is_admin(access_token) is False:
             return Response(status=PERMISSION_DENIED)
 
+        # Get json objects
+        #image_type = json.get("image_type")
         event_id = json.get("event_id")
         image_base64_data = json.get("image_data")
 
+        # Images should be stored in a directory
+        # under IMAGE_BASE_DIRECTORY > event id > filename.
+        # Where the filename is the actual id of the image given by the database.
+        # e.g. files will be stored IMAGE_BASE_DIRECTORY/EVENT_ID/2.jpeg,
+        #                           IMAGE_BASE_DIRECTORY/EVENT_ID/3.jpeg etc...
+
+        # Create parent directory where the image file will reside.
+        image_parent_dir = IMAGE_BASE_DIRECTORY + str(event_id) + '/'
+
+        # Get database connection
         connection = query_db.get_connection(current_db_location())
-        if connection is not None:
-            query_db.insert_into_event_image(connection, event_id, image_base64_data)
-            connection.close()
-            return Response(status=SUCCESS_CODE)
-        else: # Connection to database failed
-            return Response(status=FAILURE_CODE)
+
+        # Insert into the database and retrieve the id for the image.
+        # The id will be used as the image filename.
+        image_filename = query_db.insert_into_event_image(connection, event_id, image_parent_dir)
+
+        # If there is not image type, encode as jpg.
+        image_util.jpeg_and_write_image(image_parent_dir, image_filename, image_base64_data)
+        return Response(status=SUCCESS_CODE)
+    else:
+        return Response(status=FAILURE_CODE)
 
 
 #----------------------------------------------------------------
@@ -332,7 +358,7 @@ def get_event(identifier):
 # GET ALL EVENT IMAGES
 #----------------------------------------------------------------
 # TODO: Correct compression of images.
-@app.route('/get_all_event_images/<identifier>', methods=['GET'])
+@app.route('/get_event_images/<identifier>', methods=['GET'])
 def get_all_event_images(identifier):
     if not identifier:
         return Response(status=MISSING_PARAM_CODE)
@@ -352,6 +378,35 @@ def get_all_event_images(identifier):
         return Response(status=SUCCESS_CODE, response=json, mimetype='application/json')
     else:
         return Response(status=FAILURE_CODE)
+
+
+#----------------------------------------------------------------
+# GET ALL EVENT IMAGES IDS
+#----------------------------------------------------------------
+@app.route('/get_images_ids_for_event/<int:event_id>', methods=['GET'])
+def get_images_ids_for_event(event_id):
+    if not event_id:
+        return Response(status=MISSING_PARAM_CODE)
+
+    json = '{ "image_ids": ['
+    connection = query_db.get_connection(current_db_location())
+    if connection is not None:
+        identifiers = query_db.get_event_image_ids(connection, event_id)
+
+        for count, image_id in enumerate(identifiers, start=1):
+            json += str(image_id)
+            if count is not len(identifiers):
+                 json += ','
+            else:
+                json += ']}'
+
+        return Response(status=SUCCESS_CODE, response=json, mimetype='application/json')
+    else:
+        return Response(status=FAILURE_CODE)
+
+
+
+
 
 
 

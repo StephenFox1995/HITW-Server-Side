@@ -14,7 +14,7 @@ CREATE_EVENT_TABLE_STMT = '''CREATE TABLE 'Event' (
 );'''
 
 CREATE_MEMBER_TABLE_STMT = '''CREATE TABLE 'Member' (
-	member_id 		INTEGER PRIMARY KEY  NOT NULL,
+	member_id 		INTEGER PRIMARY KEY NOT NULL,
 	member_f_name 	VARCHAR NOT NULL,
 	member_l_name 	VARCHAR NOT NULL,
 	member_handicap VARCHAR NOT NULL
@@ -29,8 +29,9 @@ CREATE_RESULT_TABLE_STMT = '''CREATE TABLE 'Result' (
 );'''
 
 CREATE_EVENT_IMAGE_TABLE_STMT = '''CREATE TABLE 'EventImage' (
+	image_id	INTEGER PRIMARY KEY NOT NULL,
 	event_id 	INTEGER,
-	image_data 	STRING,
+	image_location 	STRING,
 	FOREIGN KEY(event_id) REFERENCES EVENT(event_id)
 );'''
 
