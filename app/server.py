@@ -244,7 +244,7 @@ def add_event_image():
             return Response(status=PERMISSION_DENIED)
 
         # Get json objects
-        #image_type = json.get("image_type")
+        image_encoding = json.get("image_encoding")
         event_id = json.get("event_id")
         image_base64_data = json.get("image_data")
 
@@ -260,12 +260,18 @@ def add_event_image():
         # Get database connection
         connection = query_db.get_connection(current_db_location())
 
-        # Insert into the database and retrieve the id for the image.
-        # The id will be used as the image filename.
-        image_filename = query_db.insert_into_event_image(connection, event_id, image_parent_dir)
 
         # If there is not image type, encode as jpg.
-        image_util.jpeg_and_write_image(image_parent_dir, image_filename, image_base64_data)
+        if image_encoding is None:
+            # Insert into the database and retrieve the id for the image.
+            # The id will be used as the image filename.
+            image_filename = query_db.insert_into_event_image(connection, event_id, image_parent_dir, 'JPEG')
+            image_util.jpeg_and_write_image(image_parent_dir, image_filename, image_base64_data)
+        else:
+            # Insert into the database and retrieve the id for the image.
+            # The id will be used as the image filename.
+            image_filename = query_db.insert_into_event_image(connection, event_id, image_parent_dir, image_encoding)
+            image_util.write_image(image_parent_dir, image_filename, image_base64_data)
         return Response(status=SUCCESS_CODE)
     else:
         return Response(status=FAILURE_CODE)
@@ -380,6 +386,33 @@ def get_all_event_images(identifier):
         return Response(status=FAILURE_CODE)
 
 
+
+@app.route('/get_event_image/<image_id>', methods=['GET'])
+def get_event_image(image_id):
+    if not image_id:
+        return Response(status=MISSING_PARAM_CODE)
+
+    connection = query_db.get_connection(current_db_location())
+    if connection is not None:
+        image_details = query_db.get_event_image_details(connection, image_id)
+
+        # Get the directoru the image is located.
+        image_directory = image_details[0]
+        image_encoding = image_details[1]
+        # Get the extension for the image encoding
+        image_extension = image_util.enconding_extensions(image_encoding)
+
+        image_file = image_directory + str(image_id) + image_extension
+        image_base64_encoding = image_util.get_image_base64(image_file, image_encoding)
+
+        if image_base64_encoding:
+            json = '{"image_data":{"' + image_base64_encoding + '"}}'
+            return Response(status=SUCCESS_CODE, response=json, mimetype='application/json')
+        else:
+            return Response(status=SUCCESS_CODE)
+    return Response(status=SUCCESS_CODE)
+
+
 #----------------------------------------------------------------
 # GET ALL EVENT IMAGES IDS
 #----------------------------------------------------------------
@@ -399,7 +432,6 @@ def get_images_ids_for_event(event_id):
                  json += ','
             else:
                 json += ']}'
-
         return Response(status=SUCCESS_CODE, response=json, mimetype='application/json')
     else:
         return Response(status=FAILURE_CODE)

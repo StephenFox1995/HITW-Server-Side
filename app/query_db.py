@@ -14,7 +14,7 @@ INSERT_INTO_MEMBER = '''INSERT INTO Member(member_id, member_f_name, member_l_na
 
 INSERT_INTO_RESULT = '''INSERT INTO Result(event_id, member_id, score) VALUES(?, ?, ?);'''
 
-INSERT_INTO_EVENT_IMAGE = '''INSERT INTO EVENTIMAGE(event_id, image_location) VALUES(?, ?);'''
+INSERT_INTO_EVENT_IMAGE = '''INSERT INTO EVENTIMAGE(event_id, image_location, encoding) VALUES(?, ?, ?);'''
 
 
 INSERT_INTO_POY = '''INSERT INTO PLAYEROFTHEYEAR(member_id, year, score) VALUES(?, ?, ?);'''
@@ -97,9 +97,9 @@ def insert_into_result(connection, event_id, player_id, score):
     cursor.close()
 
 
-def insert_into_event_image(connection, event_id, image_location):
+def insert_into_event_image(connection, event_id, image_location, encoding):
     cursor = connection.cursor()
-    cursor.execute(INSERT_INTO_EVENT_IMAGE, (event_id, image_location))
+    cursor.execute(INSERT_INTO_EVENT_IMAGE, (event_id, image_location, encoding))
     connection.commit()
     image_id = cursor.lastrowid
     cursor.close()
@@ -155,16 +155,23 @@ def get_upcoming_event(connection):
 
 # Selects an event images file location on
 # disk as stored in the database.
-def get_event_image_location(connection, image_id):
+def get_event_image_details(connection, image_id):
     cursor = connection.cursor()
-    cursor.execute(SELECT_EVENT_IMAGE_LOCATION, (image_id))
+    cursor.execute(SELECT_EVENT_IMAGE_LOCATION, (image_id,))
     row = cursor.fetchone()
 
     location = ''
+    encoding = ''
+    details = []
     if row:
-        location = row[0]
+        location = row[2]
+        encoding = row[3]
+        details.append(location)
+        details.append(encoding)
     cursor.close()
-    return location
+    return details
+
+
 
 
 # Gets all the image ids for a given event.
@@ -178,7 +185,6 @@ def get_event_image_ids(connection, event_id):
         identifiers.append(rows[0])
     cursor.close()
     return identifiers
-
 
 
 
