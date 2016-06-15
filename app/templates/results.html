@@ -24,9 +24,11 @@
   <script type="text/javascript" src="{{ url_for('static', filename='file-input.js') }}"></script>
   <script type="text/javascript" src="{{ url_for('static', filename='gallery/bootstrap-gallery.js') }}"></script>
   <script type="text/javascript" src="{{ url_for('static', filename='gallery/jquery.justifyGallery.js') }}"></script>
+  <script type="text/javascript" src="{{ url_for('static', filename='gallery/justifiedGallery.js') }}"></script>
   <link rel="stylesheet" href="../static/styles/bootstrapWebkitCompat.css">
   <link rel="stylesheet" href="../static/styles/heading.css">
   <link rel="stylesheet" href="../static/styles/gallery/bootstrap-gallery.css">
+  <link rel="stylesheet" href="../static/styles/justifiedGallery.min.css">
 
   <title>Results</title>
 </head>
@@ -134,7 +136,6 @@
   </div>
 
   <div class="container padding-50-0">
-    <h1>Gallery</h1>
     <div class="gallery row">
 
     </div>
@@ -182,7 +183,14 @@ $(document).on("ready", function() {
     function loadEventImages(image_ids) {
       // Loop through all the image ids
       // and make separate requests for each image.
-      image_ids.forEach(function(image_id) {
+      image_ids.forEach(function(image_id, index) {
+        if (index == image_ids.length - 1) {
+          $(".gallery").bootstrapGallery();
+          $('.gallery').bootstrapGallery({
+            iconset: "fontawesome"
+          });
+        }
+
         ajaxGET_get_event_image(image_id,
           function successful(data) {
             image_data = data.image_data
@@ -192,6 +200,7 @@ $(document).on("ready", function() {
           function failed() {}
         )
       });
+
     }
 
     function loadResultsToHTMLWithAdminControls(showAdminControls) {
