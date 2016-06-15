@@ -1,143 +1,145 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
 
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
 
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap-theme.min.css" integrity="sha384-fLW2N01lMqjakBkx3l/M9EahuwpSfeNvV63J5ezn3uZzapT0u7EYsXMjQV+0En5r" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap-theme.min.css" integrity="sha384-fLW2N01lMqjakBkx3l/M9EahuwpSfeNvV63J5ezn3uZzapT0u7EYsXMjQV+0En5r" crossorigin="anonymous">
 
-    <!-- Latest compiled and minified JavaScript -->
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
+  <!-- Latest compiled and minified JavaScript -->
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
 
-    <script src="../static/util.js"></script>
-    <script type="text/javascript" src="{{ url_for('static', filename='result.js') }}"></script>
-    <script type="text/javascript" src="{{ url_for('static', filename='member.js') }}"></script>
-    <script type="text/javascript" src="{{ url_for('static', filename='ajax.js') }}"></script>
-    <script type="text/javascript" src="{{ url_for('static', filename='typeahead.js') }}"></script>
-    <script type="text/javascript" src="{{ url_for('static', filename='eventHITW.js') }}"></script>
-    <script type="text/javascript" src="{{ url_for('static', filename='util.js') }}"></script>
-    <script type="text/javascript" src="{{ url_for('static', filename='gallery.js') }}"></script>
-    <script type="text/javascript" src="{{ url_for('static', filename='base64.js') }}"></script>
-    <script type="text/javascript" src="{{ url_for('static', filename='facebook.js') }}"></script>
-    <script type="text/javascript" src="{{ url_for('static', filename='file-input.js') }}"></script>
-    <script type="text/javascript" src="{{ url_for('static', filename='gallery/bootstrap-gallery.js') }}"></script>
-    <script type="text/javascript" src="{{ url_for('static', filename='gallery/jquery.justifyGallery.js') }}"></script>
-    <link rel="stylesheet" href="../static/styles/bootstrapWebkitCompat.css">
-    <link rel="stylesheet" href="../static/styles/heading.css">
-    <link rel="stylesheet" href="../static/styles/gallery/bootstrap-gallery.css">
+  <script src="../static/util.js"></script>
+  <script type="text/javascript" src="{{ url_for('static', filename='result.js') }}"></script>
+  <script type="text/javascript" src="{{ url_for('static', filename='member.js') }}"></script>
+  <script type="text/javascript" src="{{ url_for('static', filename='ajax.js') }}"></script>
+  <script type="text/javascript" src="{{ url_for('static', filename='typeahead.js') }}"></script>
+  <script type="text/javascript" src="{{ url_for('static', filename='eventHITW.js') }}"></script>
+  <script type="text/javascript" src="{{ url_for('static', filename='util.js') }}"></script>
+  <script type="text/javascript" src="{{ url_for('static', filename='gallery.js') }}"></script>
+  <script type="text/javascript" src="{{ url_for('static', filename='base64.js') }}"></script>
+  <script type="text/javascript" src="{{ url_for('static', filename='facebook.js') }}"></script>
+  <script type="text/javascript" src="{{ url_for('static', filename='file-input.js') }}"></script>
+  <script type="text/javascript" src="{{ url_for('static', filename='gallery/bootstrap-gallery.js') }}"></script>
+  <script type="text/javascript" src="{{ url_for('static', filename='gallery/jquery.justifyGallery.js') }}"></script>
+  <link rel="stylesheet" href="../static/styles/bootstrapWebkitCompat.css">
+  <link rel="stylesheet" href="../static/styles/heading.css">
+  <link rel="stylesheet" href="../static/styles/gallery/bootstrap-gallery.css">
 
-    <title>Results</title>
-  </head>
+  <title>Results</title>
+</head>
 
-  <div class="navbar navbar-default">
-    <div class="navbar-header">
-        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-          <span class="icon-bar"></span>
-          <span class="icon-bar"></span>
-          <span class="icon-bar"></span>
-        </button>
-        <a class="navbar-brand" href="/">McCaffrey's Hole In The Wall Golf Society</a>
-      </div>
-      <div class="collapse navbar-collapse">
-        <ul class="nav navbar-nav">
-          <li><a href="/">Home</a></li>
-          <li class="active">
-            <a href="/events_list" data-toggle="collapse" data-target=".navbar-collapse.in">Events</a>
-          </li>
-          <li>
-            <a href="/members_list" data-toggle="collapse" data-target=".navbar-collapse.in">Players</a>
-          </li>
-          <li>
-            <a href="/poy" data-toggle="collapse" data-target=".navbar-collapse.in">Player of the year</a>
-          </li>
-        </ul>
-      </div>
+<div class="navbar navbar-default">
+  <div class="navbar-header">
+    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+      <span class="icon-bar"></span>
+      <span class="icon-bar"></span>
+      <span class="icon-bar"></span>
+    </button>
+    <a class="navbar-brand" href="/">McCaffrey's Hole In The Wall Golf Society</a>
+  </div>
+  <div class="collapse navbar-collapse">
+    <ul class="nav navbar-nav">
+      <li><a href="/">Home</a></li>
+      <li class="active">
+        <a href="/events_list" data-toggle="collapse" data-target=".navbar-collapse.in">Events</a>
+      </li>
+      <li>
+        <a href="/members_list" data-toggle="collapse" data-target=".navbar-collapse.in">Players</a>
+      </li>
+      <li>
+        <a href="/poy" data-toggle="collapse" data-target=".navbar-collapse.in">Player of the year</a>
+      </li>
+    </ul>
+  </div>
+</div>
+
+<body>
+
+  <div id="adminControls" class="well"></div>
+  <div id="eventname" style="text-align:center;"></div>
+  <div class ="table-responsive">
+    <table class="table" id="result_table">
+      <thead>
+        <tr>
+          <th>Player</th>
+          <th>Handicap</th>
+          <th>Result</th>
+        </tr>
+      </thead>
+      <tbody>
+      </tbody>
+    </table>
   </div>
 
-  <body>
-
-    <div id="adminControls" class="well"></div>
-    <div id="eventname" style="text-align:center;"></div>
-    <div class ="table-responsive">
-      <table class="table" id="result_table">
-        <thead>
-          <tr>
-            <th>Player</th>
-            <th>Handicap</th>
-            <th>Result</th>
-          </tr>
-        </thead>
-        <tbody>
-        </tbody>
-      </table>
-    </div>
-
-    <div id="loaderImage" style="width:100%; text-align:center;">
-      <img src="https://d13yacurqjgara.cloudfront.net/users/82092/screenshots/1073359/spinner.gif" width="130" height="100" style="float-right:50%">
-    </div>
-
-
-    <!-- Add Result Modal -->
-    <div class="modal fade" id="addResultModal" role="dialog">
-      <div class="modal-dialog modal-sm">
-        <div class="modal-content">
-          <div class="modal-header">
-            <button type="button" class="close" data-dismiss="modal">&times;</button>
-            <h4 class="modal-title">Add Result</h4>
-          </div>
-          <div class="modal-body">
-            <table>
-              <tr>
-                <td>
-                  Member
-                  <input type="text" class="form-control" id="result_member_id">
-                </td>
-              </tr>
-              <tr>
-                <td>
-                  Event
-                  <input type="text" class="form-control" id="result_event_id" readonly>
-                </td>
-              </tr>
-              <tr>
-                <td>
-                  Score
-                  <input type="text" class="form-control" id="result_score_id">
-                </td>
-              </tr>
-
-            </table>
-          </div>
-          <div class="modal-footer">
-            <input type="button" class="btn btn-default" id="add_result_button" value="Add Result">
-            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-          </div>
-        </div>
-      </div>
-    </div>
-
-
-    <div class="modal fade" id="galleryModal" tabindex="-1" role="dialog" aria-labelledby="galleryModal" aria-hidden="true">
-      <div class="modal-dialog">
-        <div class="modal-content">
-          <div class="modal-body">
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <h3 style="text-align:center">Gallery</h3>
-    <div id="galleryLoaderImage" style="width:100%; text-align:center;">
+  <div id="loaderImage" style="width:100%; text-align:center;">
     <img src="https://d13yacurqjgara.cloudfront.net/users/82092/screenshots/1073359/spinner.gif" width="130" height="100" style="float-right:50%">
-    </div>
+  </div>
 
-    <div class="container padding-50-0">
-      <div class="gallery row">
+
+  <!-- Add Result Modal -->
+  <div class="modal fade" id="addResultModal" role="dialog">
+    <div class="modal-dialog modal-sm">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+          <h4 class="modal-title">Add Result</h4>
+        </div>
+        <div class="modal-body">
+          <table>
+            <tr>
+              <td>
+                Member
+                <input type="text" class="form-control" id="result_member_id">
+              </td>
+            </tr>
+            <tr>
+              <td>
+                Event
+                <input type="text" class="form-control" id="result_event_id" readonly>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                Score
+                <input type="text" class="form-control" id="result_score_id">
+              </td>
+            </tr>
+
+          </table>
+        </div>
+        <div class="modal-footer">
+          <input type="button" class="btn btn-default" id="add_result_button" value="Add Result">
+          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        </div>
       </div>
     </div>
-  </body>
+  </div>
+
+
+  <div class="modal fade" id="galleryModal" tabindex="-1" role="dialog" aria-labelledby="galleryModal" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-body">
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <h3 style="text-align:center">Gallery</h3>
+  <div id="galleryLoaderImage" style="width:100%; text-align:center;">
+    <img src="https://d13yacurqjgara.cloudfront.net/users/82092/screenshots/1073359/spinner.gif" width="130" height="100" style="float-right:50%">
+  </div>
+
+  <div class="container padding-50-0">
+    <h1>Gallery</h1>
+    <div class="gallery row">
+
+    </div>
+  </div>
+</body>
 </html>
 
 <script type="text/javascript">
@@ -164,230 +166,222 @@ $(document).on("ready", function() {
         function failure() {
           loadResultsToHTMLWithAdminControls(false);
         });
-    }
-    else { loadResultsToHTMLWithAdminControls(false); }
-  });
-
-
-  ajax_GET_get_event_image_ids(event_id,
-    function successful(data) {
-      image_ids = data.image_ids;
-      loadEventImages(image_ids)
-    },
-    function failure() {})
-});
-
-function loadEventImages(image_ids) {
-  // Loop through all the image ids
-  // and make separate requests for each image.
-  image_ids.forEach(function(image_id) {
-    ajaxGET_get_event_image(image_id,
-      function successful(data) {
-        image_data = data.image_data
-        removeGalleryLoaderImage();
-        display_image(image_data);
-      },
-      function failed() {}
-    )
-  });
-}
-
-function loadResultsToHTMLWithAdminControls(showAdminControls) {
-  if (showAdminControls) {
-
-    $('#adminControls').append('<div class="btn_display" style="text-align:center">' +
-      '<button class="btn btn-default" data-toggle="modal" data-target="#addResultModal"' + ' onclick="on_submit_result()">Add Result</button>' +
-      '<input type="file" id="upload_image" title="Upload image">' +
-    '</div>');
-
-    $('.nav').append(
-      '<li>' +
-
-
-        '<a href="/admin" data-toggle="collapse"' + 'data-target=".navbar-collapse.in">Administration</a>' +
-      '</li>');
-
-    $('input[type=file]').bootstrapFileInput();
-
-    // Add listener for uploading files.
-    $('#upload_image').on('change', function() {
-      var file = this.files[0];
-
-      file.convertToBase64(function(image_base64_data) {
-        var userToken = getFacebookUserToken().userID;
-        var strippedBase64 = strip_meta_data_base64(image_base64_data);
-        post_event_image_data(userToken, current_event.get_event_id(), strippedBase64);
-      });
+      }
+      else { loadResultsToHTMLWithAdminControls(false); }
     });
-  }
-  // Set the current event.
-  ajaxGET_get_event(event_id,
-    function successful(data) {
-      current_event = new EventHITW(data.identifier, data.title, data.location, data.time, data.date);
-      if (current_event.get_event_title() != undefined) {
-        $("#eventname").append('<h1>' + current_event.get_event_title() + '</h1>');
-        $("#eventname").append('<h4>' + current_event.get_event_location() + '</h5>');
-      }
-    },
-    function failed() { }
-  );
-
-  // Get all the results for the event.
-  ajaxGET_results_for_event(event_id,
-    function success(data) {
-      // Check and see if there are any results for this event.
-      if (data.results === null) {
-        removeLoaderImage();
-        return;
-      }
-      // Get all the results.
-      results = parse_result_from_json(data);
-      results.forEach(function(result) {
-        // Now get the member associated with that result.
-      get_member_for_result(result,
-        function success(member) {
-          removeLoaderImage();
-          members_results_map[member] = result;
-          add_result_info_to_html(result, member, showAdminControls);
-        });
-      });
-    },
-    function failure() { });
-}
 
 
-function removeLoaderImage() {
-  $('#loaderImage').remove();
-}
-
-function removeGalleryLoaderImage() {
-  $('#galleryLoaderImage').remove();
-}
-
-
-function display_images(images) {
-  var image_prefix = 'data:image/png;base64, ';
-  var correct_format_image = [];
-  images.forEach(function(image) {
-    correct_format_image.push(image_prefix + image);
-  });
-  addGallery('.gallery', correct_format_image);
-}
-
-function display_image(image) {
-  var image_prefix = 'data:image/png;base64, ';
-  addGallery('.gallery', image_prefix + image)
-}
-
-
-
-function get_member_for_result(result, callback) {
-    // Get the member_id and get all
-    // details about that user.
-    member_id = result.get_member_id();
-    ajaxGET_get_member(member_id,
+    ajax_GET_get_event_image_ids(event_id,
       function successful(data) {
-        var member = new Member(data.identifier, data.firstname, data.lastname, data.handicap);
-        callback(member);
+        image_ids = data.image_ids;
+        loadEventImages(image_ids)
       },
-      function failure() { }
-    );
-}
+      function failure() {})
+    });
 
-function post_event_image_data(authToken, event_id, image_data) {
-  ajaxPOST_add_event_image(authToken, event_id, image_data,
-    function successful() { location.reload(true); },
-    function failure() { alert("Image upload failed."); });
-}
-
-function add_result_info_to_html(result, member, showAdminControls) {
-  var member_name = member.get_member_fullname();
-  var current_handicap = member.get_member_handicap();
-
-  if (showAdminControls) {
-    $('#result_table > tbody').append(
-      '<tr>'+
-        '<td>' + member_name + '</td>' +
-        '<td>' + current_handicap + '</td>' +
-        '<td>' + result.get_result_score() + '</td>' +
-        '<td><button class="btn btn-default" onClick="delete_result_click(this)">Remove Result</button></td>' +
-      '</tr>')
-  } else {
-    $('#result_table > tbody').append(
-      '<tr>'+
-        '<td>' + member_name + '</td>' +
-        '<td>' + current_handicap + '</td>' +
-        '<td>' + result.get_result_score() + '</td>' +
-      '</tr>')
-  }
-}
-
-
-function on_submit_result() {
-  // Set the event text field.
-  $("#result_event_id").val(current_event.get_event_location());
-
-  // Set the functionality for when the user adds the result.
-  $("#add_result_button").click(function() {
-    var member_fullname = $("#result_member_id").val();
-    var score = $("#result_score_id").val();
-
-    // Check that the user has actually selected
-    // a member to add the result for.
-    if (member_fullname == "" ||
-        member_fullname == null ||
-        score == "" ||
-        score == null) {
-      return;
-    } else {
-      var member = members_to_fullname_map[member_fullname];
-      var member_id = member.get_member_id();
-      var event_id = current_event.get_event_id();
-
-      var userToken = getFacebookUserToken().userID;
-
-      add_result(userToken, event_id, member_id, score,
-        function success(data) { location.reload(true) },
-        function failed() { });
-    }
-  });
-
-  // Get all members from the database so we can use them for typeahead functionality.
-  ajaxGET_get_all_members(
-    function success(data) {
-      var members = parse_member_from_json(data);
-      var fullnames = members.map(function(member) {
-        var fullname = member.get_member_fullname();
-        members_to_fullname_map[fullname] = member;
-        return fullname;
+    function loadEventImages(image_ids) {
+      // Loop through all the image ids
+      // and make separate requests for each image.
+      image_ids.forEach(function(image_id) {
+        ajaxGET_get_event_image(image_id,
+          function successful(data) {
+            image_data = data.image_data
+            removeGalleryLoaderImage();
+            display_image(image_data);
+          },
+          function failed() {}
+        )
       });
-      set_typeahead_data_source(fullnames);
-    },
-    function failure() { });
-}
+    }
 
-function add_result(authToken, event_id, member_id, score, successful, failed) {
-  ajaxPOST_add_result(authToken, event_id, member_id, score,
-    function success(data) { successful(data); },
-    function failed() { failed(); }
-  );
-}
+    function loadResultsToHTMLWithAdminControls(showAdminControls) {
+      if (showAdminControls) {
 
-function set_typeahead_data_source(data_source) {
-  $("#result_member_id").typeahead({
-    source: data_source,
-    minLength: 1
-  });
-}
+        $('#adminControls').append('<div class="btn_display" style="text-align:center">' +
+        '<button class="btn btn-default" data-toggle="modal" data-target="#addResultModal"' + ' onclick="on_submit_result()">Add Result</button>' +
+        '<input type="file" id="upload_image" title="Upload image">' +
+        '</div>');
 
-function delete_result_click(button) {
-  // Prompt user about deletion.
-  if (confirm("Are you sure you want to delete this result?")) {
-    var result = get_object_for_button_index(button, results)
-    // Delete the result
-    ajaxDELETE_delete_result(result.get_event_id(), result.get_member_id(),
-    function success() { location.reload(true); },
-    function failure() { })
-  }
-}
-</script>
+        $('.nav').append(
+          '<li>' +
+
+
+          '<a href="/admin" data-toggle="collapse"' + 'data-target=".navbar-collapse.in">Administration</a>' +
+          '</li>');
+
+          $('input[type=file]').bootstrapFileInput();
+
+          // Add listener for uploading files.
+          $('#upload_image').on('change', function() {
+            var file = this.files[0];
+
+            file.convertToBase64(function(image_base64_data) {
+              var userToken = getFacebookUserToken().userID;
+              var strippedBase64 = strip_meta_data_base64(image_base64_data);
+              post_event_image_data(userToken, current_event.get_event_id(), strippedBase64);
+            });
+          });
+        }
+        // Set the current event.
+        ajaxGET_get_event(event_id,
+          function successful(data) {
+            current_event = new EventHITW(data.identifier, data.title, data.location, data.time, data.date);
+            if (current_event.get_event_title() != undefined) {
+              $("#eventname").append('<h1>' + current_event.get_event_title() + '</h1>');
+              $("#eventname").append('<h4>' + current_event.get_event_location() + '</h5>');
+            }
+          },
+          function failed() { }
+        );
+
+        // Get all the results for the event.
+        ajaxGET_results_for_event(event_id,
+          function success(data) {
+            // Check and see if there are any results for this event.
+            if (data.results === null) {
+              removeLoaderImage();
+              return;
+            }
+            // Get all the results.
+            results = parse_result_from_json(data);
+            results.forEach(function(result) {
+              // Now get the member associated with that result.
+              get_member_for_result(result,
+                function success(member) {
+                  removeLoaderImage();
+                  members_results_map[member] = result;
+                  add_result_info_to_html(result, member, showAdminControls);
+                });
+              });
+            },
+            function failure() { });
+          }
+
+
+          function removeLoaderImage() {
+            $('#loaderImage').remove();
+          }
+
+          function removeGalleryLoaderImage() {
+            $('#galleryLoaderImage').remove();
+          }
+
+
+
+          function display_image(image) {
+            var image_prefix = 'data:image/png;base64, ';
+            addImageToGallery(image_prefix + image)
+          }
+
+
+
+          function get_member_for_result(result, callback) {
+            // Get the member_id and get all
+            // details about that user.
+            member_id = result.get_member_id();
+            ajaxGET_get_member(member_id,
+              function successful(data) {
+                var member = new Member(data.identifier, data.firstname, data.lastname, data.handicap);
+                callback(member);
+              },
+              function failure() { }
+            );
+          }
+
+          function post_event_image_data(authToken, event_id, image_data) {
+            ajaxPOST_add_event_image(authToken, event_id, image_data,
+              function successful() { location.reload(true); },
+              function failure() { alert("Image upload failed."); });
+            }
+
+            function add_result_info_to_html(result, member, showAdminControls) {
+              var member_name = member.get_member_fullname();
+              var current_handicap = member.get_member_handicap();
+
+              if (showAdminControls) {
+                $('#result_table > tbody').append(
+                  '<tr>'+
+                  '<td>' + member_name + '</td>' +
+                  '<td>' + current_handicap + '</td>' +
+                  '<td>' + result.get_result_score() + '</td>' +
+                  '<td><button class="btn btn-default" onClick="delete_result_click(this)">Remove Result</button></td>' +
+                  '</tr>')
+                } else {
+                  $('#result_table > tbody').append(
+                    '<tr>'+
+                    '<td>' + member_name + '</td>' +
+                    '<td>' + current_handicap + '</td>' +
+                    '<td>' + result.get_result_score() + '</td>' +
+                    '</tr>')
+                  }
+                }
+
+
+                function on_submit_result() {
+                  // Set the event text field.
+                  $("#result_event_id").val(current_event.get_event_location());
+
+                  // Set the functionality for when the user adds the result.
+                  $("#add_result_button").click(function() {
+                    var member_fullname = $("#result_member_id").val();
+                    var score = $("#result_score_id").val();
+
+                    // Check that the user has actually selected
+                    // a member to add the result for.
+                    if (member_fullname == "" ||
+                    member_fullname == null ||
+                    score == "" ||
+                    score == null) {
+                      return;
+                    } else {
+                      var member = members_to_fullname_map[member_fullname];
+                      var member_id = member.get_member_id();
+                      var event_id = current_event.get_event_id();
+
+                      var userToken = getFacebookUserToken().userID;
+
+                      add_result(userToken, event_id, member_id, score,
+                        function success(data) { location.reload(true) },
+                        function failed() { });
+                      }
+                    });
+
+                    // Get all members from the database so we can use them for typeahead functionality.
+                    ajaxGET_get_all_members(
+                      function success(data) {
+                        var members = parse_member_from_json(data);
+                        var fullnames = members.map(function(member) {
+                          var fullname = member.get_member_fullname();
+                          members_to_fullname_map[fullname] = member;
+                          return fullname;
+                        });
+                        set_typeahead_data_source(fullnames);
+                      },
+                      function failure() { });
+                    }
+
+                    function add_result(authToken, event_id, member_id, score, successful, failed) {
+                      ajaxPOST_add_result(authToken, event_id, member_id, score,
+                        function success(data) { successful(data); },
+                        function failed() { failed(); }
+                      );
+                    }
+
+                    function set_typeahead_data_source(data_source) {
+                      $("#result_member_id").typeahead({
+                        source: data_source,
+                        minLength: 1
+                      });
+                    }
+
+                    function delete_result_click(button) {
+                      // Prompt user about deletion.
+                      if (confirm("Are you sure you want to delete this result?")) {
+                        var result = get_object_for_button_index(button, results)
+                        // Delete the result
+                        ajaxDELETE_delete_result(result.get_event_id(), result.get_member_id(),
+                        function success() { location.reload(true); },
+                        function failure() { })
+                      }
+                    }
+                    </script>

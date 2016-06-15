@@ -34,7 +34,7 @@
         'maxRowHeight': '400px',
         'spacing': 2,
         'refreshInterval': 500,
-        'maxRefreshCount': 10,
+        'maxRefreshCount': 1,
         'resizeCSS': {'min-width': '0',
                       'min-height': '0',
                       'height': 'auto',

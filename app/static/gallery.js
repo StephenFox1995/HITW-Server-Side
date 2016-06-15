@@ -1,31 +1,17 @@
-function addGallery(element, data) {
-  if (data instanceof Array) {
-    $(element).append(galleryBody());
 
-    data.forEach(function(image) {
-      $('.gallery').append(galleryItem(image));
-    });
-  } else {
-    $('.gallery').append(galleryItem(data))
-  }
-
-  $('.gallery').justifyGallery();
+var done = false
+function addImageToGallery(image) {
+  $('.gallery').append(galleryItem(image))
   $('.gallery').bootstrapGallery();
-  $('.gallery-overview').bootstrapGallery({
+  $('.gallery').justifyGallery();
+  $('.gallery').bootstrapGallery({
     iconset: "fontawesome"
   });
-
 }
 
 // Returns the ccs for a gallery item.
 function galleryItem(src) {
   return '<a href="' + src + '">' +
-              '<img src= "' + src + '">' +
-         '</a>';
-}
-
-// Reuturns the css for a gallery item.
-function galleryBody() {
-  var body = '<h1>Gallery</h1>';
-    return body;
+  '<img src= "' + src + '">' +
+  '</a>';
 }
