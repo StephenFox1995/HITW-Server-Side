@@ -151,6 +151,7 @@ var current_event;
 var members_results_map = {};
 var fbResponse = null;
 
+
 $(document).on("ready", function() {
   getFacebookLoginStatus(function(response) {
     fbResponse = response;
@@ -253,6 +254,9 @@ $(document).on("ready", function() {
             }
             // Get all the results.
             results = parse_result_from_json(data);
+            results.sort(function(resultA, resultB) {
+              return resultA.get_result_score() - resultB.get_result_score()
+            })
             results.forEach(function(result) {
               // Now get the member associated with that result.
               get_member_for_result(result,

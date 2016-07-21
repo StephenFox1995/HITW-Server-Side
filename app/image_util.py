@@ -17,7 +17,8 @@ def jpeg_and_write_image(directory, filename, base64_data):
     # create the directory for the file.
     hitwfile.makedir(directory)
     dir_to_save = str(directory) + str(filename) + '.jpg'
-    image.save(dir_to_save, 'JPEG')
+    image.save(dir_to_save, optimize=True, quality=50)
+
 
 
 def write_image(base64_data):
@@ -40,6 +41,9 @@ def get_image_base64(file, encoding):
     image.save(image_buffer, encoding)
     image_base64 = base64.b64encode(image_buffer.getvalue())
     return image_base64
+
+def size(b64string):
+    return (len(b64string) * 3) / 4 - b64string.count('=', -2)
 
 
 def enconding_extensions(encoding):
