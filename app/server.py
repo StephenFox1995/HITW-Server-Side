@@ -369,9 +369,12 @@ def get_event_image(image_id):
     if connection is not None:
         image_details = query_db.get_event_image_details(connection, image_id)
 
-        # Get the directoru the image is located.
+        # Get the directory the image is located.
         image_directory = image_details[0]
         image_encoding = image_details[1]
+        image_id = image_details[2]
+        event_id = image_details[3]
+
         # Get the extension for the image encoding
         image_extension = image_util.enconding_extensions(image_encoding)
 
@@ -379,7 +382,7 @@ def get_event_image(image_id):
         image_base64_encoding = image_util.get_image_base64(image_file, image_encoding)
 
         if image_base64_encoding:
-            json = '{"image_data":"' + image_base64_encoding + '"}'
+            json = '{"image_id": "%d", "event_id": "%d", "image_data": "%s"}' % (image_id, event_id, image_base64_encoding)
             return Response(status=SUCCESS_CODE, response=json, mimetype='application/json')
         else:
             return Response(status=FAILURE_CODE)

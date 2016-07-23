@@ -166,8 +166,12 @@ def get_event_image_details(connection, image_id):
     if row:
         location = row[2]
         encoding = row[3]
+        image_id = row[0]
+        event_id = row[1]
         details.append(location)
         details.append(encoding)
+        details.append(image_id)
+        details.append(event_id)
     cursor.close()
     return details
 
