@@ -141,8 +141,6 @@
   </div>
 
   <div class ="table-responsive" id="manageImages">
-    <table class="table" id="imageTable">
-    </table>
   </div>
 </body>
 </html>
@@ -397,7 +395,10 @@ function set_typeahead_data_source(data_source) {
 
 
 function manageImages() {
-  $("#manageImages").append('<button class="btn btn-default" onClick="deleteImage()">Close</button>');
+  $("#manageImages").append('<h3>Manage Images</h3>')
+  $("#manageImages").append('<table class="table" id="imageTable"></table>')
+  $("#manageImages").append('<button class="btn btn-default" onClick="removeManageImage()">Close</button>');
+
   images.forEach(function(image) {
     $("#imageTable").append(
       '<tr>' +
@@ -421,6 +422,9 @@ function deleteImage(button) {
       console.log("Failure");
   })
 
+}
+function removeManageImage() {
+  $("#manageImages").empty()
 }
 
 function delete_result_click(button) {
