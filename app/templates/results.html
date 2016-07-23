@@ -177,8 +177,7 @@ $(document).on("ready", function() {
       function successful(data) {
         image_ids = data.image_ids;
         loadEventImages(image_ids)
-      },
-      function failure() {})
+      });
     });
 
     function loadEventImages(image_ids) {
@@ -198,7 +197,9 @@ $(document).on("ready", function() {
             removeGalleryLoaderImage();
             display_image(image_data);
           },
-          function failed() {}
+          function failed() {
+            console.log("22");
+          }
         )
       });
 

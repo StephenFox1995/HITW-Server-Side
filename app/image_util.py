@@ -14,20 +14,28 @@ def jpeg_and_write_image(directory, filename, base64_data):
     raw_data = base64_decode(base64_data)
     image = Image.open(io.BytesIO(raw_data))
 
+    image = resize_image(image)
+    quality = compression_amount(size(base64_data))
+
     # create the directory for the file.
     hitwfile.makedir(directory)
     dir_to_save = str(directory) + str(filename) + '.jpg'
-    image.save(dir_to_save, optimize=True, quality=50)
+    image.save(dir_to_save, optimize=True, quality=quality)
+    image.close()
 
 
 
-def write_image(base64_data):
-    raw_data = base64_decode(base64_data)
-    image = Image.open(io.BytesIO(raw_data))
+def compression_amount(size):
+    if (size > 1500000): # > 1.5 megabytes
+        return 20
+    elif (size < 1500000): # < 1.5 megabyte
+        return 30
 
-    # create the directory for the file.
-    hitwfile.makedir(directory)
-    image.save(str(directory) + str(filename))
+def resize_image(image):
+    width, height = image.size
+    new_height = width / 2
+    new_width = height / 2
+    return image.resize((new_height, new_width), Image.ANTIALIAS)
 
 
 def get_image(file):
