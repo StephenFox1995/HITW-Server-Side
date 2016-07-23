@@ -465,6 +465,27 @@ function ajaxDELETE_delete_event(accessToken, event_id, successful, failed) {
   });
 }
 
+/**Attempts to delete an image from the database via an AJAX call.
+@param event_id The id of the image to delete.
+@param successful A callback upon successful deletion.
+@param failed A callback when an error has occurred.
+*/
+function ajaxDELETE_delete_event_image(accessToken, image_id, successful, failed) {
+  var jsonData = {
+    "accessToken" : accessToken
+  }
+  var data = JSON.stringify(jsonData);
+
+  $.ajax({
+    type: "DELETE",
+    url: '/delete_image/' + image_id,
+    contentType: "application/json",
+    data: data,
+    success: function(data) { successful(data); },
+    failure: function() { failed(); }
+  });
+}
+
 
 
 function ajaxDELETE_delete_result(event_id, member_id, successful, failed) {

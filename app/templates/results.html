@@ -137,8 +137,12 @@
 
   <div class="container padding-50-0">
     <div class="gallery row">
-
     </div>
+  </div>
+
+  <div class ="table-responsive" id="manageImages">
+    <table class="table" id="imageTable">
+    </table>
   </div>
 </body>
 </html>
@@ -150,6 +154,7 @@ var event_id = {{ event_id }};
 var current_event;
 var members_results_map = {};
 var fbResponse = null;
+var images = []
 
 
 $(document).on("ready", function() {
@@ -196,12 +201,12 @@ function loadEventImages(image_ids) {
     ajaxGET_get_event_image(image_id,
       function successful(data) {
         var image = {}
-        image.image_data = data.image_data
-        image.event_id = data.event_id
-        image.image_id = data.image_id
-        image_data = data.image_data
+        image.image_data = data.image_data;
+        image.event_id = data.event_id;
+        image.image_id = data.image_id;
+        images.push(image)
         removeGalleryLoaderImage();
-        display_image(image_data);
+        display_image(image);
       },
       function failed() { }
     )
@@ -211,8 +216,9 @@ function loadEventImages(image_ids) {
 function loadResultsToHTMLWithAdminControls(showAdminControls) {
   if (showAdminControls) {
     $('#adminControls').append('<div class="btn_display" style="text-align:center">' +
-      '<button class="btn btn-default" data-toggle="modal" data-target="#addResultModal"' + ' onclick="on_submit_result()">Add Result</button>' +
+      '<button class="btn btn-default" data-toggle="modal" data-target="#addResultModal" onclick="on_submit_result()">Add Result</button>' +
       '<input type="file" id="upload_image" title="Upload image">' +
+      '<button class="btn btn-default" onclick="manageImages()">Manage Images</button>' +
       '</div>')
     $('.nav').append(
       '<li>' +
@@ -284,7 +290,8 @@ function removeGalleryLoaderImage() {
 
 function display_image(image) {
   var image_prefix = 'data:image/png;base64, ';
-  addImageToGallery(image_prefix + image)
+  image.image = image_prefix + image.image_data
+  addImageToGallery(image)
 }
 
 
@@ -386,6 +393,34 @@ function set_typeahead_data_source(data_source) {
     source: data_source,
     minLength: 1
   });
+}
+
+
+function manageImages() {
+  $("#manageImages").append('<button class="btn btn-default" onClick="deleteImage()">Close</button>');
+  images.forEach(function(image) {
+    $("#imageTable").append(
+      '<tr>' +
+        '<td>' +
+          '<img src= "' + image.image + '" width=50>' +
+        '</td>' +
+        '<td><button class="btn btn-default" onClick="deleteImage(this)">Remove Image</button></td>' +
+      '</tr>' );
+  })
+}
+
+function deleteImage(button) {
+  var imageToDelete = get_object_for_button_index(button, images);
+    var userToken = getFacebookUserToken().userID;
+  ajaxDELETE_delete_event_image(userToken, imageToDelete.image_id,
+    function success() {
+      console.log("Success");
+      location.reload(true);
+    },
+    function failure() {
+      console.log("Failure");
+  })
+
 }
 
 function delete_result_click(button) {

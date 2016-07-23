@@ -68,6 +68,7 @@ DELETE_EVENT = 'DELETE FROM Event WHERE event_id = ?'
 
 DELETE_POY = 'DELETE FROM PlayerOfTheYear WHERE member_id = ? AND year = ?;'
 
+DELETE_IMAGE = 'DELETE FROM EVENTIMAGE WHERE image_id = ?;'
 #----------------
 
 
@@ -362,6 +363,13 @@ def delete_event(connection, event_id):
     delete_query = DELETE_EVENT
     cursor = connection.cursor()
     cursor.execute(delete_query, (event_id,))
+    connection.commit()
+    cursor.close()
+
+def delete_event_image(connection, image_id):
+    delete_query = DELETE_IMAGE
+    cursor = connection.cursor()
+    cursor.execute(delete_query, (image_id,))
     connection.commit()
     cursor.close()
 

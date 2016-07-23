@@ -2,16 +2,12 @@
 function addImageToGallery(image) {
   $('.gallery').append(galleryItem(image))
   $(".gallery").justifiedGallery();
-
-  // $('.gallery').justifyGallery();
-  // $('.gallery').bootstrapGallery({
-  //   iconset: "fontawesome"
-  // });
 }
 
 // Returns the ccs for a gallery item.
-function galleryItem(src) {
+function galleryItem(image) {
+  var src = image.image
   return '<a href="' + src + '">' +
-  '<img src= "' + src + '">' +
-  '</a>';
+            '<img src= "' + src + '">' +
+          '</a>';
 }

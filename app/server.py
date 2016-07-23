@@ -781,6 +781,27 @@ def edit_poy(member_id):
     else: # Failure
         return Response(status=FAILURE_CODE)
 
+
+#----------------------------------------------------------------
+# DELETE IMAGE
+#----------------------------------------------------------------
+@app.route("/delete_image/<image_id>", methods=["DELETE"])
+def removeImage(image_id):
+    if request.method == 'DELETE':
+        json = request.json
+        access_token = json.get('accessToken')
+
+        # Check that this is an admin user.
+        if auth.is_admin(access_token) is False:
+            return Response(status=PERMISSION_DENIED)
+        connection = query_db.get_connection(current_db_location())
+        if connection is None:
+            return Response(status=FAILURE_CODE)
+        else:
+            query_db.delete_event_image(connection, image_id)
+            connection.close()
+            return Response(status=SUCCESS_CODE)
+
 #----------------------------------------------------------------
 # IS ADMIN
 #----------------------------------------------------------------
