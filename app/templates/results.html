@@ -132,7 +132,7 @@
 
   <h3 style="text-align:center">Gallery</h3>
   <div id="galleryLoaderImage" style="width:100%; text-align:center;">
-    <img src="https://d13yacurqjgara.cloudfront.net/users/82092/screenshots/1073359/spinner.gif" width="130" height="100" style="float-right:50%">
+
   </div>
 
   <div class="container padding-50-0">
@@ -181,6 +181,7 @@ $(document).on("ready", function() {
     });
 
     function loadEventImages(image_ids) {
+      addGalleryLoaderImage()
       // Loop through all the image ids
       // and make separate requests for each image.
       image_ids.forEach(function(image_id, index) {
@@ -274,6 +275,10 @@ $(document).on("ready", function() {
 
           function removeLoaderImage() {
             $('#loaderImage').remove();
+          }
+
+          function addGalleryLoaderImage() {
+            $('#galleryLoaderImage').append('<img src="https://d13yacurqjgara.cloudfront.net/users/82092/screenshots/1073359/spinner.gif" width="130" height="100" style="float-right:50%">')
           }
 
           function removeGalleryLoaderImage() {
