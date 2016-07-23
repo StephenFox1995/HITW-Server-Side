@@ -267,14 +267,11 @@ def add_event_image():
             # The id will be used as the image filename.
             image_filename = query_db.insert_into_event_image(connection, event_id, image_parent_dir, 'JPEG')
             image_util.jpeg_and_write_image(image_parent_dir, image_filename, image_base64_data)
-        else:
-            # Insert into the database and retrieve the id for the image.
-            # The id will be used as the image filename.
-            image_filename = query_db.insert_into_event_image(connection, event_id, image_parent_dir, image_encoding)
-            image_util.write_image(image_parent_dir, image_filename, image_base64_data)
         return Response(status=SUCCESS_CODE)
     else:
         return Response(status=FAILURE_CODE)
+
+
 
 
 #----------------------------------------------------------------

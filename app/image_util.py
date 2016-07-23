@@ -1,6 +1,9 @@
 import base64
 import io, hitwfile
-from PIL import Image
+from PIL import Image, ExifTags
+
+
+
 
 def base64_decode(encoded_string):
     return base64.b64decode(encoded_string)
@@ -15,6 +18,7 @@ def jpeg_and_write_image(directory, filename, base64_data):
     image = Image.open(io.BytesIO(raw_data))
 
     image = resize_image(image)
+
     quality = compression_amount(size(base64_data))
 
     # create the directory for the file.
@@ -22,6 +26,7 @@ def jpeg_and_write_image(directory, filename, base64_data):
     dir_to_save = str(directory) + str(filename) + '.jpg'
     image.save(dir_to_save, optimize=True, quality=quality)
     image.close()
+
 
 
 

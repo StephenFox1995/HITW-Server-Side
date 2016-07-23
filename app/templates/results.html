@@ -198,9 +198,7 @@ $(document).on("ready", function() {
             removeGalleryLoaderImage();
             display_image(image_data);
           },
-          function failed() {
-            console.log("22");
-          }
+          function failed() { }
         )
       });
 
@@ -259,6 +257,8 @@ $(document).on("ready", function() {
             results.sort(function(resultA, resultB) {
               return resultA.get_result_score() - resultB.get_result_score()
             })
+
+
             results.forEach(function(result) {
               // Now get the member associated with that result.
               get_member_for_result(result,
