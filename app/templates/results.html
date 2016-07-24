@@ -258,7 +258,7 @@ function loadResultsToHTMLWithAdminControls(showAdminControls) {
       // Get all the results.
       results = parse_result_from_json(data);
       results.sort(function(resultA, resultB) {
-        return resultA.get_result_score() - resultB.get_result_score()
+        return resultB.get_result_score() - resultA.get_result_score()
       })
 
       results.forEach(function(result) {
