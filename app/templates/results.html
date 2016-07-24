@@ -150,10 +150,10 @@ var results = [];
 var members_to_fullname_map = {};
 var event_id = {{ event_id }};
 var current_event;
-var members_results_map = {};
 var fbResponse = null;
 var images = []
-
+var membersRetrievedCount = 0
+var resultsObjectArray = []
 
 $(document).on("ready", function() {
   getFacebookLoginStatus(function(response) {
@@ -257,17 +257,31 @@ function loadResultsToHTMLWithAdminControls(showAdminControls) {
       }
       // Get all the results.
       results = parse_result_from_json(data);
-      results.sort(function(resultA, resultB) {
-        return resultB.get_result_score() - resultA.get_result_score()
-      })
 
       results.forEach(function(result) {
         // Now get the member associated with that result.
         get_member_for_result(result,
           function success(member) {
             removeLoaderImage();
-            members_results_map[member] = result;
-            add_result_info_to_html(result, member, showAdminControls);
+            var resultsObject = {}
+            resultsObject.result = result
+            resultsObject.member = member
+
+            resultsObjectArray.push(resultsObject)
+            // Increse member count
+            membersRetrievedCount++;
+
+            // Check to see if we've retreived all members
+            // for the results and display if we have.
+            if (membersRetrievedCount === results.length) {
+              // Sort in correct order.
+              resultsObjectArray.sort(function(resultsObjectA, resultsObjectB) {
+                return resultsObjectB.result.get_result_score() - resultsObjectA.result.get_result_score();
+              })
+              resultsObjectArray.forEach(function(resultObject, index) {
+                add_result_info_to_html(resultObject.result, resultObject.member, showAdminControls);
+              })
+            }
           });
       });
     },
