@@ -21,9 +21,10 @@ FAILURE_CODE = 500 # Internal Server Error
 MISSING_PARAM_CODE = 422 # Missing param error
 PERMISSION_DENIED = 403 # Persmission denied.
 
+IMAGE_BASE_DIRECTORY = '/Users/stephenfox/Desktop/hitw_images/'
+
 
 app = Flask(__name__)
-
 
 
 @app.route('/', methods=['GET'])
@@ -232,7 +233,7 @@ def add_poy():
 #
 @app.route('/add_event_image/', methods=['POST'])
 def add_event_image():
-    IMAGE_BASE_DIRECTORY = '/Users/stephenfox/Desktop/hitw_images/'
+
 
     if request.json:
         json = request.json
@@ -785,11 +786,13 @@ def edit_poy(member_id):
 #----------------------------------------------------------------
 # DELETE IMAGE
 #----------------------------------------------------------------
-@app.route("/delete_image/<image_id>", methods=["DELETE"])
-def removeImage(image_id):
+@app.route("/delete_image", methods=["DELETE"])
+def removeImage():
     if request.method == 'DELETE':
         json = request.json
         access_token = json.get('accessToken')
+        event_id = json.get('event_id')
+        image_id = json.get('image_id')
 
         # Check that this is an admin user.
         if auth.is_admin(access_token) is False:
@@ -800,6 +803,10 @@ def removeImage(image_id):
         else:
             query_db.delete_event_image(connection, image_id)
             connection.close()
+
+            # Remove image from disk aswell.
+            image_parent_dir = IMAGE_BASE_DIRECTORY + str(event_id) + '/'
+            image_util.delete_image(image_parent_dir, str(image_id) + '.jpg')
             return Response(status=SUCCESS_CODE)
 
 #----------------------------------------------------------------

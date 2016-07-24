@@ -470,15 +470,17 @@ function ajaxDELETE_delete_event(accessToken, event_id, successful, failed) {
 @param successful A callback upon successful deletion.
 @param failed A callback when an error has occurred.
 */
-function ajaxDELETE_delete_event_image(accessToken, image_id, successful, failed) {
+function ajaxDELETE_delete_event_image(accessToken, image_id, event_id, successful, failed) {
   var jsonData = {
-    "accessToken" : accessToken
+    "accessToken" : accessToken,
+    "event_id": event_id,
+    "image_id": image_id
   }
   var data = JSON.stringify(jsonData);
 
   $.ajax({
     type: "DELETE",
-    url: '/delete_image/' + image_id,
+    url: '/delete_image',
     contentType: "application/json",
     data: data,
     success: function(data) { successful(data); },

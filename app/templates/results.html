@@ -413,14 +413,11 @@ function manageImages() {
 function deleteImage(button) {
   var imageToDelete = get_object_for_button_index(button, images);
     var userToken = getFacebookUserToken().userID;
-  ajaxDELETE_delete_event_image(userToken, imageToDelete.image_id,
+  ajaxDELETE_delete_event_image(userToken, imageToDelete.image_id, event_id,
     function success() {
-      console.log("Success");
       location.reload(true);
     },
-    function failure() {
-      console.log("Failure");
-  })
+    function failure() { })
 
 }
 function removeManageImage() {

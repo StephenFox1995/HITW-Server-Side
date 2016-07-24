@@ -1,6 +1,7 @@
 import base64
 import io, hitwfile
 from PIL import Image, ExifTags
+import os
 
 
 
@@ -27,6 +28,9 @@ def jpeg_and_write_image(directory, filename, base64_data):
     image.save(dir_to_save, optimize=True, quality=quality)
     image.close()
 
+
+def delete_image(directory, filename):
+    os.remove(str(directory) + str(filename))
 
 
 
